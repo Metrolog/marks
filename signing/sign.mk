@@ -11,7 +11,7 @@ SIGNCODE ?= signcode
 SIGNCODEPWD ?= signcodepwd
 CHKTRUST ?= chktrust
 
-$(call exportCodeSigningCertificate,filePath,password)
+# $(call exportCodeSigningCertificate,filePath,password)
 define exportCodeSigningCertificate
 $1:
 	$$(MAKETARGETDIR)
