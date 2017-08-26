@@ -9,6 +9,13 @@
 % перевод из миллиметров в пункты
 /mm { 72.0 mul 25.4 div } def
 
+/showcenter {
+  dup
+  stringwidth pop  2 div  0 exch sub  0  rmoveto
+  show
+}
+def
+
 % генерация рисунка поверительного клейма
 /verification_stamp {
   6 dict begin
@@ -26,9 +33,15 @@
   newpath
   0 0  18 2 div  0 360 arc
   0 0  18 2 div 1 sub  0 360 arc
-  eoclip
-  
-  fill
+  closepath
+%  eoclip
+  eofill
+
+  % шифр поверительного клейма организации
+  /Helvetica findfont
+  5 scalefont setfont
+  0 -6 moveto
+  verification_stamp_id showcenter
 
   grestore
   end
@@ -58,22 +71,8 @@ def
 gsave
 
 30 mm 230 mm translate % передвинем начало отсчета
-newpath % начнем новый путь
-0 0 moveto % установим начальную точку в начало отсчета
 
-% начинаем рисовать буквы "ПУ-29"
-% ширина буквы - 10 мм, высота буквы - 20 мм, расстояние между буквами - 5 мм.
-
-% нарисуем букву "П"
-0 mm 20 mm rlineto % проводим линию на 20 мм вверх
-10 mm 0 mm rlineto % проводим линию на 10 мм вправо
-0 mm -20 mm rlineto % проводим линию на 20 мм вниз
-
-% буквы нарисовали, далее следуют инструкции отображения пути
-2.0 setlinewidth  % установим толщину линии
-stroke % проводим линию устаноленной толщины вдоль построенного пути
-
-2017 (IV) (СП) (А) 20.0 mm verification_stamp
+2017 (IV) (CT) (А) 20.0 mm verification_stamp
 
 grestore
 showpage
