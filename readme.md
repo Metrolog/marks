@@ -7,3 +7,4 @@
 
 
 [PostScript]: https://ru.wikipedia.org/wiki/PostScript
+[PostScript Language reference manual]: http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/postscript/pdfs/psrefman.pdf
