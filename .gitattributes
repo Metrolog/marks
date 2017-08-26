@@ -1,0 +1,2 @@
+*.md         merge=text   diff=text   -eol
+*.ps         merge=text   diff=text   -eol
