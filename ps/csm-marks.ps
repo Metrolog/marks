@@ -6,7 +6,39 @@
 %%BoundingBox: 0 0 585 842
 %%EndComments
 
-/mm { 72.0 mul 25.4 div } def % перевод из миллиметров в пункты
+% перевод из миллиметров в пункты
+/mm { 72.0 mul 25.4 div } def
+
+% генерация рисунка поверительного клейма
+/verification_stamp {
+  6 dict begin
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+  /scale_k size 18 div def % рассчитаем коэффициент для последующего масштабирования
+  gsave
+
+  scale_k scale_k scale % масштабируем пространство для отрисовки из 18 единиц в заданный размер клейма
+
+  % окружность
+  newpath
+  0 0  18 2 div  0 360 arc
+  0 0  18 2 div 1 sub  0 360 arc
+  eoclip
+  
+  fill
+
+  grestore
+  end
+}
+def
+
+% генерация рисунка калибровочного клейма
+/calibration_stamp {
+}
+def
 
 %%EndProlog
 
@@ -37,34 +69,11 @@ newpath % начнем новый путь
 10 mm 0 mm rlineto % проводим линию на 10 мм вправо
 0 mm -20 mm rlineto % проводим линию на 20 мм вниз
 
-% нарисуем букву "У"
-5 mm 0 mm rmoveto % смещаем текущую точку на 5 мм вправо
-10 mm 20 mm rlineto % проводим диагональ (10 мм вправо и 20 мм вверх)
--10 mm 0 mm rmoveto % смещаем текущую точку на 10 мм влево
-5 mm -10 mm rlineto % проводим диагональ (5 мм вправо и 10 мм вниз)
-
-% нарисуем тире
-10 mm 0 mm rmoveto % смещаем текущую точку на 10 мм вправо
-10 mm 0 mm rlineto % проводим линию на 10 мм вправо
-
-% нарисуем цифру "2"
-5 mm 10 mm rmoveto
-10 mm 0 mm rlineto
-0 mm -10 mm rlineto
--10 mm -10 mm rlineto
-10 mm 0 mm rlineto
-
-% нарисуем цифру "9"
-5 mm 0 mm rmoveto
-10 mm 10 mm rlineto
-0 mm 10 mm rlineto
--10 mm 0 mm rlineto
-0 mm -10 mm rlineto
-10 mm 0 mm rlineto
-
 % буквы нарисовали, далее следуют инструкции отображения пути
 2.0 setlinewidth  % установим толщину линии
 stroke % проводим линию устаноленной толщины вдоль построенного пути
+
+2017 (IV) (СП) (А) 20.0 mm verification_stamp
 
 grestore
 showpage
