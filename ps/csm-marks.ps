@@ -1,28 +1,31 @@
 %!PS-Adobe-2.0
-%%Creator: MAV
-%%Title: TEST. PU-29
-%%CreationDate: Sun Jan 12 13:38:48 2003
+%%Creator: Sergei S. Betke
+%%Title: CSM makrs
 %%Pages: 1
 %%PageOrder: Ascend
 %%BoundingBox: 0 0 585 842
 %%EndComments
-/cmm { 72.0 mul 25.4 div } def % перевод из миллиметров в пункты
+
+/mm { 72.0 mul 25.4 div } def % перевод из миллиметров в пункты
+
 %%EndProlog
+
 %%BeginSetup
 %%Feature: *Resolution 600dpi
 %%EndSetup
+
 %%Page: A 1
 %%BeginSetup
-%
 %%BeginFeature: *PageSize A4
 <</PageSize [595 842] /ImagingBBox null>> setpagedevice
 %%EndFeature
 %%EndSetup
+
 % начальные служебные инструкции закончены
 
 gsave
 
-30 cmm 230 cmm translate % передвинем начало отсчета
+30 mm 230 mm translate % передвинем начало отсчета
 newpath % начнем новый путь
 0 0 moveto % установим начальную точку в начало отсчета
 
@@ -30,34 +33,34 @@ newpath % начнем новый путь
 % ширина буквы - 10 мм, высота буквы - 20 мм, расстояние между буквами - 5 мм.
 
 % нарисуем букву "П"
-0 cmm 20 cmm rlineto % проводим линию на 20 мм вверх
-10 cmm 0 cmm rlineto % проводим линию на 10 мм вправо
-0 cmm -20 cmm rlineto % проводим линию на 20 мм вниз
+0 mm 20 mm rlineto % проводим линию на 20 мм вверх
+10 mm 0 mm rlineto % проводим линию на 10 мм вправо
+0 mm -20 mm rlineto % проводим линию на 20 мм вниз
 
 % нарисуем букву "У"
-5 cmm 0 cmm rmoveto % смещаем текущую точку на 5 мм вправо
-10 cmm 20 cmm rlineto % проводим диагональ (10 мм вправо и 20 мм вверх)
--10 cmm 0 cmm rmoveto % смещаем текущую точку на 10 мм влево
-5 cmm -10 cmm rlineto % проводим диагональ (5 мм вправо и 10 мм вниз)
+5 mm 0 mm rmoveto % смещаем текущую точку на 5 мм вправо
+10 mm 20 mm rlineto % проводим диагональ (10 мм вправо и 20 мм вверх)
+-10 mm 0 mm rmoveto % смещаем текущую точку на 10 мм влево
+5 mm -10 mm rlineto % проводим диагональ (5 мм вправо и 10 мм вниз)
 
 % нарисуем тире
-10 cmm 0 cmm rmoveto % смещаем текущую точку на 10 мм вправо
-10 cmm 0 cmm rlineto % проводим линию на 10 мм вправо
+10 mm 0 mm rmoveto % смещаем текущую точку на 10 мм вправо
+10 mm 0 mm rlineto % проводим линию на 10 мм вправо
 
 % нарисуем цифру "2"
-5 cmm 10 cmm rmoveto
-10 cmm 0 cmm rlineto
-0 cmm -10 cmm rlineto
--10 cmm -10 cmm rlineto
-10 cmm 0 cmm rlineto
+5 mm 10 mm rmoveto
+10 mm 0 mm rlineto
+0 mm -10 mm rlineto
+-10 mm -10 mm rlineto
+10 mm 0 mm rlineto
 
 % нарисуем цифру "9"
-5 cmm 0 cmm rmoveto
-10 cmm 10 cmm rlineto
-0 cmm 10 cmm rlineto
--10 cmm 0 cmm rlineto
-0 cmm -10 cmm rlineto
-10 cmm 0 cmm rlineto
+5 mm 0 mm rmoveto
+10 mm 10 mm rlineto
+0 mm 10 mm rlineto
+-10 mm 0 mm rlineto
+0 mm -10 mm rlineto
+10 mm 0 mm rlineto
 
 % буквы нарисовали, далее следуют инструкции отображения пути
 2.0 setlinewidth  % установим толщину линии
