@@ -18,7 +18,7 @@
 }
 def
 
-/string_center {
+/string_center_bottom {
   dup
     stringwidth pop  2 div  neg
     0
@@ -29,6 +29,22 @@ def
 /string_center_middle {
   dup
     dup stringwidth pop 2 div neg
+    exch stringheight 2 div
+  rmoveto
+}
+def
+
+/string_left_middle {
+  dup
+    0
+    exch stringheight 2 div
+  rmoveto
+}
+def
+
+/string_right_middle {
+  dup
+    dup stringwidth pop neg
     exch stringheight 2 div
   rmoveto
 }
@@ -55,9 +71,9 @@ def
   % шифр поверительного клейма организации
   /Helvetica findfont
   5 scalefont setfont
-  0 -6 moveto
+  0 -7 moveto
     verification_stamp_id
-    string_center 
+    string_center_bottom
   false charpath
 
   % индивидуальный знак поверителя
@@ -68,6 +84,24 @@ def
     string_center_middle 
   false charpath
   
+  % год
+  /Helvetica findfont
+  8 scalefont setfont
+  -7 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 2 sub
+        1
+      getinterval
+    string_left_middle 
+  false charpath
+  7 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 1 sub
+        1
+      getinterval
+    string_right_middle 
+  false charpath
+
   eofill
 
   grestore
