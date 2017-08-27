@@ -9,6 +9,14 @@
 % перевод из миллиметров в пункты
 /mm { 72.0 mul 25.4 div } def
 
+/tan {
+  dup
+  sin
+  exch cos
+  div
+}
+def
+
 /stringheight {
   gsave
     newpath
@@ -47,6 +55,33 @@ def
     dup stringwidth pop neg
     exch stringheight 2 div
   rmoveto
+}
+def
+
+% знак РСТ
+/RST {
+  1 dict begin
+  /H exch def % параметр H (высота) знака
+  gsave
+  
+  currentpoint translate
+
+  % окружность
+  newpath
+  0  H 2 div neg  H  90 0.5 1 atan sub  105  arc
+    15 cos H mul  H 2 div  sub  15 tan  div  neg  15 sin H mul  sub
+    0
+    15 sin H mul  neg
+    H 2 div  15 cos H mul  sub
+    H  H 2 div  15 cos  div  sub
+  arct
+  0  H 2 div  H  255  270 0.5 1 atan add  arc
+  closepath
+    
+  eofill
+
+  grestore
+  end
 }
 def
 
@@ -110,6 +145,10 @@ def
     string_center_middle
   false charpath
   
+  % знак РСТ
+  2.5 5 moveto
+  3 RST
+
   eofill
 
   grestore
@@ -141,7 +180,7 @@ gsave
 
 30 mm 230 mm translate % передвинем начало отсчета
 
-2017 (IV) (CT) (A) 20.0 mm verification_stamp
+2017 (IV) (CT) (A) 40.0 mm verification_stamp
 
 % glyphshow
 
