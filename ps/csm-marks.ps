@@ -70,15 +70,15 @@ def
 
   % шифр поверительного клейма организации
   /Helvetica findfont
-  5 scalefont setfont
-  0 -7 moveto
+  4 scalefont setfont
+  0 -5.5 moveto
     verification_stamp_id
-    string_center_bottom
+    string_center_middle
   false charpath
 
   % индивидуальный знак поверителя
   /Helvetica findfont
-  5 scalefont setfont
+  4 scalefont setfont
   0 0 moveto
     verification_stamp_sign
     string_center_middle 
@@ -86,7 +86,7 @@ def
   
   % год
   /Helvetica findfont
-  8 scalefont setfont
+  6 scalefont setfont
   -7 0 moveto
         verification_stamp_year 4 string cvs
         dup length 2 sub
@@ -102,6 +102,14 @@ def
     string_right_middle 
   false charpath
 
+  % период
+  /Helvetica findfont
+  3 scalefont setfont
+  -2.5 5 moveto
+    verification_stamp_period
+    string_center_middle
+  false charpath
+  
   eofill
 
   grestore
