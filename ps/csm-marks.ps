@@ -9,9 +9,29 @@
 % перевод из миллиметров в пункты
 /mm { 72.0 mul 25.4 div } def
 
-/showcenter {
+/stringheight {
+  gsave
+    false charpath pathbbox exch pop sub exch pop
+  grestore
+}
+def
+
+/show_center {
+  3 1 roll
+  moveto
   dup
-  stringwidth pop  2 div  0 exch sub  0  rmoveto
+  stringwidth pop  2 div  neg  0  rmoveto
+  show
+}
+def
+
+/show_center_middle {
+  3 1 roll
+  moveto
+  dup
+    dup stringwidth pop 2 div neg
+    exch stringheight 2 div
+  rmoveto
   show
 }
 def
@@ -33,15 +53,17 @@ def
   newpath
   0 0  18 2 div  0 360 arc
   0 0  18 2 div 1 sub  0 360 arc
-  closepath
-%  eoclip
   eofill
 
   % шифр поверительного клейма организации
   /Helvetica findfont
   5 scalefont setfont
-  0 -6 moveto
-  verification_stamp_id showcenter
+  0 -6 verification_stamp_id show_center
+
+  % индивидуальный знак поверителя
+  /Helvetica findfont
+  5 scalefont setfont
+  0 0 verification_stamp_sign show_center_middle
 
   grestore
   end
@@ -72,7 +94,9 @@ gsave
 
 30 mm 230 mm translate % передвинем начало отсчета
 
-2017 (IV) (CT) (А) 20.0 mm verification_stamp
+2017 (IV) (CT) (A) 20.0 mm verification_stamp
+
+% glyphshow
 
 grestore
 showpage
