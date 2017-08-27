@@ -11,28 +11,26 @@
 
 /stringheight {
   gsave
+    newpath
+    0 0 moveto
     false charpath pathbbox exch pop sub exch pop
   grestore
 }
 def
 
-/show_center {
-  3 1 roll
-  moveto
+/string_center {
   dup
-  stringwidth pop  2 div  neg  0  rmoveto
-  show
+    stringwidth pop  2 div  neg
+    0
+  rmoveto
 }
 def
 
-/show_center_middle {
-  3 1 roll
-  moveto
+/string_center_middle {
   dup
     dup stringwidth pop 2 div neg
     exch stringheight 2 div
   rmoveto
-  show
 }
 def
 
@@ -53,17 +51,24 @@ def
   newpath
   0 0  18 2 div  0 360 arc
   0 0  18 2 div 1 sub  0 360 arc
-  eofill
 
   % шифр поверительного клейма организации
   /Helvetica findfont
   5 scalefont setfont
-  0 -6 verification_stamp_id show_center
+  0 -6 moveto
+    verification_stamp_id
+    string_center 
+  false charpath
 
   % индивидуальный знак поверителя
   /Helvetica findfont
   5 scalefont setfont
-  0 0 verification_stamp_sign show_center_middle
+  0 0 moveto
+    verification_stamp_sign
+    string_center_middle 
+  false charpath
+  
+  eofill
 
   grestore
   end
