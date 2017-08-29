@@ -124,7 +124,21 @@ def
     x5 y5  arc_angle_to
   arcn
   closepath
-    
+  eofill
+  
+  % Ò
+  newpath
+    0.5  0.18 2 div  add  H mul
+    0.25 H mul  2 div  neg
+  moveto
+  0  0.25 0.1 sub  H mul  rlineto
+  0.35 0.18 sub  2 div  H mul  0  rlineto
+  0  0.1 H mul  rlineto
+  0.35 H mul neg  0  rlineto
+  0  0.1 H mul neg  rlineto
+  0.35 0.18 sub  2 div  H mul  0  rlineto
+  0  0.25 0.1 sub  H mul  neg  rlineto
+  closepath
   eofill
 
   grestore
