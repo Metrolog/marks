@@ -58,24 +58,71 @@ def
 }
 def
 
+/arc_angle_from {
+  5 dict begin
+  /y1 exch def
+  /x1 exch def
+  /r exch def
+  /yc exch def
+  /xc exch def
+    xc yc r
+    y1 yc sub  x1 xc sub  atan
+  end
+}
+def
+
+/arc_angle_to {
+  6 dict begin
+  /y2 exch def
+  /x2 exch def
+  /a1 exch def
+  /r exch def
+  /yc exch def
+  /xc exch def
+    xc yc r a1
+    y2 yc sub  x2 xc sub  atan
+  end
+}
+def
+
 % знак РСТ
 /RST {
-  1 dict begin
+  10 dict begin
   /H exch def % параметр H (высота) знака
+  /x1  15 tan  H 2 div  mul  neg  def
+  /R1  H  H 2 div  15 cos  div  sub  def
+  /x2  0.17 H mul  def
+  /y2  R1 dup mul  x2 x1 sub  dup mul  sub  sqrt  def
+  /R2  y2  0.25 H mul  add  def
+  /x4  0.5 H mul  def
+  /y4  3 sqrt  2 div  H mul  H 2 div  sub  def
+  /x5  x4  def
+  /y5  R2 dup mul  x5 x2 sub  dup mul  sub  sqrt  y2 sub  def
   gsave
   
   currentpoint translate
 
-  % окружность
+  % С
   newpath
-  0  H 2 div neg  H  90 0.5 1 atan sub  105  arc
-    15 cos H mul  H 2 div  sub  15 tan  div  neg  15 sin H mul  sub
-    0
-    15 sin H mul  neg
-    H 2 div  15 cos H mul  sub
-    H  H 2 div  15 cos  div  sub
-  arct
-  0  H 2 div  H  255  270 0.5 1 atan add  arc
+    0  H 2 div neg  H
+    x4 y4 arc_angle_from
+    105
+  arc
+  x1 0 R1 105 255 arc
+    0  H 2 div  H
+    255
+    x4  y4 neg  arc_angle_to
+  arc
+  x5  y5 neg  lineto
+    x2 y2 R2
+    x5  y5 neg  arc_angle_from
+    270
+  arcn
+  x2 0  0.25 H mul  270 90 arcn
+    x2  y2 neg  R2
+    90
+    x5 y5  arc_angle_to
+  arcn
   closepath
     
   eofill
