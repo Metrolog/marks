@@ -98,12 +98,14 @@ def
   /y4  3 sqrt  2 div  H mul  H 2 div  sub  def
   /x5  x4  def
   /y5  R2 dup mul  x5 x2 sub  dup mul  sub  sqrt  y2 sub  def
-  gsave
   
+  % сохран€ем на стеке текущую матрицу преобразовани€ системы координат дл€ последующего восстановлени€
+  matrix currentmatrix
+  % переносим начало координат в центр символа –—“
   currentpoint translate
 
   % —
-  newpath
+  x4 y4 moveto
     0  H 2 div neg  H
     x4 y4 arc_angle_from
     105
@@ -123,11 +125,9 @@ def
     90
     x5 y5  arc_angle_to
   arcn
-  closepath
-  eofill
+  x4 y4 lineto
   
   % “
-  newpath
     0.5  0.18 2 div  add  H mul
     0.25 H mul  2 div  neg
   moveto
@@ -138,10 +138,10 @@ def
   0  0.1 H mul neg  rlineto
   0.35 0.18 sub  2 div  H mul  0  rlineto
   0  0.25 0.1 sub  H mul  neg  rlineto
-  closepath
-  eofill
 
-  grestore
+  % восстановливаем систему координат
+  setmatrix
+
   end
 }
 def
@@ -239,9 +239,9 @@ def
 
 gsave
 
-30 mm 230 mm translate % передвинем начало отсчета
+60 mm 230 mm translate % передвинем начало отсчета
 
-2017 (IV) (CT) (A) 40.0 mm verification_stamp
+2017 (IV) (CT) (A) 100.0 mm verification_stamp
 
 % glyphshow
 
