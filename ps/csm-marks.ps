@@ -180,12 +180,15 @@ def
   /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
   /verification_stamp_year exch def % год поверительного клейма
   /scale_k size 18 div def % рассчитаем коэффициент для последующего масштабирования
-  gsave
 
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  % переносим начало координат в центр символа РСТ
+  currentpoint translate
   scale_k scale_k scale % масштабируем пространство для отрисовки из 18 единиц в заданный размер клейма
 
   % окружность
-  newpath
+  18 2 div  0  moveto
   0 0  18 2 div  0 360 arc
   0 0  18 2 div 1 sub  0 360 arc
 
@@ -235,9 +238,9 @@ def
   2.5 5 moveto
   3 RST
 
-  eofill
+  % восстановливаем систему координат
+  setmatrix
 
-  grestore
   end
 }
 def
@@ -264,9 +267,9 @@ def
 
 gsave
 
-110 mm 180 mm translate % передвинем начало отсчета
-
+110 mm 180 mm moveto
 2017 (IV) (CT) (A) 200.0 mm verification_stamp
+eofill
 
 % glyphshow
 
