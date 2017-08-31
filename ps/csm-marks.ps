@@ -85,6 +85,31 @@ def
 }
 def
 
+% https://groups.google.com/forum/#!topic/comp.lang.postscript/rvAGfbsbLVw
+/glyphpath
+{
+  2 dict begin
+  /bln exch def
+  /glyphname exch def
+
+  currentfont
+
+  currentfont length dict begin
+  currentfont {1 index /FID ne {def} {pop pop} ifelse} forall
+  /Encoding [ 256 {/.notdef} repeat ] def
+
+  Encoding 97 glyphname put % code of char a = 97 
+  currentdict
+  end
+  /tempfont exch definefont pop
+  /tempfont 1 selectfont
+  (a) bln charpath
+  setfont
+  /tempfont undefinefont
+
+  end
+} def
+
 % знак РСТ
 /RST {
   10 dict begin
@@ -204,9 +229,11 @@ def
   /Helvetica findfont
   4 scalefont setfont
   0 0 moveto
+%    verification_stamp_sign
+%    string_center_middle 
+%  false charpath
     verification_stamp_sign
-    string_center_middle 
-  false charpath
+  false glyphpath
   
   % год
   /Helvetica findfont
@@ -268,10 +295,8 @@ def
 gsave
 
 110 mm 180 mm moveto
-2017 (IV) (CT) (A) 200.0 mm verification_stamp
+2017 (IV) (CN) /alpha 200.0 mm verification_stamp
 eofill
-
-% glyphshow
 
 grestore
 showpage
