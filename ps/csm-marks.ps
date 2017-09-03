@@ -108,7 +108,8 @@ def
   /tempfont undefinefont
 
   end
-} def
+}
+def
 
 % знак РСТ
 /RST {
@@ -150,7 +151,7 @@ def
     90
     x5 y5  arc_angle_to
   arcn
-  x4 y4 lineto
+  closepath
   
   % Т
     0.5  0.18 2 div  add  H mul
@@ -163,6 +164,7 @@ def
   0  0.1 H mul neg  rlineto
   0.35 0.18 sub  2 div  H mul  0  rlineto
   0  0.25 0.1 sub  H mul  neg  rlineto
+  closepath
   
   % р
     0.31 0.08 add H mul neg
@@ -187,7 +189,7 @@ def
     -0.08  0.08 0.04 sub neg  atan
     180
   arc
-  0  0.1 0.28 add H mul neg  rlineto
+  closepath
 
   % восстановливаем систему координат
   setmatrix
@@ -214,29 +216,30 @@ def
 
   % окружность
   18 2 div  0  moveto
-  0 0  18 2 div  0 360 arc
-  0 0  18 2 div 1 sub  0 360 arc
-
+  0 0  18 2 div  0 360 arc  closepath
+  18 2 div 0.5 sub  0  moveto
+  0 0  18 2 div 0.5 sub  360 0 arcn  closepath
+  
   % шифр поверительного клейма организации
-  /Helvetica findfont
+  (Courier) findfont
   4 scalefont setfont
   0 -5.5 moveto
     verification_stamp_id
     string_center_middle
-  false charpath
+  true charpath
 
   % индивидуальный знак поверителя
-  /Helvetica findfont
+  (Courier) findfont
   4 scalefont setfont
   0 0 moveto
-%    verification_stamp_sign
-%    string_center_middle 
-%  false charpath
     verification_stamp_sign
-  false glyphpath
+    string_center_middle 
+  true charpath
+    % verification_stamp_sign
+  % true glyphpath
   
   % год
-  /Helvetica findfont
+  (Courier) findfont
   6 scalefont setfont
   -7 0 moveto
         verification_stamp_year 4 string cvs
@@ -244,27 +247,27 @@ def
         1
       getinterval
     string_left_middle 
-  false charpath
+  true charpath
   7 0 moveto
         verification_stamp_year 4 string cvs
         dup length 1 sub
         1
       getinterval
     string_right_middle 
-  false charpath
+  true charpath
 
   % период
-  /Helvetica findfont
+  (Courier) findfont
   3 scalefont setfont
   -2.5 5 moveto
     verification_stamp_period
     string_center_middle
-  false charpath
-  
+  true charpath
+
   % знак РСТ
   2.5 5 moveto
   3 RST
-
+  
   % восстановливаем систему координат
   setmatrix
 
@@ -294,9 +297,11 @@ def
 
 gsave
 
-110 mm 180 mm moveto
-2017 (IV) (CN) /alpha 200.0 mm verification_stamp
-eofill
+60 mm 220 mm moveto
+2017 (IV) (CN) (A) 100.0 mm verification_stamp
+fill
+% 0.1 setlinewidth
+% stroke
 
 grestore
 showpage
