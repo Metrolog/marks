@@ -1,2 +1,7 @@
-*.md         merge=text   diff=text   -eol
-*.ps         merge=text   diff=text   -eol
+*.md         merge=text diff=text -eol
+#*.ps        merge=text diff=text -eol encoding=cp1251
+*.ps         text encoding=cp1251
+
+[diff "ps"]
+  textconv = ps2ascii
+
