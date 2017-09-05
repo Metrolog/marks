@@ -73,6 +73,20 @@
   >> setdistillerparams
 } if
 
+/GetPageBBox {
+  currentpagedevice /ImagingBBox get
+  dup type /nulltype eq
+    {
+      pop
+        0 0
+        currentpagedevice /PageSize get  aload  pop
+        4 array
+      astore
+    }
+  if
+}
+def
+
 /CP1251Encoding 256 array def
 CP1251Encoding 0  StandardEncoding 0 128 getinterval  putinterval
 CP1251Encoding 128 [
@@ -291,7 +305,7 @@ end
 def
 
 % генерация рисунка поверительного клейма
-/verification_stamp {
+/verification_stamp_path {
   6 dict begin
   /size exch def % размер клейма
   /verification_stamp_sign exch def % индивидуальный знак поверителя
@@ -366,7 +380,78 @@ def
 def
 
 % генерация рисунка калибровочного клейма
-/calibration_stamp {
+/calibration_stamp_path {
+}
+def
+
+% размещение объектов в шахматном порядке
+/align_staggered {
+  6 dict begin
+  /ItemSize exch def % размеры объектов [x y]
+  /AreaBBox exch def % координаты области для размещения объектов [x1 y1 x2 y2]
+  /ItemX  ItemSize aload pop pop  def
+  /ItemY  ItemSize aload pop exch pop  def
+  /BBoxX  AreaBBox aload pop pop exch pop sub neg  def
+  /BBoxY  AreaBBox aload pop exch pop sub neg exch pop  def
+  gsave
+  
+  AreaBBox aload pop pop pop  translate
+  
+  0 % координата X начала первой строки
+    ItemY 2 div  ItemY  BBoxY ItemY 2 div sub
+    {
+        exch dup  3 1 roll  ItemX 2 div  add
+        ItemX
+        BBoxX ItemX 2 div sub
+        {
+          exch dup  3 1 roll
+          newpath
+          moveto
+          2017 (IV) (СП) (а) 18.0 mm verification_stamp_path
+          fill
+        }
+      for
+      pop
+      % изменяем координату X начала строки
+      ItemX 2 div  sub
+      dup  0 lt { ItemX add } if
+    }
+  for
+
+  grestore
+  end
+}
+def
+
+% размещение объектов по сетке
+/align_to_grid {
+  6 dict begin
+  /ItemSize exch def % размеры объектов [x y]
+  /AreaBBox exch def % координаты области для размещения объектов [x1 y1 x2 y2]
+  /ItemX  ItemSize aload pop pop  def
+  /ItemY  ItemSize aload pop exch pop  def
+  /BBoxX  AreaBBox aload pop pop exch pop sub neg  def
+  /BBoxY  AreaBBox aload pop exch pop sub neg exch pop  def
+  gsave
+  
+  AreaBBox aload pop pop pop  translate
+  
+    ItemY 2 div  ItemY  BBoxY ItemY 2 div sub
+    {
+        ItemX 2 div  ItemX  BBoxX ItemX 2 div sub
+        {
+          exch dup  3 1 roll
+          newpath
+          moveto
+          2017 (IV) (СП) (а) 18.0 mm verification_stamp_path
+          fill
+        }
+      for
+    }
+  for
+
+  grestore
+  end
 }
 def
 
@@ -380,18 +465,24 @@ def
 %%BeginSetup
 %%BeginFeature: *PageSize A4
 <<
-  /HWResolution [2400 2400]
+  % /HWResolution [2400 2400]
   /PageSize [595 842]
   /ImagingBBox null
+  /MirrorPrint false
+  /NegativePrint true
 >> setpagedevice
 %%EndFeature
 %%EndSetup
 
 gsave
 
-60 mm 220 mm moveto
-2017 (IV) (СП) (а) 100.0 mm verification_stamp
-fill
+  GetPageBBox
+  [ 20 mm  20 mm 3 sqrt 2 div mul ]
+align_staggered
+
+% 60 mm 220 mm moveto
+% 2017 (IV) (СП) (а) 18.0 mm verification_stamp_path
+% fill
 % 0.1 setlinewidth
 % stroke
 
