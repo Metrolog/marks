@@ -399,9 +399,9 @@ end
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
   matrix currentmatrix
-  % переносим начало координат в центр символа РСТ
   currentpoint translate
-  scale_k scale_k scale % масштабируем пространство для отрисовки из 18 единиц в заданный размер клейма
+  scale_k scale_k scale
+  9 9 translate
 
   % окружность
   18 2 div  0  moveto
@@ -481,11 +481,11 @@ end
   AreaBBox aload pop pop pop  translate
   
   0 % координата X начала первой строки
-    ItemY 2 div  ItemY  BBoxY ItemY 2 div sub
+    0  ItemY  BBoxY ItemY sub
     {
-        exch dup  3 1 roll  ItemX 2 div  add
+        exch dup  3 1 roll
         ItemX
-        BBoxX ItemX 2 div sub
+        BBoxX ItemX sub
         {
           exch dup  3 1 roll
           newpath
@@ -520,9 +520,9 @@ end
   
   AreaBBox aload pop pop pop  translate
   
-    ItemY 2 div  ItemY  BBoxY ItemY 2 div sub
+    0  ItemY  BBoxY ItemY sub
     {
-        ItemX 2 div  ItemX  BBoxX ItemX 2 div sub
+        0  ItemX  BBoxX ItemX sub
         {
           exch dup  3 1 roll
           newpath
