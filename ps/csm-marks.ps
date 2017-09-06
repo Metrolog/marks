@@ -568,8 +568,23 @@ gsave
   [ 20 mm  dup 3 sqrt 2 div mul ]
 align_staggered
 
-% 60 mm 220 mm moveto
-% 2017 (IV) (ÑÏ) (à) 18.0 mm verification_stamp_path
+matrix currentmatrix
+60 mm 220 mm translate
+0 0 moveto
+2017 (IV) (ÑÏ) (à) 18.0 mm verification_stamp_path
+false upath
+
+dup
+ufill
+
+exch setmatrix
+80 mm 220 mm translate
+dup
+ufill
+
+20 mm 0 mm translate
+ufill
+ 
 % fill
 % 0.1 setlinewidth
 % stroke
