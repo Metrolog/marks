@@ -111,56 +111,81 @@ CP1251Encoding 128 [
 % перевод из миллиметров в пункты
 /mm { 72.0 mul 25.4 div } def
 
-/tan {
+/tan 
+{
   dup
   sin
   exch cos
   div
-}
-def
+} bind def
 
-/stringheight {
+/areverse  %  [a b ... z] --> [z ... b a]
+{
+  [ exch
+    aload
+    length
+    2  1  3 -1 roll
+      {
+        -1 roll
+      }
+    for
+  ]
+} bind def
+
+/aconcatenate  %  [(a) (b) ... (z)] --> (ab...z)
+{
+  0  1 index  { length add } forall  string
+  0 3 2 roll
+    {
+      3 copy putinterval
+      length add
+    }
+  forall pop  
+} bind def
+
+/stringheight
+{
   gsave
     newpath
     0 0 moveto
     false charpath pathbbox exch pop sub exch pop
   grestore
-}
-def
+} bind def
 
-/string_center_bottom {
+/string_center_bottom
+{
   dup
     stringwidth pop  2 div  neg
     0
   rmoveto
-}
-def
+} bind def
 
-/string_center_middle {
+/string_center_middle
+{
   dup
     dup stringwidth pop 2 div neg
     exch stringheight 2 div
   rmoveto
-}
-def
+} bind def
 
-/string_left_middle {
+/string_left_middle
+{
   dup
     0
     exch stringheight 2 div
   rmoveto
-}
-def
+} bind def
 
-/string_right_middle {
+/string_right_middle
+{
   dup
     dup stringwidth pop neg
     exch stringheight 2 div
   rmoveto
-}
-def
+} bind def
 
-/arc_angle_from {
+/arc_angle_from
+{
   5 dict begin
   /y1 exch def
   /x1 exch def
@@ -170,10 +195,10 @@ def
     xc yc r
     y1 yc sub  x1 xc sub  atan
   end
-}
-def
+} bind def
 
-/arc_angle_to {
+/arc_angle_to
+{
   6 dict begin
   /y2 exch def
   /x2 exch def
@@ -184,8 +209,65 @@ def
     xc yc r a1
     y2 yc sub  x2 xc sub  atan
   end
-}
-def
+} bind def
+
+/int_to_roman % 4 --> (IV)
+{
+  1 dict begin
+  /n_int exch def
+
+  [
+      [
+        << /i (I)  /v (V)  /x (X) >>
+        << /i (X)  /v (L)  /x (C) >>
+        << /i (C)  /v (D)  /x (M) >>
+        << /i (M) >>
+      ]
+      {
+        n_int 0 eq { pop exit } if
+        begin
+          [
+              [ {} {i} {i i} {i i i} {i v} {v} {v i} {v i i} {v i i i} {i x} ]
+              n_int 10 mod
+            get
+            exec
+          ]
+        aconcatenate
+        end
+        /n_int  n_int 10 idiv  def
+      }
+    forall
+  ]
+  areverse
+  aconcatenate
+
+  end
+} bind def
+
+/arange % 1 5 --> [ 1 2 3 4 5 ]
+{
+  2 dict begin
+  /n_to exch def
+  /n_from exch def
+  [ n_from 1 n_to {} for ]
+  end
+} bind def
+
+/months % [ 1 2 3 ] --> [ (1) (2) (3) ]
+{
+  [ exch
+    { 2 string  cvs } forall
+  ]
+} bind def
+% 1 12 arange  months ==
+
+/quarters % [ 1 2 3 4 ] --> [ (I) (II) (III) (IV) ]
+{
+  [ exch
+    { int_to_roman } forall
+  ]
+} bind def
+% 1 4 arange  quarters == 
 
 (GOST2.304-81TypeA) findfont
 dup length dict begin
@@ -218,7 +300,8 @@ end
 (stamp_year) exch definefont pop
 
 % знак РСТ
-/RST {
+/RST
+{
   10 dict begin
   /H exch def % параметр H (высота) знака
   /x1  15 tan  H 2 div  mul  neg  def
@@ -301,11 +384,11 @@ end
   setmatrix
 
   end
-}
-def
+} bind def
 
 % генерация рисунка поверительного клейма
-/verification_stamp_path {
+/verification_stamp_path
+{
   6 dict begin
   /size exch def % размер клейма
   /verification_stamp_sign exch def % индивидуальный знак поверителя
@@ -376,16 +459,16 @@ def
   setmatrix
 
   end
-}
-def
+} bind def
 
 % генерация рисунка калибровочного клейма
-/calibration_stamp_path {
-}
-def
+/calibration_stamp_path
+{
+} bind def
 
 % размещение объектов в шахматном порядке
-/align_staggered {
+/align_staggered
+{
   6 dict begin
   /ItemSize exch def % размеры объектов [x y]
   /AreaBBox exch def % координаты области для размещения объектов [x1 y1 x2 y2]
@@ -417,14 +500,15 @@ def
       dup  0 lt { ItemX add } if
     }
   for
+  pop
 
   grestore
   end
-}
-def
+} bind def
 
 % размещение объектов по сетке
-/align_to_grid {
+/align_to_grid
+{
   6 dict begin
   /ItemSize exch def % размеры объектов [x y]
   /AreaBBox exch def % координаты области для размещения объектов [x1 y1 x2 y2]
@@ -452,8 +536,7 @@ def
 
   grestore
   end
-}
-def
+} bind def
 
 %%EndProlog
 
@@ -476,8 +559,13 @@ def
 
 gsave
 
+% 210 mm 0 mm translate
+% 90 rotate
+
   GetPageBBox
-  [ 20 mm  20 mm 3 sqrt 2 div mul ]
+  % [ 2 mm 2 mm 145 mm 208 mm ]
+  % [ 22 mm  dup 3 sqrt 2 div mul ]
+  [ 20 mm  dup 3 sqrt 2 div mul ]
 align_staggered
 
 % 60 mm 220 mm moveto
