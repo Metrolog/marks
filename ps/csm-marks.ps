@@ -244,12 +244,12 @@ CP1251Encoding 128 [
   end
 } bind def
 
-/arange % 1 5 --> [ 1 2 3 4 5 ]
+/range % 1 5 --> 1 2 3 4 5
 {
   2 dict begin
   /n_to exch def
   /n_from exch def
-  [ n_from 1 n_to {} for ]
+  n_from 1 n_to {} for
   end
 } bind def
 
@@ -259,7 +259,7 @@ CP1251Encoding 128 [
     { 2 string  cvs } forall
   ]
 } bind def
-% 1 12 arange  months ==
+% [ 1 12 range ]  months ==
 
 /quarters % [ 1 2 3 4 ] --> [ (I) (II) (III) (IV) ]
 {
@@ -267,7 +267,7 @@ CP1251Encoding 128 [
     { int_to_roman } forall
   ]
 } bind def
-% 1 4 arange  quarters == 
+% [ 1 4 range ]  quarters == 
 
 (GOST2.304-81TypeA) findfont
 dup length dict begin
@@ -491,6 +491,35 @@ end
 {
 } bind def
 
+/create_stamps % год [массив периодов] (шифр клейма) [массив знаков поверителей] диаметр функция_генерации  --> выполнение функции генерации для всех заданных клейм
+{
+  6 dict begin
+  /stamp_functor exch def
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+
+      verification_stamp_period type /arraytype eq
+      { verification_stamp_period }
+      { [ verification_stamp_period ] }
+    ifelse
+    {
+        verification_stamp_year
+        exch
+        verification_stamp_id
+        verification_stamp_sign
+        size
+      stamp_functor load exec
+    }
+  forall
+  
+  end
+} def
+
+
+
 % размещение объектов в шахматном порядке
 /align_staggered
 {
@@ -513,10 +542,11 @@ end
         BBoxX ItemX sub
         {
           exch dup  3 1 roll
-          newpath
-          moveto
-          2017 (IV) (СП) (а) 18.0 mm verification_stamp_path
-          fill
+          gsave
+            translate
+            2017 (I) (СП) (а) 18.0 mm verification_stamp_upath
+            ufill
+          grestore
         }
       for
       pop
@@ -591,21 +621,36 @@ gsave
   % [ 20 mm  dup 3 sqrt 2 div mul ]
 % align_staggered
 
-matrix currentmatrix
+  [
+      2017
+      [ 1 2  3 6 range  10 ] months
+      (СП)
+      (а)
+      18.0 mm
+      /verification_stamp_upath
+    create_stamps
+  ]
+  {
+    20 mm 0 mm translate
+    ufill
+  }
+forall
 
-60 mm 220 mm translate
-2017 (I) (СП) (а) 18.0 mm verification_stamp_upath
-ufill
+% matrix currentmatrix
 
-20 mm 0 mm translate
-2017 (IV) (СП) (Б) 18.0 mm verification_stamp_upath
-ufill
+% 60 mm 220 mm translate
+% 2017 (I) (СП) (а) 18.0 mm verification_stamp_upath
+% ufill
 
-20 mm 0 mm translate
-2017 (III) (СП) (Г) 18.0 mm verification_stamp_upath
-ufill
+% 20 mm 0 mm translate
+% 2017 (IV) (СП) (Б) 18.0 mm verification_stamp_upath
+% ufill
 
-setmatrix
+% 20 mm 0 mm translate
+% 2017 (III) (СП) (Г) 18.0 mm verification_stamp_upath
+% ufill
+
+% setmatrix
  
 % fill
 % 0.1 setlinewidth
