@@ -253,19 +253,15 @@ CP1251Encoding 128 [
   end
 } bind def
 
-/months % [ 1 2 3 ] --> [ (1) (2) (3) ]
+/months % [ 1 2 3 ] --> (1) (2) (3)
 {
-  [ exch
-    { 2 string  cvs } forall
-  ]
+  { 2 string  cvs } forall
 } bind def
 % [ 1 12 range ]  months ==
 
-/quarters % [ 1 2 3 4 ] --> [ (I) (II) (III) (IV) ]
+/quarters % [ 1 2 3 4 ] --> (I) (II) (III) (IV)
 {
-  [ exch
-    { int_to_roman } forall
-  ]
+  { int_to_roman } forall
 } bind def
 % [ 1 4 range ]  quarters == 
 
@@ -623,7 +619,7 @@ gsave
 
   [
       2017
-      [ 1 2  3 6 range  10 ] months
+      [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
       (ÑÏ)
       (à)
       18.0 mm
