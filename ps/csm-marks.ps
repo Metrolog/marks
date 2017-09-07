@@ -300,7 +300,7 @@ end
 (stamp_year) exch definefont pop
 
 % знак РСТ
-/RST
+/RST % H_size --> -
 {
   10 dict begin
   /H exch def % параметр H (высота) знака
@@ -386,6 +386,18 @@ end
   end
 } bind def
 
+{ % генерация знака РСТ как userpath
+  gsave
+  newpath
+  0 0 moveto
+    /urst
+    1 RST
+    true upath
+    cvlit
+  def
+  grestore
+} exec
+
 % генерация рисунка поверительного клейма
 /verification_stamp_path
 {
@@ -453,7 +465,10 @@ end
 
   % знак РСТ
   2.5 5 moveto
-  3 RST
+  % 3 RST
+  currentpoint translate
+  3 3 scale
+  urst uappend
   
   % восстановливаем систему координат
   setmatrix
