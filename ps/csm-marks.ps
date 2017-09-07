@@ -399,7 +399,7 @@ end
 } exec
 
 % генерация рисунка поверительного клейма
-/verification_stamp_path
+/verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год --> -
 {
   6 dict begin
   /size exch def % размер клейма
@@ -475,6 +475,16 @@ end
 
   end
 } bind def
+
+/verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год --> user path
+{
+  gsave
+  newpath
+  0 0 moveto
+  verification_stamp_path
+  false upath
+  grestore
+} def
 
 % генерация рисунка калибровочного клейма
 /calibration_stamp_path
@@ -577,28 +587,25 @@ gsave
 % 210 mm 0 mm translate
 % 90 rotate
 
-  GetPageBBox
-  % [ 2 mm 2 mm 145 mm 208 mm ]
-  % [ 22 mm  dup 3 sqrt 2 div mul ]
-  [ 20 mm  dup 3 sqrt 2 div mul ]
-align_staggered
+  % GetPageBBox
+  % [ 20 mm  dup 3 sqrt 2 div mul ]
+% align_staggered
 
 matrix currentmatrix
+
 60 mm 220 mm translate
-0 0 moveto
-2017 (IV) (СП) (а) 18.0 mm verification_stamp_path
-false upath
-
-dup
-ufill
-
-exch setmatrix
-80 mm 220 mm translate
-dup
+2017 (I) (СП) (а) 18.0 mm verification_stamp_upath
 ufill
 
 20 mm 0 mm translate
+2017 (IV) (СП) (Б) 18.0 mm verification_stamp_upath
 ufill
+
+20 mm 0 mm translate
+2017 (III) (СП) (Г) 18.0 mm verification_stamp_upath
+ufill
+
+setmatrix
  
 % fill
 % 0.1 setlinewidth
