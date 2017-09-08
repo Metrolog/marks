@@ -295,6 +295,90 @@ end
 (GOST2.304-81TypeA) findfont
 (stamp_year) exch definefont pop
 
+/path_as_upath % path_generator bool --> userpath
+{
+  1 dict begin
+  /cache_upath exch def
+  gsave
+  newpath
+  0 0 moveto
+  load exec
+  cache_upath upath
+  grestore
+  end
+} def
+
+/stamp_sign_path_helper % (sign) angle --> - (добавляем к текущему пути путь знака поверителя)
+{
+  1 dict begin
+  /savedCTM matrix currentmatrix def
+  rotate
+  true charpath
+  savedCTM setmatrix
+  end
+} def
+
+% TODO: необходимо центр знака расположить в координатах 0 0
+/stamp_sign_upath_helper % (sign) angle --> upath
+{
+  /stamp_sign_path_helper
+  true path_as_upath
+} def
+
+/stamp_signs_cyr [
+  (а) (б) (в) (г) (д) (е) (ж) (з)
+  (и) (й) (к) (л) (м) (п) (р) (с)
+  (т) (у) (ф) (ц) (ч) (ш) (щ) (ъ)
+  (ы) (ь) (э) (ю) (я) (b) (d) (f)
+  (g) (h) (i) (j) (k) (r) (s) (t)
+  (v) (w)
+] def
+
+/stamp_signs_greek [
+          ( ) ( ) ( ) ( ) ( ) ( ) 
+  ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) 
+  ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) 
+] def
+
+gsave
+
+/stamp_signs_upaths [
+
+  1 dict begin
+
+    0 90 270
+    {
+      /angle exch def
+      
+      (stamp_sign) findfont
+      4 scalefont setfont
+        stamp_signs_cyr
+        {
+          angle stamp_sign_upath_helper
+        }
+      forall
+
+      (stamp_sign) findfont % необходим шрифт с греческой кодировкой!!!
+      4 scalefont setfont
+        stamp_signs_greek
+        {
+          angle stamp_sign_upath_helper
+        }
+      forall
+    }
+  for
+  
+  end
+  
+] def
+
+grestore
+
+/stamp_sign_upath % sign_N --> upath
+{
+  stamp_signs_upaths exch get
+} def
+
 % знак РСТ
 /RST % H_size --> -
 {
@@ -382,17 +466,7 @@ end
   end
 } bind def
 
-{ % генерация знака РСТ как userpath
-  gsave
-  newpath
-  0 0 moveto
-    /urst
-    1 RST
-    true upath
-    cvlit
-  def
-  grestore
-} exec
+/urst  1 /RST true path_as_upath  cvlit def
 
 % генерация рисунка поверительного клейма
 /verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год --> -
@@ -426,12 +500,18 @@ end
   true charpath
 
   % индивидуальный знак поверителя
-  (stamp_sign) findfont
-  4 scalefont setfont
+  % (stamp_sign) findfont
+  % 4 scalefont setfont
+  % 0 0 moveto
+    % verification_stamp_sign
+    % string_center_middle 
+  % true charpath
+  matrix currentmatrix
   0 0 moveto
-    verification_stamp_sign
-    string_center_middle 
-  true charpath
+  1 1 scale
+  0 stamp_sign_upath
+  uappend
+  setmatrix
   
   % год
   (stamp_year) findfont
@@ -474,12 +554,8 @@ end
 
 /verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год --> user path
 {
-  gsave
-  newpath
-  0 0 moveto
-  verification_stamp_path
-  false upath
-  grestore
+  /verification_stamp_path
+  false path_as_upath
 } def
 
 % генерация рисунка калибровочного клейма
