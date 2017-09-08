@@ -1,2 +1,4 @@
 *.md   text  merge=text diff=text eol=crlf
 *.ps   text  merge=text diff=text eol=crlf encoding=cp1251
+*.pdf  binary
+*.jpg  binary
