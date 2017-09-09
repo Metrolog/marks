@@ -275,7 +275,19 @@ dup length dict begin
   /Encoding CP1251Encoding def
   currentdict
 end
-(stamp_sign) exch definefont pop
+(stamp_sign_cyr) exch definefont pop
+
+(GOST2.304-81TypeA) findfont
+dup length dict begin
+  { 1 index /FID ne
+    {def}
+    {pop pop}
+    ifelse
+  } forall
+  /Encoding CP1251Encoding def
+  currentdict
+end
+(stamp_sign_greek) exch definefont pop
 
 (GOST2.304-81TypeA) findfont
 dup length dict begin
@@ -350,7 +362,7 @@ gsave
     {
       /angle exch def
       
-      (stamp_sign) findfont
+      (stamp_sign_cyr) findfont
       4 scalefont setfont
         stamp_signs_cyr
         {
@@ -358,7 +370,7 @@ gsave
         }
       forall
 
-      (stamp_sign) findfont % необходим шрифт с греческой кодировкой!!!
+      (stamp_sign_greek) findfont
       4 scalefont setfont
         stamp_signs_greek
         {
