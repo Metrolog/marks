@@ -373,12 +373,19 @@ end
   1 dict begin
   /savedCTM matrix currentmatrix def
   rotate
+  gsave
+    currentpoint
+    newpath
+    moveto
+    dup  true charpath
+    pathbbox
+  grestore
+  3 -1 roll sub neg 2 div  3 1 roll sub 2 div  exch  rmoveto
   true charpath
   savedCTM setmatrix
   end
 } def
 
-% TODO: необходимо центр знака расположить в координатах 0 0
 /stamp_sign_upath_helper % (sign) angle --> upath
 {
   /stamp_sign_path_helper
@@ -556,17 +563,10 @@ grestore
   true charpath
 
   % индивидуальный знак поверителя
-  % (stamp_sign) findfont
-  % 4 scalefont setfont
-  % 0 0 moveto
-    % verification_stamp_sign
-    % string_center_middle 
-  % true charpath
   matrix currentmatrix
   0 0 moveto
   1 1 scale
-  verification_stamp_sign stamp_sign_upath
-  uappend
+  verification_stamp_sign stamp_sign_upath uappend
   setmatrix
   
   % год
@@ -645,8 +645,6 @@ grestore
   
   end
 } def
-
-
 
 % размещение объектов в шахматном порядке
 /align_staggered
@@ -753,7 +751,7 @@ gsave
       2017
       [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
       (СП)
-      63 64 add 64 add 64 add
+      244
       18.0 mm
       /verification_stamp_upath
     create_stamps
