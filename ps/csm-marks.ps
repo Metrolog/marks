@@ -621,7 +621,7 @@ grestore
 
 /create_stamps % год [массив периодов] (шифр клейма) [массив знаков поверителей] диаметр функция_генерации  --> выполнение функции генерации для всех заданных клейм
 {
-  6 dict begin
+  8 dict begin
   /stamp_functor exch def
   /size exch def % размер клейма
   /verification_stamp_sign exch def % индивидуальный знак поверителя
@@ -634,12 +634,22 @@ grestore
       { [ verification_stamp_period ] }
     ifelse
     {
-        verification_stamp_year
-        exch
-        verification_stamp_id
-        verification_stamp_sign
-        size
-      stamp_functor load exec
+      /verification_stamp_current_period exch def
+      
+          verification_stamp_sign type /arraytype eq
+          { verification_stamp_sign }
+          { [ verification_stamp_sign ] }
+        ifelse
+        {
+          /verification_stamp_current_sign exch def
+            verification_stamp_year
+            verification_stamp_current_period
+            verification_stamp_id
+            verification_stamp_current_sign
+            size
+          stamp_functor load exec
+        }
+      forall
     }
   forall
   
@@ -749,9 +759,10 @@ gsave
 
   [
       2017
-      [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
+      % [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
+      [ [ 3 ] quarters ]
       (СП)
-      244
+      [ 63 72 range ]
       18.0 mm
       /verification_stamp_upath
     create_stamps
