@@ -154,7 +154,7 @@ def
   /theta /iota /kappa /lambda /mugreek /nu /xi /omicron
   /pi /rho /sigma1 /sigma /tau /upsilon /phi /chi
   /psi /omega /iotadieresis /upsilondieresis /omicrontonos /upsilontonos /omegatonos /null
-]
+] def
 
 % перевод из миллиметров в пункты
 /mm { 72.0 mul 25.4 div } def
@@ -332,7 +332,7 @@ dup length dict begin
     {pop pop}
     ifelse
   } forall
-  /Encoding CP1251Encoding def
+  /Encoding CP1253Encoding def
   currentdict
 end
 (stamp_sign_greek) exch definefont pop
@@ -395,18 +395,16 @@ end
 ] def
 
 /stamp_signs_greek [
-          ( ) ( ) ( ) ( ) ( ) ( ) 
-  ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) 
-  ( ) ( ) ( ) ( ) ( ) ( ) ( ) ( ) 
+          (б) (в) (г) (д) (ж) (з)
+  (и) (й) (к) (л) (м) (н) (о) (р)
+  (с) (у) (ф) (х) (ц) (ч) (ш) (щ)
 ] def
 
 gsave
 
 /stamp_signs_upaths [
-
   1 dict begin
-
-    0 90 270
+    [ 0 180 90 270 ]
     {
       /angle exch def
       
@@ -426,17 +424,15 @@ gsave
         }
       forall
     }
-  for
-  
+  forall
   end
-  
 ] def
 
 grestore
 
 /stamp_sign_upath % sign_N --> upath
 {
-  stamp_signs_upaths exch get
+  stamp_signs_upaths  exch 1 sub  get
 } def
 
 % знак –—“
@@ -569,7 +565,7 @@ grestore
   matrix currentmatrix
   0 0 moveto
   1 1 scale
-  0 stamp_sign_upath
+  verification_stamp_sign stamp_sign_upath
   uappend
   setmatrix
   
@@ -757,7 +753,7 @@ gsave
       2017
       [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
       (—ѕ)
-      (а)
+      63 64 add 64 add 64 add
       18.0 mm
       /verification_stamp_upath
     create_stamps
