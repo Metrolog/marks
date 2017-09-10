@@ -587,20 +587,30 @@ grestore
     string_right_middle 
   true charpath
 
-  % период
-  (stamp_period) findfont
-  3 scalefont setfont
-  -2.5 5 moveto
-    verification_stamp_period
-    string_center_middle
-  true charpath
+    verification_stamp_period () eq
+    {
+      % знак РСТ
+      0 5 moveto
+      currentpoint translate
+      3 3 scale
+      urst uappend
+    }
+    {
+      % период
+      (stamp_period) findfont
+      3 scalefont setfont
+      -2.5 5 moveto
+        verification_stamp_period
+        string_center_middle
+      true charpath
 
-  % знак РСТ
-  2.5 5 moveto
-  % 3 RST
-  currentpoint translate
-  3 3 scale
-  urst uappend
+      % знак РСТ
+      2.5 5 moveto
+      currentpoint translate
+      3 3 scale
+      urst uappend
+    }
+  ifelse
   
   % восстановливаем систему координат
   setmatrix
@@ -760,7 +770,8 @@ gsave
   [
       2017
       % [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
-      [ [ 3 ] quarters ]
+      % [ [ 3 ] quarters ]
+      ()
       (СП)
       [ 63 72 range ]
       18.0 mm
