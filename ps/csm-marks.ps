@@ -3,7 +3,6 @@
 %%Title: CSM makrs
 %%Pages: 1
 %%PageOrder: Ascend
-%%BoundingBox: 0 0 585 842
 %%EndComments
 
 /setdistillerparams where {
@@ -158,6 +157,16 @@ def
 
 % перевод из миллиметров в пункты
 /mm { 72.0 mul 25.4 div } def
+
+/size_of_BBox % [ x1 x2 y1 y2 ] --> x2-x1  y2-y1
+{
+  dup type  /arraytype  eq  { aload pop } if
+  exch  3 1 roll
+  sub neg
+  3 1 roll
+  sub neg
+  exch
+} bind def
 
 /tan 
 {
@@ -378,7 +387,7 @@ end
     newpath
     moveto
     dup  true charpath
-    pathbbox
+    flattenpath pathbbox
   grestore
   3 -1 roll sub neg 2 div  3 1 roll sub 2 div  exch  rmoveto
   true charpath
@@ -629,7 +638,7 @@ grestore
 {
 } bind def
 
-/create_stamps % год [массив периодов] (шифр клейма) [массив знаков поверителей] диаметр функция_генерации  --> выполнение функции генерации для всех заданных клейм
+/create_stamps % год [массив периодов] (шифр клейма) [массив знаков поверителей] размер функция_генерации  --> выполнение функции генерации для всех заданных клейм
 {
   8 dict begin
   /stamp_functor exch def
@@ -739,6 +748,51 @@ grestore
   end
 } bind def
 
+/draw_stamps % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
+{
+  9 dict begin
+  /gap exch def
+  /BBox exch def
+  /stamps exch def
+  /stamps_length  stamps length  def
+  /current_stamp_index 0 def
+  /current_line_heigth 0 def
+  
+  % {
+    current_stamp_index stamps_length ge { stop } if
+    BBox aload pop pop pop  moveto
+      {
+        gsave
+          newpath
+          0 0 moveto
+          /current_stamp_BBox  [ stamps current_stamp_index get uappend pathbbox ]  def
+          /current_stamp_SizeY /current_stamp_SizeX  current_stamp_BBox  size_of_BBox  3 1 roll  def  def
+        grestore
+        currentpoint pop  current_stamp_SizeX  add  BBox 2 get  gt  { exit } if
+        % todo: проверять высоту строки нужно до вывода строки
+        gsave
+          stamps current_stamp_index get
+          current_stamp_BBox aload pop pop pop  neg  exch neg exch  rmoveto
+          currentpoint translate
+          dup ufill
+        grestore
+        /current_stamp_index current_stamp_index 1 add def
+        current_stamp_index stamps_length ge { exit } if
+        current_stamp_SizeX gap add  0  rmoveto
+        current_stamp_SizeY  current_line_heigth  gt  { /current_line_heigth current_stamp_SizeY def } if
+      }
+    loop
+      % stamps
+      % {
+        % 20 mm 0 mm translate
+        % ufill
+      % }
+    % forall
+  % } stopped pop
+
+  end
+} bind def
+
 %%EndProlog
 
 %%BeginSetup
@@ -747,11 +801,11 @@ grestore
 
 %%Page: A 1
 %%BeginSetup
-%%BeginFeature: *PageSize A4
+%%BeginFeature: *PageSize A5
 <<
   % /HWResolution [2400 2400]
-  /PageSize [595 842]
-  /ImagingBBox null
+  /PageSize [ 210 mm  297 2 div mm ]
+  /ImagingBBox [ 5 mm  5 mm  210 5 sub mm  297 2 div 5 sub mm ]
   /MirrorPrint false
   /NegativePrint true
 >> setpagedevice
@@ -770,19 +824,16 @@ gsave
   [
       2017
       % [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
-      % [ [ 3 ] quarters ]
-      ()
+      [ [ 3 ] quarters ]
       (СП)
-      [ 63 72 range ]
+      [ 1 256 range ]
       18.0 mm
       /verification_stamp_upath
     create_stamps
   ]
-  {
-    20 mm 0 mm translate
-    ufill
-  }
-forall
+  GetPageBBox
+  2 mm
+draw_stamps
 
 % matrix currentmatrix
 
@@ -810,4 +861,3 @@ showpage
 %%PageTrailer
 %%Trailer
 %%EOF
-
