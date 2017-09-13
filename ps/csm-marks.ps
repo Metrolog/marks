@@ -789,7 +789,7 @@ grestore
 
 /draw_stamps % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
 {
-  19 dict begin
+  20 dict begin
   /gap exch def
   /BBox exch def
   /stamps exch def
@@ -860,7 +860,8 @@ grestore
       {
           current_stamp_index stamps_length lt
           {
-            /current_stamp_BBox  [ stamps current_stamp_index get upath_BBox ]  def
+            /current_stamp { stamps current_stamp_index get } def
+            /current_stamp_BBox  [ current_stamp upath_BBox ]  def
             /current_stamp_Size [ current_stamp_BBox size_of_BBox ] def
             /current_stamp_SizeX /current_stamp_SizeY  current_stamp_BBox  size_of_BBox_def
           }
@@ -932,12 +933,13 @@ grestore
         currentpoint
         matrix currentmatrix
           currentpoint pop  0  moveto % рисуем строку с y=0
-          current_stamp_BBox aload pop pop pop  neg  exch neg exch  rmoveto
+            current_stamp_BBox 0 get neg
+            current_stamp_BBox 1 get neg
+          rmoveto
           currentpoint translate
-          stamps current_stamp_index get uappend
+          current_stamp uappend
         setmatrix
         moveto
-        current_stamp_SizeX gap add  0  rmoveto
         current_line_props begin
           current_stamp_SizeY  line_height  gt  { /line_height current_stamp_SizeY def } if
             possible_staggered_align_for_next_line
@@ -947,7 +949,40 @@ grestore
                 {
                     ItemSize current_stamp_Size aeq not
                     {
-                      (Вывод в шахматном порядке невозможен: ) ==  ItemSize ==  current_stamp_Size ==
+                      % (Вывод в шахматном порядке невозможен: ) ==  ItemSize ==  current_stamp_Size ==
+                      /possible_staggered_align_for_next_line false def
+                      /possible_staggered_align false def
+                      /is_odd_line false def
+                    }
+                  if
+                  % todo: здесь добавить сравнение формы оттиска с кругом
+                    gsave
+                        current_stamp
+                          newpath
+                          current_stamp_BBox aload pop pop pop  moveto
+                          gap neg  gap neg  rmoveto
+                          0  current_stamp_SizeY gap 2 mul add  rlineto
+                          current_stamp_SizeX gap 2 mul add  0  rlineto
+                          0  current_stamp_SizeY gap 2 mul add neg  rlineto
+                          closepath
+                              current_stamp_BBox aload pop  3 -1 roll
+                            add 2 div
+                              3 1 roll  add 2 div  current_stamp_SizeX 2 div  gap 2 div add  add
+                            exch
+                          moveto
+                              current_stamp_BBox aload pop  3 -1 roll
+                            add 2 div
+                              3 1 roll  add 2 div
+                            exch
+                            current_stamp_SizeX 2 div  gap 2 div add
+                            0
+                            360
+                          arc
+                        false upath
+                      inufill
+                    grestore
+                    {
+                      % (Вывод в шахматном порядке невозможен: форма объекта не вписывается в круг.)
                       /possible_staggered_align_for_next_line false def
                       /possible_staggered_align false def
                       /is_odd_line false def
@@ -961,7 +996,7 @@ grestore
             {
                 ItemSize  prev_line_props /ItemSize get  aeq not
                 {
-                  (Вывод в шахматном порядке невозможен (размеры элемента с предыщей строкой не совпадают): ) ==  ItemSize ==  prev_line_props /ItemSize get ==
+                  % (Вывод в шахматном порядке невозможен (размеры элемента с предыщей строкой не совпадают): ) ==  ItemSize ==  prev_line_props /ItemSize get ==
                   /possible_staggered_align false def
                   /is_odd_line false def
                 }
@@ -969,6 +1004,7 @@ grestore
             }
           if
         end
+        current_stamp_SizeX gap add  0  rmoveto
         /current_stamp_index current_stamp_index 1 add def
       }
     loop
