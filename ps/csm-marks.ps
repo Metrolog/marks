@@ -766,7 +766,7 @@ grestore
 
 /draw_stamps % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
 {
-  16 dict begin
+  17 dict begin
   /gap exch def
   /BBox exch def
   /stamps exch def
@@ -801,6 +801,7 @@ grestore
             { true }
             {
               /current_stamp_BBox  [ stamps current_stamp_index get upath_BBox ]  def
+              /current_stamp_Size [ current_stamp_BBox size_of_BBox ] def
               /current_stamp_SizeX /current_stamp_SizeY  current_stamp_BBox  size_of_BBox_def
               currentpoint pop  current_stamp_SizeX  add  BBox_SizeX  gt
             }
@@ -840,6 +841,12 @@ grestore
         current_stamp_SizeX gap add  0  rmoveto
         current_line_props begin
           current_stamp_SizeY  line_height  gt  { /line_height current_stamp_SizeY def } if
+            null ItemSize eq
+            { /ItemSize current_stamp_Size def }
+            {
+              ItemSize current_stamp_Size ne { /possible_staggered_align false def } if
+            }
+          ifelse
         end
         /current_stamp_index current_stamp_index 1 add def
       }
