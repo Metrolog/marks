@@ -671,6 +671,27 @@ grestore
   false path_as_upath
 } def
 
+% знак калибровки
+/K % H_size --> -
+{
+  currentpoint
+  matrix currentmatrix
+  
+  currentpoint translate
+
+  (stamp_K) findfont
+  5 -1 roll  scalefont  setfont
+    (K)
+    string_center_middle
+  true charpath
+
+  % восстановливаем систему координат
+  setmatrix
+  moveto
+} bind def
+
+/uK 1 /K true path_as_upath  cvlit def
+
 % генерация рисунка калибровочного клейма
 /calibration_stamp_path % размер знак_поверителя (шифр клейма) (период) год --> user path
 {
@@ -743,13 +764,10 @@ grestore
   true charpath
 
   % знак калибровки
-  (stamp_K) findfont
-  4 scalefont setfont
   0 0 moveto
   currentpoint translate
-    (K)
-    string_center_middle
-  true charpath
+  6 6 scale
+  uK uappend
   
   % восстановливаем систему координат
   setmatrix
