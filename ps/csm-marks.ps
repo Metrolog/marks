@@ -352,6 +352,11 @@ def
 } bind def
 % [ 1 4 range ]  quarters == 
 
+/year % --> ()
+{
+  ()
+} bind def
+
 (GOST2.304-81TypeA) findfont
 dup length dict begin
   { 1 index /FID ne
@@ -1071,7 +1076,7 @@ gsave
       /verification_stamp_upath
     create_stamps
       2017
-      [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
+      [ [ 1 12  range ] months  [ 1 4 range ] quarters year ]
       % [ [ 3 ] quarters ]
       (ÑÏ)
       [ 1 ]
