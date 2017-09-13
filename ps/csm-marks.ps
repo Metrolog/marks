@@ -768,31 +768,36 @@ grestore
   /current_line_heigth 0 def
   
   gsave
+    newpath % готовим первую строку
     BBox aload pop pop pop  moveto
       {
         current_stamp_index stamps_length ge { exit } if
         /current_stamp_BBox  [ stamps current_stamp_index get upath_BBox ]  def
         /current_stamp_SizeY /current_stamp_SizeX  current_stamp_BBox  size_of_BBox  3 1 roll  def  def
           currentpoint pop  current_stamp_SizeX  add  BBox 2 get  gt
-          {
-            BBox 0 get  currentpoint exch pop current_line_heigth add gap add  moveto
+          { % переходим к новой строке
+              BBox 0 get  currentpoint exch pop current_line_heigth add gap add
+                fill % фиксируем текущую строку
+                newpath % готовим новую строку
+            moveto
             /current_line_heigth 0 def
           }
         if
         % todo: проверять высоту строки нужно до вывода строки
+        currentpoint
         matrix currentmatrix
           stamps current_stamp_index get
           current_stamp_BBox aload pop pop pop  neg  exch neg exch  rmoveto
           currentpoint translate
-          ufill
-          % uappend
+          uappend
         setmatrix
-        /current_stamp_index current_stamp_index 1 add def
-        current_stamp_index stamps_length ge { exit } if
+        moveto
         current_stamp_SizeX gap add  0  rmoveto
         current_stamp_SizeY  current_line_heigth  gt  { /current_line_heigth current_stamp_SizeY def } if
+        /current_stamp_index current_stamp_index 1 add def
       }
     loop
+    fill % фиксируем последнюю строку
   grestore
 
   end
