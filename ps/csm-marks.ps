@@ -830,10 +830,12 @@ grestore
       current_stamp_index stamps_length ge
       { true }
       {
-          current_line_props /is_odd_line get
-          { currentpoint pop  current_stamp_SizeX  add  current_line_props /ItemSize get 0 get gap add 2 div  add  BBox_SizeX  gt }
-          { currentpoint pop  current_stamp_SizeX  add  BBox_SizeX  gt }
-        ifelse
+          currentpoint pop  current_stamp_SizeX  add
+            current_line_props /is_odd_line get
+            { current_line_props /ItemSize get  0 get  gap add  2 div  add }
+          if
+          BBox_SizeX
+        gt
       }
     ifelse
   } def
@@ -866,8 +868,11 @@ grestore
           
           is_EOP
           {
-            showpage
-            setup_new_page
+            false upath
+              showpage
+              setup_new_page
+            uappend
+            currentpoint pop  0  moveto
           }
         if
 
