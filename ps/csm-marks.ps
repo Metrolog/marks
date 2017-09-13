@@ -843,7 +843,7 @@ grestore
       currentpoint exch pop  current_line_props /line_height get  add
         current_line_props /possible_staggered_align get
         {
-              current_line_props /ItemSize get  0 get  gap add
+              current_line_props /ItemSize get  1 get  gap add
               3 sqrt  2 div  1 sub
             mul
           add
@@ -879,7 +879,7 @@ grestore
                 current_line_props /possible_staggered_align get
                 {
                     0
-                      current_line_props /ItemSize get  0 get  gap add
+                      current_line_props /ItemSize get  1 get  gap add
                       3 sqrt  2 div  1 sub
                     mul
                   rmoveto
