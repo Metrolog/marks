@@ -664,9 +664,103 @@ grestore
 } def
 
 % генерация рисунка калибровочного клейма
-/calibration_stamp_path
+/calibration_stamp_path % размер знак_поверителя (шифр клейма) (период) год --> user path
 {
+  6 dict begin
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+  /scale_k size 18 div def % рассчитаем коэффициент для последующего масштабирования
+
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  currentpoint translate
+  scale_k scale_k scale
+  9 9 translate
+
+  % квадрат
+  18 2 div neg  dup  moveto
+  18 0 rlineto
+  0 18 rlineto
+  -18 0 rlineto
+  closepath
+  0.5 0.5 rmoveto
+  0 17 rlineto
+  17 0 rlineto
+  0 -17 rlineto
+  closepath
+  
+  % шифр поверительного клейма организации
+  (stamp_id) findfont
+  4 scalefont setfont
+  0 -5.5 moveto
+    verification_stamp_id
+    string_center_middle
+  true charpath
+
+  % индивидуальный знак поверителя
+  matrix currentmatrix
+  0 0 moveto
+  1 1 scale
+  verification_stamp_sign stamp_sign_upath uappend
+  setmatrix
+  
+  % год
+  (stamp_year) findfont
+  6 scalefont setfont
+  -7 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 2 sub
+        1
+      getinterval
+    string_left_middle 
+  true charpath
+  7 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 1 sub
+        1
+      getinterval
+    string_right_middle 
+  true charpath
+
+    verification_stamp_period () eq
+    {
+      % знак РСТ
+      0 5 moveto
+      currentpoint translate
+      3 3 scale
+      urst uappend
+    }
+    {
+      % период
+      (stamp_period) findfont
+      3 scalefont setfont
+      -2.5 5 moveto
+        verification_stamp_period
+        string_center_middle
+      true charpath
+
+      % знак РСТ
+      2.5 5 moveto
+      currentpoint translate
+      3 3 scale
+      urst uappend
+    }
+  ifelse
+  
+  % восстановливаем систему координат
+  setmatrix
+
+  end
 } bind def
+
+/calibration_stamp_upath % размер знак_поверителя (шифр клейма) (период) год --> user path
+{
+  /calibration_stamp_path
+  false path_as_upath
+} def
 
 /create_stamps % год [массив периодов] (шифр клейма) [массив знаков поверителей] размер функция_генерации  --> выполнение функции генерации для всех заданных клейм
 {
@@ -1048,6 +1142,14 @@ gsave
       [ 1 256 range ]
       18.0 mm
       /verification_stamp_upath
+    create_stamps
+      2017
+      [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
+      % [ [ 3 ] quarters ]
+      (СП)
+      [ 1 ]
+      18.0 mm
+      /calibration_stamp_upath
     create_stamps
   ]
   GetPageBBox
