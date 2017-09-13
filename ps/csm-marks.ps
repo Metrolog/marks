@@ -168,6 +168,13 @@ def
   exch
 } bind def
 
+/size_of_BBox_def % /sizeX /sizeY [ x1 x2 y1 y2 ] --> - ; /sizeX = x2-x1; /sizeY = y2-y1;
+{
+  size_of_BBox
+  3 -1 roll exch def
+  def
+} def
+
 /tan 
 {
   dup
@@ -759,37 +766,54 @@ grestore
 
 /draw_stamps % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
 {
-  9 dict begin
+  11 dict begin
   /gap exch def
   /BBox exch def
   /stamps exch def
   /stamps_length  stamps length  def
   /current_stamp_index 0 def
   /current_line_heigth 0 def
+  /BBox_SizeX /BBox_SizeY  BBox  size_of_BBox_def
   
-  gsave
+  % gsave
+  matrix currentmatrix
+    BBox aload pop pop pop  translate
     newpath % готовим первую строку
-    BBox aload pop pop pop  moveto
+    0 0 moveto
       {
         current_stamp_index stamps_length ge { exit } if
         /current_stamp_BBox  [ stamps current_stamp_index get upath_BBox ]  def
-        /current_stamp_SizeY /current_stamp_SizeX  current_stamp_BBox  size_of_BBox  3 1 roll  def  def
-          currentpoint pop  current_stamp_SizeX  add  BBox 2 get  gt
+        /current_stamp_SizeX /current_stamp_SizeY  current_stamp_BBox  size_of_BBox_def
+          currentpoint pop  current_stamp_SizeX  add  BBox_SizeX  gt
           { % переходим к новой строке
-              BBox 0 get  currentpoint exch pop current_line_heigth add gap add
-                fill % фиксируем текущую строку
+            false upath % сохранили текущую строку в user path
+              currentpoint exch pop  current_line_heigth  add  BBox_SizeY  gt
+              { % переходим на новую страницу
+                showpage
+                BBox aload pop pop pop  translate
+                newpath
+                0 0 moveto
+              }
+            if
+            currentpoint
+            matrix currentmatrix
+              0  currentpoint exch pop  translate
+              0 0 moveto
+              4 -1 roll  ufill
+            setmatrix
+            moveto
+              0  currentpoint exch pop current_line_heigth add gap add
                 newpath % готовим новую строку
             moveto
             /current_line_heigth 0 def
           }
         if
-        % todo: проверять высоту строки нужно до вывода строки
         currentpoint
         matrix currentmatrix
-          stamps current_stamp_index get
+          currentpoint pop  0  moveto % рисуем строку с y=0
           current_stamp_BBox aload pop pop pop  neg  exch neg exch  rmoveto
           currentpoint translate
-          uappend
+          stamps current_stamp_index get uappend
         setmatrix
         moveto
         current_stamp_SizeX gap add  0  rmoveto
@@ -797,8 +821,16 @@ grestore
         /current_stamp_index current_stamp_index 1 add def
       }
     loop
-    fill % фиксируем последнюю строку
-  grestore
+    currentpoint
+    matrix currentmatrix
+      false upath
+      BBox 0 get  currentpoint exch pop  moveto
+      currentpoint translate
+      ufill % фиксируем последнюю строку
+    setmatrix
+    moveto
+  setmatrix
+  % grestore
 
   end
 } bind def
