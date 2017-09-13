@@ -207,6 +207,29 @@ def
   forall pop  
 } bind def
 
+/aeq % array1 array2 aeq --> bool 
+{
+    2 copy eq
+    { pop pop true }
+    {
+        2 copy length exch length eq 
+        {
+          true % arr arr true
+            0  1  3 index length 1 sub
+            {
+              3 index 1 index get % arr arr bool index val1
+              3 index 2 index get % arr arr bool index val1 val2
+              eq exch pop and % arr arr bool 
+            }
+          for
+          exch pop exch pop
+        }
+        { pop pop false }
+      ifelse
+    }
+  ifelse
+} bind def
+
 /stringheight
 {
   gsave
@@ -766,7 +789,7 @@ grestore
 
 /draw_stamps % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
 {
-  17 dict begin
+  19 dict begin
   /gap exch def
   /BBox exch def
   /stamps exch def
@@ -776,12 +799,16 @@ grestore
   
   /no_prev_line_props <<
     /line_height 0
+    /possible_staggered_align_for_next_line false
     /possible_staggered_align false
-    /ItemSize null def
+    /ItemSize null
+    /is_odd_line false
   >> def
   
   /new_line_props  no_prev_line_props  dup length dict  copy  def
-  new_line_props /possible_staggered_align true put
+  new_line_props begin
+    /possible_staggered_align_for_next_line true def
+  end
   
   /current_line_props  new_line_props  dup length dict  copy  def
   /prev_line_props  no_prev_line_props  dup length dict  copy  def
@@ -792,41 +819,108 @@ grestore
     newpath
     0 0 moveto
     /prev_line_props  no_prev_line_props  dup length dict  copy  def
+    current_line_props begin
+      /possible_staggered_align false def
+      /is_odd_line false def
+    end
+  } def
+  
+  /is_EOL
+  {
+      current_stamp_index stamps_length ge
+      { true }
+      {
+          current_line_props /is_odd_line get
+          { currentpoint pop  current_stamp_SizeX  add  current_line_props /ItemSize get 0 get gap add 2 div  add  BBox_SizeX  gt }
+          { currentpoint pop  current_stamp_SizeX  add  BBox_SizeX  gt }
+        ifelse
+      }
+    ifelse
+  } def
+  
+  /is_EOP
+  {
+      currentpoint exch pop  current_line_props /line_height get  add
+        current_line_props /possible_staggered_align get
+        {
+              current_line_props /ItemSize get  0 get  gap add
+              3 sqrt  2 div  1 sub
+            mul
+          add
+        }
+      if
+      BBox_SizeY
+    gt
   } def
   
   matrix currentmatrix
     setup_new_page
       {
-            current_stamp_index stamps_length ge
-            { true }
-            {
-              /current_stamp_BBox  [ stamps current_stamp_index get upath_BBox ]  def
-              /current_stamp_Size [ current_stamp_BBox size_of_BBox ] def
-              /current_stamp_SizeX /current_stamp_SizeY  current_stamp_BBox  size_of_BBox_def
-              currentpoint pop  current_stamp_SizeX  add  BBox_SizeX  gt
-            }
-          ifelse
-          { % переходим к новой строке
+          current_stamp_index stamps_length lt
+          {
+            /current_stamp_BBox  [ stamps current_stamp_index get upath_BBox ]  def
+            /current_stamp_Size [ current_stamp_BBox size_of_BBox ] def
+            /current_stamp_SizeX /current_stamp_SizeY  current_stamp_BBox  size_of_BBox_def
+          }
+        if
+          
+          is_EOP
+          {
+            showpage
+            setup_new_page
+          }
+        if
+
+          is_EOL
+          {
             false upath % сохранили текущую строку в user path
-              currentpoint exch pop  current_line_props /line_height get  add  BBox_SizeY  gt
-              { % переходим на новую страницу
-                showpage
-                setup_new_page
-              }
-            if
-            currentpoint
+            
             matrix currentmatrix
-              0  currentpoint exch pop  translate
+                current_line_props /possible_staggered_align get
+                {
+                    0
+                      current_line_props /ItemSize get  0 get  gap add
+                      3 sqrt  2 div  1 sub
+                    mul
+                  rmoveto
+                  current_line_props /is_odd_line get
+                  {
+                      current_line_props /ItemSize get  0 get  gap add  2 div
+                      currentpoint exch pop
+                    translate
+                  }
+                  {
+                      0
+                      currentpoint exch pop
+                    translate
+                  }
+                  ifelse
+                }
+                {
+                    0
+                    currentpoint exch pop
+                  translate
+                }
+              ifelse
               0 0 moveto
-              4 -1 roll  ufill
+              2 -1 roll
+              ufill
             setmatrix
-            moveto
+            
               0
               currentpoint exch pop  current_line_props /line_height get  add  gap add
                 newpath % готовим новую строку
             moveto
+            
             /prev_line_props  current_line_props  dup length dict  copy  def
             /current_line_props  new_line_props  dup length dict  copy  def
+            current_line_props begin
+              prev_line_props /possible_staggered_align_for_next_line get  dup  /possible_staggered_align exch def
+                {
+                  /is_odd_line prev_line_props /is_odd_line get not  def
+                }
+              if
+            end
           }
         if
         current_stamp_index stamps_length ge { exit } if
@@ -841,12 +935,34 @@ grestore
         current_stamp_SizeX gap add  0  rmoveto
         current_line_props begin
           current_stamp_SizeY  line_height  gt  { /line_height current_stamp_SizeY def } if
-            null ItemSize eq
-            { /ItemSize current_stamp_Size def }
+            possible_staggered_align_for_next_line
             {
-              ItemSize current_stamp_Size ne { /possible_staggered_align false def } if
+                null ItemSize eq
+                { /ItemSize current_stamp_Size def }
+                {
+                    ItemSize current_stamp_Size aeq not
+                    {
+                      (Вывод в шахматном порядке невозможен: ) ==  ItemSize ==  current_stamp_Size ==
+                      /possible_staggered_align_for_next_line false def
+                      /possible_staggered_align false def
+                      /is_odd_line false def
+                    }
+                  if
+                }
+              ifelse
             }
-          ifelse
+          if
+            possible_staggered_align
+            {
+                ItemSize  prev_line_props /ItemSize get  aeq not
+                {
+                  (Вывод в шахматном порядке невозможен (размеры элемента с предыщей строкой не совпадают): ) ==  ItemSize ==  prev_line_props /ItemSize get ==
+                  /possible_staggered_align false def
+                  /is_odd_line false def
+                }
+              if
+            }
+          if
         end
         /current_stamp_index current_stamp_index 1 add def
       }
