@@ -786,10 +786,14 @@ grestore
   matrix currentmatrix
     setup_new_page
       {
-        current_stamp_index stamps_length ge { exit } if
-        /current_stamp_BBox  [ stamps current_stamp_index get upath_BBox ]  def
-        /current_stamp_SizeX /current_stamp_SizeY  current_stamp_BBox  size_of_BBox_def
-          currentpoint pop  current_stamp_SizeX  add  BBox_SizeX  gt
+            current_stamp_index stamps_length ge
+            { true }
+            {
+              /current_stamp_BBox  [ stamps current_stamp_index get upath_BBox ]  def
+              /current_stamp_SizeX /current_stamp_SizeY  current_stamp_BBox  size_of_BBox_def
+              currentpoint pop  current_stamp_SizeX  add  BBox_SizeX  gt
+            }
+          ifelse
           { % переходим к новой строке
             false upath % сохранили текущую строку в user path
               currentpoint exch pop  current_line_heigth  add  BBox_SizeY  gt
@@ -811,6 +815,7 @@ grestore
             /current_line_heigth 0 def
           }
         if
+        current_stamp_index stamps_length ge { exit } if
         currentpoint
         matrix currentmatrix
           currentpoint pop  0  moveto % рисуем строку с y=0
@@ -824,14 +829,6 @@ grestore
         /current_stamp_index current_stamp_index 1 add def
       }
     loop
-    currentpoint
-    matrix currentmatrix
-      false upath
-      BBox 0 get  currentpoint exch pop  moveto
-      currentpoint translate
-      ufill % фиксируем последнюю строку
-    setmatrix
-    moveto
   setmatrix
   % grestore
 
@@ -880,27 +877,8 @@ gsave
   2 mm
 draw_stamps
 
-% matrix currentmatrix
-
-% 60 mm 220 mm translate
-% 2017 (I) (СП) (а) 18.0 mm verification_stamp_upath
-% ufill
-
-% 20 mm 0 mm translate
-% 2017 (IV) (СП) (Б) 18.0 mm verification_stamp_upath
-% ufill
-
-% 20 mm 0 mm translate
-% 2017 (III) (СП) (Г) 18.0 mm verification_stamp_upath
-% ufill
-
-% setmatrix
- 
-% fill
-% 0.1 setlinewidth
-% stroke
-
 grestore
+
 showpage
 
 %%PageTrailer
