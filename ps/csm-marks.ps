@@ -748,6 +748,15 @@ grestore
   end
 } bind def
 
+/upath_BBox % upath --> x1 y1 x2 y2
+{
+  gsave
+    newpath
+    0 0 moveto
+    uappend flattenpath pathbbox
+  grestore
+} bind def
+
 /draw_stamps % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
 {
   9 dict begin
@@ -758,37 +767,33 @@ grestore
   /current_stamp_index 0 def
   /current_line_heigth 0 def
   
-  % {
-    current_stamp_index stamps_length ge { stop } if
+  gsave
     BBox aload pop pop pop  moveto
       {
-        gsave
-          newpath
-          0 0 moveto
-          /current_stamp_BBox  [ stamps current_stamp_index get uappend pathbbox ]  def
-          /current_stamp_SizeY /current_stamp_SizeX  current_stamp_BBox  size_of_BBox  3 1 roll  def  def
-        grestore
-        currentpoint pop  current_stamp_SizeX  add  BBox 2 get  gt  { exit } if
+        current_stamp_index stamps_length ge { exit } if
+        /current_stamp_BBox  [ stamps current_stamp_index get upath_BBox ]  def
+        /current_stamp_SizeY /current_stamp_SizeX  current_stamp_BBox  size_of_BBox  3 1 roll  def  def
+          currentpoint pop  current_stamp_SizeX  add  BBox 2 get  gt
+          {
+            BBox 0 get  currentpoint exch pop current_line_heigth add gap add  moveto
+            /current_line_heigth 0 def
+          }
+        if
         % todo: проверять высоту строки нужно до вывода строки
-        gsave
+        matrix currentmatrix
           stamps current_stamp_index get
           current_stamp_BBox aload pop pop pop  neg  exch neg exch  rmoveto
           currentpoint translate
-          dup ufill
-        grestore
+          ufill
+          % uappend
+        setmatrix
         /current_stamp_index current_stamp_index 1 add def
         current_stamp_index stamps_length ge { exit } if
         current_stamp_SizeX gap add  0  rmoveto
         current_stamp_SizeY  current_line_heigth  gt  { /current_line_heigth current_stamp_SizeY def } if
       }
     loop
-      % stamps
-      % {
-        % 20 mm 0 mm translate
-        % ufill
-      % }
-    % forall
-  % } stopped pop
+  grestore
 
   end
 } bind def
