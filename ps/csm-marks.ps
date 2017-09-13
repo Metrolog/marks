@@ -766,20 +766,32 @@ grestore
 
 /draw_stamps % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
 {
-  12 dict begin
+  16 dict begin
   /gap exch def
   /BBox exch def
   /stamps exch def
   /stamps_length  stamps length  def
   /current_stamp_index 0 def
-  /current_line_heigth 0 def
   /BBox_SizeX /BBox_SizeY  BBox  size_of_BBox_def
+  
+  /no_prev_line_props <<
+    /line_height 0
+    /possible_staggered_align false
+    /ItemSize null def
+  >> def
+  
+  /new_line_props  no_prev_line_props  dup length dict  copy  def
+  new_line_props /possible_staggered_align true put
+  
+  /current_line_props  new_line_props  dup length dict  copy  def
+  /prev_line_props  no_prev_line_props  dup length dict  copy  def
   
   /setup_new_page
   {
     BBox aload pop pop pop  translate
     newpath
     0 0 moveto
+    /prev_line_props  no_prev_line_props  dup length dict  copy  def
   } def
   
   matrix currentmatrix
@@ -795,7 +807,7 @@ grestore
           ifelse
           { % переходим к новой строке
             false upath % сохранили текущую строку в user path
-              currentpoint exch pop  current_line_heigth  add  BBox_SizeY  gt
+              currentpoint exch pop  current_line_props /line_height get  add  BBox_SizeY  gt
               { % переходим на новую страницу
                 showpage
                 setup_new_page
@@ -808,10 +820,12 @@ grestore
               4 -1 roll  ufill
             setmatrix
             moveto
-              0  currentpoint exch pop current_line_heigth add gap add
+              0
+              currentpoint exch pop  current_line_props /line_height get  add  gap add
                 newpath % готовим новую строку
             moveto
-            /current_line_heigth 0 def
+            /prev_line_props  current_line_props  dup length dict  copy  def
+            /current_line_props  new_line_props  dup length dict  copy  def
           }
         if
         current_stamp_index stamps_length ge { exit } if
@@ -824,7 +838,9 @@ grestore
         setmatrix
         moveto
         current_stamp_SizeX gap add  0  rmoveto
-        current_stamp_SizeY  current_line_heigth  gt  { /current_line_heigth current_stamp_SizeY def } if
+        current_line_props begin
+          current_stamp_SizeY  line_height  gt  { /line_height current_stamp_SizeY def } if
+        end
         /current_stamp_index current_stamp_index 1 add def
       }
     loop
