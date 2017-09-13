@@ -399,6 +399,9 @@ end
 (GOST2.304-81TypeA) findfont
 (stamp_year) exch definefont pop
 
+(GOST2.304-81TypeA) findfont
+(stamp_K) exch definefont pop
+
 /path_as_upath % path_generator bool --> userpath
 {
   1 dict begin
@@ -673,10 +676,10 @@ grestore
 {
   6 dict begin
   /size exch def % размер клейма
-  /verification_stamp_sign exch def % индивидуальный знак поверителя
-  /verification_stamp_id exch def % шифр поверительного клейма
-  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
-  /verification_stamp_year exch def % год поверительного клейма
+  /stamp_sign exch def % индивидуальный знак поверителя
+  /stamp_id exch def % шифр клейма
+  /stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /stamp_year exch def % год клейма
   /scale_k size 18 div def % рассчитаем коэффициент для последующего масштабирования
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
@@ -697,63 +700,56 @@ grestore
   0 -17 rlineto
   closepath
   
-  % шифр поверительного клейма организации
+  % шифр клейма организации
   (stamp_id) findfont
   4 scalefont setfont
   0 -5.5 moveto
-    verification_stamp_id
+    stamp_id
     string_center_middle
   true charpath
 
   % индивидуальный знак поверителя
   matrix currentmatrix
-  0 0 moveto
-  1 1 scale
-  verification_stamp_sign stamp_sign_upath uappend
+    2.5 5 moveto
+    currentpoint translate
+    1 1 scale
+    stamp_sign stamp_sign_upath uappend
   setmatrix
   
   % год
   (stamp_year) findfont
   6 scalefont setfont
   -7 0 moveto
-        verification_stamp_year 4 string cvs
+        stamp_year 4 string cvs
         dup length 2 sub
         1
       getinterval
     string_left_middle 
   true charpath
   7 0 moveto
-        verification_stamp_year 4 string cvs
+        stamp_year 4 string cvs
         dup length 1 sub
         1
       getinterval
     string_right_middle 
   true charpath
 
-    verification_stamp_period () eq
-    {
-      % знак РСТ
-      0 5 moveto
-      currentpoint translate
-      3 3 scale
-      urst uappend
-    }
-    {
-      % период
-      (stamp_period) findfont
-      3 scalefont setfont
-      -2.5 5 moveto
-        verification_stamp_period
-        string_center_middle
-      true charpath
+  % период
+  (stamp_period) findfont
+  3 scalefont setfont
+  -2.5 5 moveto
+    stamp_period
+    string_center_middle
+  true charpath
 
-      % знак РСТ
-      2.5 5 moveto
-      currentpoint translate
-      3 3 scale
-      urst uappend
-    }
-  ifelse
+  % знак калибровки
+  (stamp_K) findfont
+  4 scalefont setfont
+  0 0 moveto
+  currentpoint translate
+    (K)
+    string_center_middle
+  true charpath
   
   % восстановливаем систему координат
   setmatrix
