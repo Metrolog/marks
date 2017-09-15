@@ -1063,8 +1063,10 @@ grestore
 %%BeginFeature: *PageSize A5
 <<
   % /HWResolution [2400 2400]
-  /PageSize [ 210 mm  297 2 div mm ]
-  /ImagingBBox [ 5 mm  5 mm  210 5 sub mm  297 2 div 5 sub mm ]
+  % /PageSize [ 210 mm  297 2 div mm ]
+  % /ImagingBBox [ 5 mm  5 mm  210 5 sub mm  297 2 div 5 sub mm ]
+  /PageSize [ 297 2 div mm  210 mm ]
+  /ImagingBBox [ 5 mm  8 mm  297 2 div 5 sub mm  210 5 sub mm ]
   /MirrorPrint false
   /NegativePrint true
 >> setpagedevice
