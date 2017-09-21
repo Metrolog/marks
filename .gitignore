@@ -1,1 +1,9 @@
-ps/*.pdf
+*.sfd-*
+obj
+release
+bin
+_output
+dirstate
+make.log
+build.log
+ReleaseNotes.md
