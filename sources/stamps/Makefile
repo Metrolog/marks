@@ -43,15 +43,18 @@ endif
 
 # postscript to PDF build system
 
-STAMPSRCDIR := .
-STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)/*.ps)
+STAMPSRCDIR := 
+STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
-STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)/%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
+STAMPFONTDIR := ../../fonts/
+STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)*.afm)
 
-$(STAMPSPDFFILES): $(STAMPSSOURCEFILES)
+STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
+
+$(OUTPUTDIR)/%.pdf: $(STAMPSRCDIR)%.ps $(STAMPFONTFILES)
 	$(info Build file "$@"...)
 	$(MAKETARGETDIR)
-	$(GS) -sOutputFile=$@ $<
+	$(GS) -sOutputFile=$@ -sFONTPATH=$(STAMPFONTDIR) $<
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)
