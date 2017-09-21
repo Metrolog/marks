@@ -91,6 +91,16 @@ $null = (
 );
 
 & choco install Ghostscript --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+$ToPath += Split-Path `
+    -LiteralPath (
+        (
+            Get-ChildItem -LiteralPath 'HKLM:\SOFTWARE\GPL Ghostscript' `
+            | Sort-Object -Property Name -Descending `
+            | Select-Object -First 1 `
+        ) `
+        | Get-ItemPropertyValue -Name 'GS_DLL'
+    ) `
+;
 
 & choco install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
 $env:CygWin = Get-ItemPropertyValue `
