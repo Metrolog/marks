@@ -19,12 +19,24 @@ endif
 
 ifeq ($(OS),Windows_NT)
 
-GS                 ?= gswin32c
+GS                 ?= gswin64c \
+	-dSAFER \
+	-dNOPAUSE \
+	-dBATCH \
+	-sDEVICE=pdfwrite \
+	-dNOPLATFONTS
+
 PDFVIEWER          ?= start
 
 else
 
 GS                 ?= gs
+	-dSAFER \
+	-dNOPAUSE \
+	-dBATCH \
+	-sDEVICE=pdfwrite \
+	-dNOPLATFONTS
+
 PDFVIEWER          ?= start
 
 endif
@@ -34,13 +46,12 @@ endif
 STAMPSRCDIR := .
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)/*.ps)
 
-STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)/%,$(OUTPUTDIR)/%,$(STAMPSSOURCEFILES))
+STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)/%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
 
 $(STAMPSPDFFILES): $(STAMPSSOURCEFILES)
 	$(info Build file "$@"...)
 	$(MAKETARGETDIR)
-
-#	cd $(<D) && $(LATEXUNPACK) $(<F)
+	$(GS) -sOutputFile=$@ $<
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)
