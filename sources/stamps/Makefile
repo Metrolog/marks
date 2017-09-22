@@ -54,7 +54,10 @@ STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURC
 $(OUTPUTDIR)/%.pdf: $(STAMPSRCDIR)%.ps $(STAMPFONTFILES)
 	$(info Build file "$@"...)
 	$(MAKETARGETDIR)
-	$(GS) -sOutputFile=$@ -sFONTPATH=$(STAMPFONTDIR) $<
+	$(GS) \
+    -sOutputFile=$@ \
+    -sFONTPATH=$(call OSabsPath,$(STAMPFONTDIR)) \
+    $<
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)
