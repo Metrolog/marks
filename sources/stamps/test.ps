@@ -5,12 +5,18 @@
 %%PageOrder: Ascend
 %%EndComments
 
-  (csm-marks.ps) findlibfile
-  {
-    exch pop
-    cvx exec
-  }
-if
+/require % (libfilename) --> execute lib file
+{
+    findlibfile
+    { exch pop cvx exec }
+    {
+      (Error: file ) = = ( not found!) =
+      stop
+    }
+  ifelse
+} bind def
+
+(csm-marks.ps) require
 
 %%BeginSetup
 %%EndSetup
