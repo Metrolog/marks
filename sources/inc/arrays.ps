@@ -1,0 +1,61 @@
+%!PS-Adobe-2.0
+%%Creator: Sergei S. Betke
+%%EndComments
+
+/areverse  %  [a b ... z] --> [z ... b a]
+{
+  [ exch
+    aload
+    length
+    2  1  3 -1 roll
+      {
+        -1 roll
+      }
+    for
+  ]
+} bind def
+
+/aconcatenate  %  [(a) (b) ... (z)] --> (ab...z)
+{
+  0  1 index  { length add } forall  string
+  0 3 2 roll
+    {
+      3 copy putinterval
+      length add
+    }
+  forall pop  
+} bind def
+
+/aeq % array1 array2 aeq --> bool 
+{
+    2 copy eq
+    { pop pop true }
+    {
+        2 copy length exch length eq 
+        {
+          true % arr arr true
+            0  1  3 index length 1 sub
+            {
+              3 index 1 index get % arr arr bool index val1
+              3 index 2 index get % arr arr bool index val1 val2
+              eq exch pop and % arr arr bool 
+            }
+          for
+          exch pop exch pop
+        }
+        { pop pop false }
+      ifelse
+    }
+  ifelse
+} bind def
+
+/range % 1 5 --> 1 2 3 4 5
+{
+  2 dict begin
+  /n_to exch def
+  /n_from exch def
+  n_from 1 n_to {} for
+  end
+} bind def
+
+%%EOF
