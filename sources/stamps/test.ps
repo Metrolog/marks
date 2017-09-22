@@ -5,16 +5,7 @@
 %%PageOrder: Ascend
 %%EndComments
 
-/require % (libfilename) --> execute lib file
-{
-    findlibfile
-    { exch pop cvx exec }
-    {
-      (Error: file ) = = ( not found!) =
-      stop
-    }
-  ifelse
-} bind def
+(lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
 
 (distiller.ps) require
 (boxes.ps) require

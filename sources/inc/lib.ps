@@ -1,0 +1,51 @@
+%!PS-Adobe-2.0
+%%Creator: Sergei S. Betke
+%%EndComments
+
+  userdict /modules known not
+  {
+    userdict /modules 100 dict put
+  }
+if
+
+/require % (libfilename) --> execute lib file
+{
+    dup
+    findlibfile
+    {
+      exch pop cvx exec
+      userdict /modules get  exch cvlit  true  put
+    }
+    {
+      (Error: file ) = = ( not found!) =
+      pop
+      stop
+    }
+  ifelse
+} bind def
+
+/require_once % (libfilename) --> once execute lib file
+{
+    dup
+    userdict /modules get  exch cvlit  known not
+    {
+        dup
+        findlibfile
+        {
+          exch pop cvx exec
+          userdict /modules get  exch cvlit  true  put
+        }
+        {
+          (Error: file ) = = ( not found!) =
+          pop
+          stop
+        }
+      ifelse
+    }
+    {
+      pop
+    }
+  ifelse
+} bind def
+
+%%EOF
