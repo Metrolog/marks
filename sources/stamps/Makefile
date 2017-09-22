@@ -46,8 +46,8 @@ endif
 STAMPSRCDIR := 
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
-STAMPFONTDIR := ../../fonts/
-STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)*.afm)
+STAMPFONTDIR := ../../fonts
+STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)/*.pfb)
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
 
