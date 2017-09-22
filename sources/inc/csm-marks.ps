@@ -2,73 +2,16 @@
 %%Creator: Sergei S. Betke
 %%EndComments
 
-/stringheight
-{
-  gsave
-    newpath
-    0 0 moveto
-    false charpath pathbbox exch pop sub exch pop
-  grestore
-} bind def
+(lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
 
-/string_center_bottom
-{
-  dup
-    stringwidth pop  2 div  neg
-    0
-  rmoveto
-} bind def
-
-/string_center_middle
-{
-  dup
-    dup stringwidth pop 2 div neg
-    exch stringheight 2 div
-  rmoveto
-} bind def
-
-/string_left_middle
-{
-  dup
-    0
-    exch stringheight 2 div
-  rmoveto
-} bind def
-
-/string_right_middle
-{
-  dup
-    dup stringwidth pop neg
-    exch stringheight 2 div
-  rmoveto
-} bind def
-
-/arc_angle_from
-{
-  5 dict begin
-  /y1 exch def
-  /x1 exch def
-  /r exch def
-  /yc exch def
-  /xc exch def
-    xc yc r
-    y1 yc sub  x1 xc sub  atan
-  end
-} bind def
-
-/arc_angle_to
-{
-  6 dict begin
-  /y2 exch def
-  /x2 exch def
-  /a1 exch def
-  /r exch def
-  /yc exch def
-  /xc exch def
-    xc yc r a1
-    y2 yc sub  x2 xc sub  atan
-  end
-} bind def
+(boxes.ps) require_once
+(encoding-cp1251.ps) require_once
+(encoding-cp1253.ps) require_once
+(si.ps) require_once
+(math.ps) require_once
+(arrays.ps) require_once
+(roman.ps) require_once
+(graphics.ps) require_once
 
 /months % [ 1 2 3 ] --> (1) (2) (3)
 {
@@ -131,19 +74,6 @@ end
 
 (GOST2.304-81TypeA) findfont
 (stamp_K) exch definefont pop
-
-/path_as_upath % path_generator bool --> userpath
-{
-  1 dict begin
-  /cache_upath exch def
-  gsave
-  newpath
-  0 0 moveto
-  load exec
-  cache_upath upath
-  grestore
-  end
-} def
 
 /stamp_sign_path_helper % (sign) angle --> - (добавляем к текущему пути путь знака поверителя)
 {
