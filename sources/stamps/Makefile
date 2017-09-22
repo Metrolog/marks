@@ -46,16 +46,20 @@ endif
 STAMPSRCDIR := 
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
+STAMPINCDIR := ../inc
+STAMPINCFILES := $(wildcard $(STAMPINCDIR)/*.ps)
+
 STAMPFONTDIR := ../../fonts
 STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)/*.pfb)
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
 
-$(OUTPUTDIR)/%.pdf: $(STAMPSRCDIR)%.ps $(STAMPFONTFILES)
+$(OUTPUTDIR)/%.pdf: $(STAMPSRCDIR)%.ps $(STAMPINCFILES) $(STAMPFONTFILES)
 	$(info Build file "$@"...)
 	$(MAKETARGETDIR)
 	$(GS) \
     -sOutputFile=$@ \
+    -I$(call OSabsPath,$(STAMPINCDIR)) \
     -sFONTPATH=$(call OSabsPath,$(STAMPFONTDIR)) \
     $<
 

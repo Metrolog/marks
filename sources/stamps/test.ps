@@ -1,0 +1,68 @@
+%!PS-Adobe-2.0
+%%Creator: Sergei S. Betke
+%%Title: CSM makrs
+%%Pages: 1
+%%PageOrder: Ascend
+%%EndComments
+
+  (csm-marks.ps) findlibfile
+  {
+    exch pop
+    cvx exec
+  }
+if
+
+%%BeginSetup
+%%EndSetup
+
+%%Page: A 1
+%%BeginSetup
+%%BeginFeature: *PageSize A5
+<<
+  % /HWResolution [2400 2400]
+  % /PageSize [ 210 mm  297 2 div mm ]
+  % /ImagingBBox [ 5 mm  5 mm  210 5 sub mm  297 2 div 5 sub mm ]
+  /PageSize [ 297 2 div mm  210 mm ]
+  /ImagingBBox [ 5 mm  8 mm  297 2 div 5 sub mm  210 5 sub mm ]
+  /MirrorPrint false
+  /NegativePrint true
+>> setpagedevice
+%%EndFeature
+%%EndSetup
+
+gsave
+
+%------------------------------------------------------------------------------
+% для подготовки оттисков править код ниже !!!
+%------------------------------------------------------------------------------
+  [
+      2017
+      % [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
+      [ [ 3 ] quarters ]
+      (СП)
+      [ 1 256 range ]
+      18.0 mm
+      /verification_stamp_upath
+    create_stamps
+      2017
+      [ [ 1 12  range ] months  [ 1 4 range ] quarters year ]
+      % [ [ 3 ] quarters ]
+      (СП)
+      [ 1 ]
+      18.0 mm
+      /calibration_stamp_upath
+    create_stamps
+  ]
+  GetPageBBox
+  2 mm
+draw_stamps
+
+%------------------------------------------------------------------------------
+% конец области для кода генерации оттисков
+%------------------------------------------------------------------------------
+
+grestore
+
+showpage
+
+%%EOF
