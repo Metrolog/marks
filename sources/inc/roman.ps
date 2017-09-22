@@ -1,0 +1,38 @@
+%!PS-Adobe-2.0
+%%Creator: Sergei S. Betke
+%%EndComments
+
+/int_to_roman % 4 --> (IV)
+{
+  1 dict begin
+  /n_int exch def
+
+  [
+      [
+        << /i (I)  /v (V)  /x (X) >>
+        << /i (X)  /v (L)  /x (C) >>
+        << /i (C)  /v (D)  /x (M) >>
+        << /i (M) >>
+      ]
+      {
+        n_int 0 eq { pop exit } if
+        begin
+          [
+              [ {} {i} {i i} {i i i} {i v} {v} {v i} {v i i} {v i i i} {i x} ]
+              n_int 10 mod
+            get
+            exec
+          ]
+        aconcatenate
+        end
+        /n_int  n_int 10 idiv  def
+      }
+    forall
+  ]
+  areverse
+  aconcatenate
+
+  end
+} bind def
+
+%%EOF
