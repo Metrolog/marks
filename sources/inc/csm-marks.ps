@@ -2,20 +2,6 @@
 %%Creator: Sergei S. Betke
 %%EndComments
 
-/GetPageBBox {
-  currentpagedevice /ImagingBBox get
-  dup type /nulltype eq
-    {
-      pop
-        0 0
-        currentpagedevice /PageSize get  aload  pop
-        4 array
-      astore
-    }
-  if
-}
-def
-
 /CP1251Encoding [
   /null /controlSTX /controlSOT /controlETX /controlEOT /controlENQ /controlACK /controlBEL
   /controlBS /controlHT /controlLF /controlVT /controlFF /controlCR /controlSO /controlSI
@@ -87,23 +73,6 @@ def
 
 % перевод из миллиметров в пункты
 /mm { 72.0 mul 25.4 div } def
-
-/size_of_BBox % [ x1 x2 y1 y2 ] --> x2-x1  y2-y1
-{
-  dup type  /arraytype  eq  { aload pop } if
-  exch  3 1 roll
-  sub neg
-  3 1 roll
-  sub neg
-  exch
-} bind def
-
-/size_of_BBox_def % /sizeX /sizeY [ x1 x2 y1 y2 ] --> - ; /sizeX = x2-x1; /sizeY = y2-y1;
-{
-  size_of_BBox
-  3 -1 roll exch def
-  def
-} def
 
 /tan 
 {
@@ -747,15 +716,6 @@ grestore
   
   end
 } def
-
-/upath_BBox % upath --> x1 y1 x2 y2
-{
-  gsave
-    newpath
-    0 0 moveto
-    uappend flattenpath pathbbox
-  grestore
-} bind def
 
 /draw_stamps % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
 {
