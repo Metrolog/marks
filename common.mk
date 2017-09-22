@@ -68,6 +68,12 @@ winPath = $(shell cygpath -w $1)
 # $(call shellPath,sourcePathOrFileName)
 shellPath = $(shell cygpath -u $1)
 
+ifeq ($(OS),Windows_NT)
+  OSabsPath = $(winPath)
+else
+  OSabsPath = $(abspath $1)
+endif
+
 # $(call psExecuteCommand,powershellScriptBlock)
 psExecuteCommand = \
   powershell \
