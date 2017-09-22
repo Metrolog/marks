@@ -7,15 +7,9 @@
 
 (lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
 
-(distiller.ps) require
-(boxes.ps) require
-(encoding-cp1251.ps) require
-(encoding-cp1253.ps) require
-(si.ps) require
-(math.ps) require
-(arrays.ps) require
-(roman.ps) require
-(csm-marks.ps) require
+(distiller.ps) require_once
+(si.ps) require_once
+(csm-marks.ps) require_once
 
 %%BeginSetup
 %%EndSetup
