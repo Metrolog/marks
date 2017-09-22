@@ -2,6 +2,10 @@
 %%Creator: Sergei S. Betke
 %%EndComments
 
+(lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
+
+(arrays.ps) require_once
+
 /int_to_roman % 4 --> (IV)
 {
   1 dict begin
