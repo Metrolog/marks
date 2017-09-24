@@ -6,6 +6,14 @@ $AGLFilePath = Join-Path `
     -Path (Join-Path -Path $EncodingsDir -ChildPath 'agl-aglfn') `
     -ChildPath 'aglfn.txt' `
 ;
+$DestDir = Join-Path `
+    -Path (
+        Join-Path `
+            -Path (Split-Path -Parent -Path (Split-Path -Parent -Path $PSCommandPath)) `
+            -ChildPath 'sources' `
+    ) `
+    -ChildPath 'inc' `
+;
 $GlyphNames = New-Object String[] 0x10000;
 Get-Content `
     -LiteralPath $AGLFilePath `
@@ -28,7 +36,7 @@ $CP1251EncodingSourceFilePath = Join-Path `
     -ChildPath 'CP1251.TXT' `
 ;
 $CP1251EncodingFilePath = Join-Path `
-    -Path $EncodingsDir `
+    -Path $DestDir `
     -ChildPath 'cp1251.ps' `
 ;
 Get-Content `
@@ -69,7 +77,7 @@ $CP1253EncodingSourceFilePath = Join-Path `
     -ChildPath 'CP1253.TXT' `
 ;
 $CP1253EncodingFilePath = Join-Path `
-    -Path $EncodingsDir `
+    -Path $DestDir `
     -ChildPath 'cp1253.ps' `
 ;
 Get-Content `
