@@ -22,7 +22,7 @@ OS2Version: 1
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 0
 CreationTime: 1115562651
-ModificationTime: 1506252562
+ModificationTime: 1506252871
 PfmFamily: 17
 TTFWeight: 400
 TTFWidth: 5
@@ -82,7 +82,7 @@ NameList: AGL For New Fonts
 DisplaySize: -48
 AntiAlias: 1
 FitToEm: 0
-WinInfo: 1026 27 9
+WinInfo: 972 27 9
 BeginPrivate: 0
 EndPrivate
 BeginChars: 65537 178
@@ -3985,30 +3985,7 @@ HStem: 0 21G<25 105 217 297 409 489> 453 79<117.074 203.187 309.444 394.681>
 VStem: 0 66<495 513.839> 25 80<0 441.078> 217 80<0 439.59> 409 80<0 437.68>
 LayerCount: 2
 Fore
-SplineSet
-161 532 m 3xec
- 199 532 231 520 257 494 c 1
- 283 520 315 532 353 532 c 259
- 429 532 489 473 489 397 c 2
- 489 0 l 1
- 409 0 l 1
- 409 397 l 2
- 409 426 382 453 353 453 c 3
- 323 453 297 428 297 397 c 2
- 297 0 l 1
- 217 0 l 1
- 217 397 l 2
- 217 426 190 453 161 453 c 3
- 131 453 105 428 105 397 c 2
- 105 0 l 1
- 25 0 l 1
- 25 401 l 2xdc
- 25 419 14 437 0 447 c 1
- 0 532 l 1
- 25 527 46 516 65 497 c 0
- 66 496 66 496 66 495 c 1
- 92 520 124 532 161 532 c 3xec
-EndSplineSet
+Refer: 63 109 N 1 0 0 1 0 0 2
 EndChar
 
 StartChar: "+APMA"
@@ -4170,29 +4147,7 @@ VStem: 0 80<92.4237 532> 192 80<91.9218 532> 384 80<91.9218 532>
 CounterMasks: 1 38
 LayerCount: 2
 Fore
-SplineSet
-0 136 m 2
- 0 532 l 1
- 80 532 l 1
- 80 136 l 2
- 80 105 105 80 136 80 c 3
- 167 80 192 105 192 136 c 2
- 192 532 l 1
- 272 532 l 1
- 272 136 l 2
- 272 105 297 80 328 80 c 3
- 359 80 384 105 384 136 c 2
- 384 532 l 1
- 464 532 l 1
- 464 133 l 2
- 464 115 475 96 489 86 c 1
- 489 0 l 1
- 463 5 442 19 423 38 c 1
- 397 13 365 0 328 0 c 3
- 259 0 232 39.23046875 232 49 c 1
- 232 39.23046875 210 0 136 0 c 259
- 61 0 0 61 0 136 c 2
-EndSplineSet
+Refer: 63 109 S -1 0 0 -1 489 532 2
 EndChar
 
 StartChar: "+APkA"
