@@ -4,7 +4,7 @@
 ;
 $AGLFilePath = Join-Path `
     -Path (Join-Path -Path $EncodingsDir -ChildPath 'agl-aglfn') `
-    -ChildPath 'glyphlist.txt' `
+    -ChildPath 'aglfn.txt' `
 ;
 $GlyphNames = New-Object String[] 0x10000;
 Get-Content `
@@ -13,15 +13,12 @@ Get-Content `
 | ? { -not $_.StartsWith('#') } `
 | ConvertFrom-Csv `
     -Delimiter ';' `
-    -Header ( 'GlyphName', 'Code' ) `
+    -Header ( 'Code', 'GlyphName', 'GlyphDescription' ) `
 | ForEach-Object {
     $GlyphName = $_.GlyphName;
-    $_.Code -split ' ' `
-    | ForEach-Object {
-        $UnicodeCode = [int32] ( '0x' + $_ );
-        if ( -not $GlyphNames[ $UnicodeCode ] -or ( $GlyphName.StartsWith('afii')) ) {
-            $GlyphNames[ $UnicodeCode ]  = $GlyphName;
-        };
+    $UnicodeCode = [int32] ( '0x' + $_.Code );
+    if ( -not $GlyphNames[ $UnicodeCode ] ) {
+        $GlyphNames[ $UnicodeCode ]  = $GlyphName;
     };
 };
 
@@ -41,7 +38,16 @@ Get-Content `
 | ConvertFrom-Csv `
     -Delimiter "`t" `
     -Header ( 'EncodingCode', 'UnicodeCode', 'GlyphDescription' ) `
-| ForEach-Object { $CP1251EncodingTable[ [int32] ( $_.EncodingCode ) ] = $GlyphNames[ $_.UnicodeCode ] } `
+| ForEach-Object {
+    if ( $GlyphNames[ [int32] $_.UnicodeCode ] ) {
+        $CP1251EncodingTable[ [int32] ( $_.EncodingCode ) ] = $GlyphNames[ [int32] $_.UnicodeCode ];
+    } else {
+        $CP1251EncodingTable[ [int32] ( $_.EncodingCode ) ] = 'uni' + ( '{0:X4}' -f ( [int32] $_.UnicodeCode ) );
+    };
+} `
+;
+'/CP1251Encoding [' `
+| Out-File -FilePath $CP1251EncodingFilePath -Encoding ascii -Force `
 ;
 $CP1251EncodingTable `
 | ForEach-Object { 
@@ -51,7 +57,10 @@ $CP1251EncodingTable `
         '/null' 
     };
 } `
-| Out-File -FilePath $CP1251EncodingFilePath -Encoding ascii -Force `
+| Out-File -FilePath $CP1251EncodingFilePath -Encoding ascii -Force -Append `
+;
+'] def' `
+| Out-File -FilePath $CP1251EncodingFilePath -Encoding ascii -Force -Append `
 ;
 
 $CP1253EncodingTable = New-Object String[] 0x100;
@@ -70,7 +79,16 @@ Get-Content `
 | ConvertFrom-Csv `
     -Delimiter "`t" `
     -Header ( 'EncodingCode', 'UnicodeCode', 'GlyphDescription' ) `
-| ForEach-Object { $CP1253EncodingTable[ [int32] ( $_.EncodingCode ) ] = $GlyphNames[ $_.UnicodeCode ] } `
+| ForEach-Object {
+    if ( $GlyphNames[ [int32] $_.UnicodeCode ] ) {
+        $CP1253EncodingTable[ [int32] ( $_.EncodingCode ) ] = $GlyphNames[ [int32] $_.UnicodeCode ];
+    } else {
+        $CP1253EncodingTable[ [int32] ( $_.EncodingCode ) ] = 'uni' + ( '{0:X4}' -f ( [int32] $_.UnicodeCode ) );
+    };
+} `
+;
+'/CP1253Encoding [' `
+| Out-File -FilePath $CP1253EncodingFilePath -Encoding ascii -Force `
 ;
 $CP1253EncodingTable `
 | ForEach-Object { 
@@ -80,5 +98,8 @@ $CP1253EncodingTable `
         '/null' 
     };
 } `
-| Out-File -FilePath $CP1253EncodingFilePath -Encoding ascii -Force `
+| Out-File -FilePath $CP1253EncodingFilePath -Encoding ascii -Force -Append `
+;
+'] def' `
+| Out-File -FilePath $CP1253EncodingFilePath -Encoding ascii -Force -Append `
 ;
