@@ -22,7 +22,7 @@ OS2Version: 1
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 0
 CreationTime: 1115562651
-ModificationTime: 1506251913
+ModificationTime: 1506252247
 PfmFamily: 17
 TTFWeight: 400
 TTFWidth: 5
@@ -82,7 +82,7 @@ NameList: AGL For New Fonts
 DisplaySize: -48
 AntiAlias: 1
 FitToEm: 0
-WinInfo: 0 27 9
+WinInfo: 54 27 9
 BeginPrivate: 0
 EndPrivate
 BeginChars: 65537 178
@@ -1773,31 +1773,12 @@ StartChar: p
 Encoding: 112 112 66
 Width: 432
 VWidth: 1365
-Flags: W
+Flags: HW
 HStem: -267 21G<0 80> 0 80<109.289 220.928> 453 79<107.794 218.626>
 VStem: 0 80<-267 23 108.62 425.324 511 532> 249 80<108.945 421.27>
 LayerCount: 2
 Fore
-SplineSet
-0 -267 m 1
- 0 532 l 1
- 80 532 l 1
- 80 511 l 1
- 106 526 132 532 164 532 c 3
- 255 532 329 459 329 369 c 2
- 329 165 l 2
- 329 74 255 0 164 0 c 3
- 133 0 105 8 80 23 c 1
- 80 -267 l 1
- 0 -267 l 1
-80 165 m 2
- 80 120 118 80 164 80 c 3
- 211 80 249 117 249 165 c 2
- 249 369 l 2
- 249 415 209 453 164 453 c 3
- 117 453 80 415 80 369 c 2
- 80 165 l 2
-EndSplineSet
+Refer: 52 98 N 1 0 0 -1 0 532 2
 EndChar
 
 StartChar: q
@@ -3547,36 +3528,14 @@ EndChar
 
 StartChar: "+AOAA"
 Encoding: 1072 1072 145
-Width: 451
+Width: 450
 VWidth: 1365
 Flags: W
 HStem: 0 80<107.122 220.779> 249 80<108.318 249> 453 79<107.797 218.879>
 VStem: 0 80<107.999 220.571 369 422.044> 249 80<108.945 249 329 421.27>
 LayerCount: 2
 Fore
-SplineSet
-0 369 m 1
- 0 461 73 532 165 532 c 3
- 255 532 329 459 329 369 c 2
- 329 135 l 2
- 329 109 337 99 347 89 c 1
- 347 0 l 1
- 312 11 294 26 279 46 c 1
- 247 15 208 0 163 0 c 259
- 73 0 0 75 0 165 c 3
- 0 255 74 329 165 329 c 2
- 249 329 l 1
- 249 369 l 2
- 249 415 209 453 164 453 c 3
- 118 453 80 415 80 369 c 1
- 0 369 l 1
-80 164 m 3
- 80 117 117 80 164 80 c 3
- 211 80 249 117 249 165 c 2
- 249 249 l 1
- 159 249 l 2
- 116 249 80 208 80 164 c 3
-EndSplineSet
+Refer: 51 97 N 1 0 0 1 0 0 2
 EndChar
 
 StartChar: "+AOEA"
@@ -4040,24 +3999,7 @@ HStem: -267 21G<0 80> 0 80<80 217.377> 453 79<80 221.159>
 VStem: 0 80<-267 0 80 453> 249 80<112.129 424.134>
 LayerCount: 2
 Fore
-SplineSet
-0 -267 m 1
- 0 532 l 1
- 165 532 l 2
- 255 532 329 459 329 369 c 2
- 329 165 l 2
- 329 74 255 0 165 0 c 2
- 80 0 l 1
- 80 -267 l 1
- 0 -267 l 1
-80 80 m 1
- 165 80 l 2
- 211 80 249 120 249 165 c 2
- 249 369 l 2
- 249 412 213 453 169 453 c 2
- 80 453 l 1
- 80 80 l 1
-EndSplineSet
+Refer: 66 112 N 1 0 0 1 0 0 2
 EndChar
 
 StartChar: "+APEA"
