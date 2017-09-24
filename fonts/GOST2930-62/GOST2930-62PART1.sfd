@@ -22,7 +22,7 @@ OS2Version: 1
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 0
 CreationTime: 1115562651
-ModificationTime: 1506250534
+ModificationTime: 1506251043
 PfmFamily: 17
 TTFWeight: 400
 TTFWidth: 5
@@ -2596,45 +2596,19 @@ HStem: 0 21G<0 100 620 720> 780 20G<0 113 607 720>
 VStem: 0 100<0 617> 620 100<0 617>
 LayerCount: 2
 Fore
-SplineSet
-0 0 m 1
- 0 800 l 1
- 100 800 l 1
- 360 400 l 1
- 620 800 l 1
- 720 800 l 1
- 720 0 l 1
- 620 0 l 1
- 620 617 l 1
- 360 217 l 1
- 100 617 l 1
- 100 0 l 1
- 0 0 l 1
-EndSplineSet
+Refer: 37 77 N 1 0 0 1 0 0 2
 EndChar
 
 StartChar: Nu
 Encoding: 925 925 101
 Width: 600
 VWidth: 1365
-Flags: HW
+Flags: W
 HStem: 0 21G<0 100 360.753 480> 780 20G<0 112.486 380 480>
 VStem: 0 100<0 584> 380 100<216 800>
 LayerCount: 2
 Fore
-SplineSet
-0 0 m 1
- 0 800 l 1
- 103 800 l 1
- 380 216 l 1
- 380 800 l 1
- 480 800 l 1
- 480 0 l 1
- 370 0 l 1
- 100 584 l 1
- 100 0 l 1
- 0 0 l 1
-EndSplineSet
+Refer: 38 78 N 1 0 0 1 0 0 2
 EndChar
 
 StartChar: Xi
@@ -3143,19 +3117,7 @@ HStem: 0 21G<0 119.247 380 480> 780 20G<0 100 367.514 480>
 VStem: 0 100<216 800> 380 100<0 584>
 LayerCount: 2
 Fore
-SplineSet
-0 800 m 1
- 100 800 l 1
- 100 216 l 1
- 377 800 l 1
- 480 800 l 1
- 480 0 l 1
- 380 0 l 1
- 380 584 l 1
- 110 0 l 1
- 0 0 l 1
- 0 800 l 1
-EndSplineSet
+Refer: 38 78 N 1 0 0 -1 0 800 2
 EndChar
 
 StartChar: "+AMkA"
@@ -3169,23 +3131,13 @@ CounterMasks: 1 1c
 LayerCount: 2
 Fore
 SplineSet
-0 800 m 1
- 100 800 l 1
- 100 216 l 1
- 377 800 l 1
- 480 800 l 1
- 480 0 l 1
- 380 0 l 1
- 380 584 l 1
- 110 0 l 1
- 0 0 l 1
- 0 800 l 1
 150 900 m 1
  150 1000 l 1
  330 1000 l 1
  330 900 l 1
  150 900 l 1
 EndSplineSet
+Refer: 121 1048 S 1 0 0 1 0 0 2
 EndChar
 
 StartChar: "+AMoA"
@@ -3235,21 +3187,7 @@ HStem: 0 21G<0 100 620 720> 780 20G<0 113 607 720>
 VStem: 0 100<0 617> 620 100<0 617>
 LayerCount: 2
 Fore
-SplineSet
-0 0 m 1
- 0 800 l 1
- 100 800 l 1
- 360 400 l 1
- 620 800 l 1
- 720 800 l 1
- 720 0 l 1
- 620 0 l 1
- 620 617 l 1
- 360 217 l 1
- 100 617 l 1
- 100 0 l 1
- 0 0 l 1
-EndSplineSet
+Refer: 37 77 N 1 0 0 1 0 0 2
 EndChar
 
 StartChar: "+AM0A"
