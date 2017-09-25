@@ -4486,7 +4486,7 @@ SplineSet
 EndSplineSet
 EndChar
 
-StartChar: mu
+StartChar: uni03BC
 Encoding: 956 956 188
 Width: 591
 VWidth: 1362
