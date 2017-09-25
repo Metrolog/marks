@@ -50,7 +50,7 @@ STAMPINCDIR := ../inc
 STAMPINCFILES := $(wildcard $(STAMPINCDIR)/*.ps)
 
 STAMPFONTDIR := ../../fonts
-STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)/*.pfb)
+STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)/*.pt3)
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
 
