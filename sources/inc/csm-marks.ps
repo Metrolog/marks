@@ -56,7 +56,7 @@ dup length dict begin
 end
 (stamp_sign_greek) exch definefont pop
 
-(GOST2.304-81TypeA) findfont
+(GOST2930-62forMarks) findfont
 dup length dict begin
   { 1 index /FID ne
     {def}
@@ -68,13 +68,13 @@ dup length dict begin
 end
 (stamp_id) exch definefont pop
 
-(GOST2.304-81TypeA) findfont
+(GOST2930-62forMarks) findfont
 (stamp_period) exch definefont pop
 
-(GOST2.304-81TypeA) findfont
+(GOST2930-62forMarks) findfont
 (stamp_year) exch definefont pop
 
-(GOST2.304-81TypeA) findfont
+(GOST2930-62forMarks) findfont
 (stamp_K) exch definefont pop
 
 /stamp_sign_path_helper % (sign) angle --> - (добавляем к текущему пути путь знака поверителя)
@@ -107,13 +107,14 @@ end
 gsave
 
 /stamp_signs_upaths [
-  1 dict begin
+  2 dict begin
+  /sign_scale 5  800 1000 div  div  def
     [ 0 180 90 270 ]
     {
       /angle exch def
       
       (stamp_sign_cyr) findfont
-      4 scalefont setfont
+      sign_scale scalefont setfont
         stamp_signs_cyr
         {
           angle stamp_sign_upath_helper
@@ -121,7 +122,7 @@ gsave
       forall
 
       (stamp_sign_greek) findfont
-      4 scalefont setfont
+      sign_scale scalefont setfont
         stamp_signs_greek
         {
           angle stamp_sign_upath_helper
