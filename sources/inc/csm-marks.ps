@@ -140,6 +140,10 @@ grestore
   stamp_signs_upaths  exch 1 sub  get
 } def
 
+/verification_stamp_id_h_size  3.8 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_year_h_size  6.0 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_period_h_size  3 mm  800 1000 div  div  1 mm div  def
+
 % генерация рисунка поверительного клейма
 /verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год --> -
 {
@@ -165,8 +169,8 @@ grestore
   
   % шифр поверительного клейма организации
   (stamp_id) findfont
-  4 scalefont setfont
-  0 -5.5 moveto
+  verification_stamp_id_h_size scalefont setfont
+  0 -5.7 moveto
     verification_stamp_id
     string_center_middle
   true charpath
@@ -180,7 +184,7 @@ grestore
   
   % год
   (stamp_year) findfont
-  6 scalefont setfont
+  verification_stamp_year_h_size scalefont setfont
   -7 0 moveto
         verification_stamp_year 4 string cvs
         dup length 2 sub
@@ -199,7 +203,7 @@ grestore
     verification_stamp_period () eq
     {
       % знак РСТ
-      0 5 moveto
+      0 5.5 moveto
       currentpoint translate
       3 3 scale
       urst uappend
@@ -207,14 +211,14 @@ grestore
     {
       % период
       (stamp_period) findfont
-      3 scalefont setfont
-      -2.5 5 moveto
+      verification_stamp_period_h_size scalefont setfont
+      -2.0 5.5 moveto
         verification_stamp_period
         string_center_middle
       true charpath
 
       % знак РСТ
-      2.5 5 moveto
+      2.5 5.5 moveto
       currentpoint translate
       3 3 scale
       urst uappend
