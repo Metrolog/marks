@@ -22,7 +22,7 @@ OS2Version: 1
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 0
 CreationTime: 1115562651
-ModificationTime: 1506369534
+ModificationTime: 1506370262
 PfmFamily: 17
 TTFWeight: 400
 TTFWidth: 5
@@ -77,12 +77,13 @@ ShortTable: maxp 16
 EndShort
 LangName: 1033 "" "" "Regular"
 Encoding: UnicodeFull
+Compacted: 1
 UnicodeInterp: none
 NameList: AGL For New Fonts
 DisplaySize: -48
 AntiAlias: 1
 FitToEm: 0
-WinInfo: 945 27 9
+WinInfo: 0 27 9
 BeginPrivate: 0
 EndPrivate
 BeginChars: 1114113 201
@@ -1700,26 +1701,26 @@ StartChar: n
 Encoding: 110 110 64
 Width: 451
 VWidth: 1365
-Flags: HW
-HStem: 0 21G<19 99 267 347> 453 79<128.307 236.392>
-VStem: 19 80<0 423.406> 267 80<0 421.27>
+Flags: W
+HStem: 0 21G<0 80 248 328> 0 21G<0 80 248 328> 453 79<109.361 217.392>
+VStem: 0 80<0 423.406 510 532> 248 80<0 421.27>
 LayerCount: 2
 Fore
 SplineSet
-183 532 m 3
- 273 532 347 459 347 369 c 2
- 347 0 l 1
- 267 0 l 1
- 267 369 l 2
- 267 414 228 453 183 453 c 3
- 138 453 99 414 99 369 c 2
- 99 0 l 1
- 19 0 l 1
- 19 383 l 2
- 19 404 13 421 0 436 c 1
+164 532 m 3xb8
+ 254 532 328 459 328 369 c 2
+ 328 0 l 1
+ 248 0 l 1
+ 248 369 l 2
+ 248 414 209 453 164 453 c 3
+ 119 453 80 414 80 369 c 2
+ 80 0 l 1
+ 0 0 l 1
+ 0 383 l 1
  0 532 l 1
- 26 523 48 504 65 483 c 1
- 98 516 136 532 183 532 c 3
+ 80 532 l 1
+ 80 510 l 1
+ 105 525 132 532 164 532 c 3xb8
 EndSplineSet
 EndChar
 
@@ -1867,7 +1868,22 @@ HStem: 0 80<108.311 220.48> 512 20G<0 80 249 329>
 VStem: 0 80<108.318 532> 249 80<108.945 532>
 LayerCount: 2
 Fore
-Refer: 64 110 S -1 0 0 -1 347 532 2
+SplineSet
+164 0 m 3
+ 74 0 0 73 0 163 c 2
+ 0 532 l 1
+ 80 532 l 1
+ 80 163 l 2
+ 80 118 119 79 164 79 c 3
+ 209 79 248 118 248 163 c 2
+ 248 532 l 1
+ 328 532 l 1
+ 328 149 l 2
+ 328 128 334 111 347 96 c 1
+ 347 0 l 1
+ 321 9 299 28 282 49 c 1
+ 249 16 211 0 164 0 c 3
+EndSplineSet
 EndChar
 
 StartChar: v
@@ -3540,7 +3556,7 @@ StartChar: uni0438
 Encoding: 1080 1080 152
 Width: 451
 VWidth: 1365
-Flags: W
+Flags: HW
 HStem: 0 80<108.311 220.48> 512 20G<0 80 249 329>
 VStem: 0 80<108.318 532> 249 80<108.945 532>
 LayerCount: 2
@@ -3691,8 +3707,8 @@ Encoding: 1087 1087 159
 Width: 451
 VWidth: 1365
 Flags: W
-HStem: 0 21G<19 99 267 347> 453 79<128.307 236.392>
-VStem: 19 80<0 423.406> 267 80<0 421.27>
+HStem: 0 21G<0 80 0 80 248 328 248 328> 453 79<109.361 217.392>
+VStem: 0 80<0 423.406 510 532> 248 80<0 421.27>
 LayerCount: 2
 Fore
 Refer: 64 110 N 1 0 0 1 0 0 2
