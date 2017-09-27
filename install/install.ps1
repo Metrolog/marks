@@ -124,6 +124,13 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     };
 };
 
+$env:CygWin = Get-ItemPropertyValue `
+    -Path HKLM:\SOFTWARE\Cygwin\setup `
+    -Name rootdir `
+;
+Write-Verbose "CygWin root directory: $env:CygWin";
+$ToPath += "$env:CygWin\bin";
+
 $null = Import-PackageProvider -Name Chocolatey -Force;
 $null = (
     Get-PackageSource -ProviderName Chocolatey `
