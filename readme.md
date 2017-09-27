@@ -102,5 +102,12 @@
 Если хотя бы одно из условий не выполняется - используется
 раскладка в строки.
 
+Благодарности
+-------------
+- [Илья Никуленко](mailto:nikulenko_iliy@rambler.ru): при подготовке знаков
+поверителей в формате Type 3 использованы в качестве основы файлы
+True Type шрифта ГОСТ 2930-62, подготовленные Ильёй Никуленко.
+
+
 [PostScript]: https://ru.wikipedia.org/wiki/PostScript
 [PostScript Language reference manual]: http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/postscript/pdfs/psrefman.pdf
