@@ -81,9 +81,49 @@ $null = (
     Get-PackageSource -ProviderName Chocolatey `
     | Set-PackageSource -Trusted `
 );
+
 if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     $null = Install-Package -Name chocolatey -MinimumVersion 0.9.10.3 -ProviderName Chocolatey;
+    
+    & choco install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    $env:CygWin = Get-ItemPropertyValue `
+        -Path HKLM:\SOFTWARE\Cygwin\setup `
+        -Name rootdir `
+    ;
+    Write-Verbose "CygWin root directory: $env:CygWin";
+    $ToPath += "$env:CygWin\bin";
+
+    #& choco install make mkdir touch zip ttfautohint --source cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    # исправляем проблемы совместимости chocolatey, cyg-get и cygwin
+    If ( Test-Path "$env:CygWin\cygwinsetup.exe" ) {
+        $cygwinsetup = "$env:CygWin\cygwinsetup.exe";
+    } ElseIf ( Test-Path "$env:CygWin\setup-x86_64.exe" ) {
+        $cygwinsetup = "$env:CygWin\setup-x86_64.exe";
+    } ElseIf ( Test-Path "$env:CygWin\setup-x86.exe" ) {
+        $cygwinsetup = "$env:CygWin\setup-x86.exe";
+    } ElseIf ( Test-Path "$env:ChocolateyPath\lib\Cygwin\tools\cygwin\cygwinsetup.exe" ) {
+        $cygwinsetup = "$env:ChocolateyPath\lib\Cygwin\tools\cygwin\cygwinsetup.exe";
+    } ElseIf ( Test-Path "$env:ChocolateyPath\lib\Cygwin.$(( Get-Package -Name CygWin -ProviderName Chocolatey ).Version)\tools\cygwin\cygwinsetup.exe" ) {
+        $cygwinsetup = "$env:ChocolateyPath\lib\Cygwin.$(( Get-Package -Name CygWin -ProviderName Chocolatey ).Version)\tools\cygwin\cygwinsetup.exe";
+    } Else {
+        Write-Error 'I can not find CygWin setup!';
+    };
+    Write-Verbose "CygWin setup: $cygwinsetup";
+    if ($PSCmdLet.ShouldProcess('CygWin', 'Установить переменную окружения')) {
+        [System.Environment]::SetEnvironmentVariable( 'CygWin', $env:CygWin, [System.EnvironmentVariableTarget]::Machine );
+    };
+    $ToPath += "$env:CygWin\bin";
+
+    Write-Verbose 'Install CygWin tools...';
+    if ($PSCmdLet.ShouldProcess('make, mkdir, touch', 'Установить пакет CygWin')) {
+        Execute-ExternalInstaller `
+            -LiteralPath $cygwinsetup `
+            -ArgumentList '--packages make,mkdir,touch --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
+        ;
+
+    };
 };
+
 $null = Import-PackageProvider -Name Chocolatey -Force;
 $null = (
     Get-PackageSource -ProviderName Chocolatey `
@@ -101,43 +141,6 @@ $ToPath += Split-Path `
         | Get-ItemPropertyValue -Name 'GS_DLL'
     ) `
 ;
-
-& choco install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-$env:CygWin = Get-ItemPropertyValue `
-    -Path HKLM:\SOFTWARE\Cygwin\setup `
-    -Name rootdir `
-;
-Write-Verbose "CygWin root directory: $env:CygWin";
-$ToPath += "$env:CygWin\bin";
-
-#& choco install make mkdir touch zip ttfautohint --source cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-# исправляем проблемы совместимости chocolatey, cyg-get и cygwin
-If ( Test-Path "$env:CygWin\cygwinsetup.exe" ) {
-    $cygwinsetup = "$env:CygWin\cygwinsetup.exe";
-} ElseIf ( Test-Path "$env:CygWin\setup-x86_64.exe" ) {
-    $cygwinsetup = "$env:CygWin\setup-x86_64.exe";
-} ElseIf ( Test-Path "$env:CygWin\setup-x86.exe" ) {
-    $cygwinsetup = "$env:CygWin\setup-x86.exe";
-} ElseIf ( Test-Path "$env:ChocolateyPath\lib\Cygwin\tools\cygwin\cygwinsetup.exe" ) {
-    $cygwinsetup = "$env:ChocolateyPath\lib\Cygwin\tools\cygwin\cygwinsetup.exe";
-} ElseIf ( Test-Path "$env:ChocolateyPath\lib\Cygwin.$(( Get-Package -Name CygWin -ProviderName Chocolatey ).Version)\tools\cygwin\cygwinsetup.exe" ) {
-    $cygwinsetup = "$env:ChocolateyPath\lib\Cygwin.$(( Get-Package -Name CygWin -ProviderName Chocolatey ).Version)\tools\cygwin\cygwinsetup.exe";
-} Else {
-    Write-Error 'I can not find CygWin setup!';
-};
-Write-Verbose "CygWin setup: $cygwinsetup";
-if ($PSCmdLet.ShouldProcess('CygWin', 'Установить переменную окружения')) {
-    [System.Environment]::SetEnvironmentVariable( 'CygWin', $env:CygWin, [System.EnvironmentVariableTarget]::Machine );
-};
-$ToPath += "$env:CygWin\bin";
-
-Write-Verbose 'Install CygWin tools...';
-if ($PSCmdLet.ShouldProcess('make, mkdir, touch', 'Установить пакет CygWin')) {
-    Execute-ExternalInstaller `
-        -LiteralPath $cygwinsetup `
-        -ArgumentList '--packages make,mkdir,touch --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
-    ;
-};
 
 if ( $GUI ) {
     & choco install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
