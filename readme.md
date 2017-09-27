@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/ng2qyleq6jqm1ko0/branch/master?svg=true)](https://ci.appveyor.com/project/sergey-s-betke/marks/branch/master)
+
 Генератор оттисков поверительных и калибровочных клейм
 ======================================================
 
