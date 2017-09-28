@@ -1,7 +1,7 @@
 sudo: false
 dist: trusty
 
-#language: python
+language: python
 
 os:
   - linux
@@ -9,7 +9,7 @@ os:
 addons:
   apt:
     packages:
-    - make
+    - make 4.2.1
     - ghostscript
 
 # env:
