@@ -25,14 +25,14 @@ DOLLAR_SIGN        :=$$
 ifeq ($(OS),Windows_NT)
 
 PATHSEP            :=;
-MAKETARGETDIR      := /usr/bin/mkdir -p $(@D)
-MAKETARGETASDIR    := /usr/bin/mkdir -p $@
+MAKETARGETDIR      = /usr/bin/mkdir -p $(@D)
+MAKETARGETASDIR    = /usr/bin/mkdir -p $@
 
 else
 
 PATHSEP            :=:
-MAKETARGETDIR      := mkdir -p $(@D)
-MAKETARGETASDIR    := mkdir -p $@
+MAKETARGETDIR      = mkdir -p $(@D)
+MAKETARGETASDIR    = mkdir -p $@
 
 endif
 
