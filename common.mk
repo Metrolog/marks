@@ -21,14 +21,20 @@ COMMA              :=,
 LEFT_BRACKET       :=(
 RIGHT_BRACKET      :=)
 DOLLAR_SIGN        :=$$
-ifeq ($(OS),Windows_NT)
-	PATHSEP          :=;
-else
-	PATHSEP          :=:
-endif
 
-MAKETARGETDIR      = /usr/bin/mkdir -p $(@D)
-MAKETARGETASDIR    = /usr/bin/mkdir -p $@
+ifeq ($(OS),Windows_NT)
+
+PATHSEP            :=;
+MAKETARGETDIR      := /usr/bin/mkdir -p $(@D)
+MAKETARGETASDIR    := /usr/bin/mkdir -p $@
+
+else
+
+PATHSEP            :=:
+MAKETARGETDIR      := mkdir -p $(@D)
+MAKETARGETASDIR    := mkdir -p $@
+
+endif
 
 ZIP                ?= zip \
 	-o \
