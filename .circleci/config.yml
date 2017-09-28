@@ -7,6 +7,12 @@ jobs:
     working_directory: ~/csm-marks
 
     steps:
+      - run: |
+        sudo apt-get update
+        sudo apt-get install git
+        sudo apt-get install make
+        sudo apt-get install ghostscript
+
       - checkout
 
       - run: make
