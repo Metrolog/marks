@@ -1,5 +1,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/ng2qyleq6jqm1ko0/branch/master?svg=true)](https://ci.appveyor.com/project/sergey-s-betke/marks/branch/master)
 [![Build status](https://travis-ci.org/Metrolog/marks.svg?branch=master)](https://travis-ci.org/Metrolog/marks)
+[![Build status](https://circleci.com/gh/Metrolog/marks/tree/master.svg?&style=shield&circle-token=b14acf911433d315298235b0c2fbf7b2670a92a8)](https://circleci.com/gh/Metrolog/marks)
 
 Генератор оттисков поверительных и калибровочных клейм
 ======================================================
