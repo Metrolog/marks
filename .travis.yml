@@ -9,7 +9,7 @@ os:
 addons:
   apt:
     packages:
-    - make-4.2.1
+    - make=4.2.1
     - ghostscript
 
 # env:
