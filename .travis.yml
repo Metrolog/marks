@@ -1,7 +1,7 @@
 sudo: false
 dist: trusty
 
-language: python
+#language: python
 
 os:
   - linux
@@ -24,4 +24,5 @@ addons:
   # - source ci/travis/install-$TRAVIS_OS_NAME.sh
 
 script:
+  - make --version
   - make
