@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ubuntu:14.04
+
+    working_directory: ~/csm-marks
+
+    steps:
+      - checkout
+
+      - run: make
+
+      - store_artifacts:
+          path: /marks/sources/stamps/release/test.pdf
+          destination: /
