@@ -10,8 +10,7 @@ jobs:
       - run:
           name: Install tools
           command: |
-            sudo apt-get update -qq
-            sudo apt-get install make ghostscript
+            sudo apt-get install make ghostscript-x
 
       - checkout
 
