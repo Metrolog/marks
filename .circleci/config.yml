@@ -2,7 +2,8 @@ version: 2
 jobs:
   build:
     docker:
-      - image: buildpack-deps:trusty
+      # - image: buildpack-deps:trusty
+      - image: ruudk/ghostscript
 
     working_directory: ~/csm-marks
 
@@ -10,7 +11,7 @@ jobs:
       - run:
           name: Install tools
           command: |
-            sudo apt-get -y update
+            # sudo apt-get -y update
             sudo apt-get install make ghostscript
 
       - checkout
