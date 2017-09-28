@@ -12,12 +12,6 @@ include $(ITG_MAKEUTILS_DIR)/appveyor.mk
 
 # tools
 
-ifeq ($(VIEWPDF),yes)
-	VIEWPDFOPT := -pv -e '$$pdf_previewer=q/$(PDFVIEWER) %O %S/'
-else
-	VIEWPDFOPT := -pv-
-endif
-
 ifeq ($(OS),Windows_NT)
 
 GS                 ?= gswin64c \
@@ -31,7 +25,7 @@ PDFVIEWER          ?= start
 
 else
 
-GS                 ?= gs
+GS                 ?= gs \
 	-dSAFER \
 	-dNOPAUSE \
 	-dBATCH \
