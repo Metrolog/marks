@@ -21,4 +21,3 @@ jobs:
 
       - store_artifacts:
           path: sources/stamps/release/test.pdf
-          destination: /
