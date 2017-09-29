@@ -285,9 +285,9 @@ grestore
 
   % индивидуальный знак поверителя
   matrix currentmatrix
-    2.5 5 moveto
+    2.5 5.5 moveto
     currentpoint translate
-    1 1 scale
+    3 4 div  dup  scale
     stamp_sign stamp_sign_upath uappend
   setmatrix
   
@@ -312,7 +312,7 @@ grestore
   % период
   (stamp_period) findfont
   3 scalefont setfont
-  -2.5 5 moveto
+  -2.5 5.5 moveto
     stamp_period
     string_center_middle
   true charpath
