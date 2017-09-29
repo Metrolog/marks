@@ -71,7 +71,7 @@ end
 (GOST2930-62forMarks) findfont
 (stamp_period) exch definefont pop
 
-(ImpactForYears) findfont
+(GOST2930-62forMarks) findfont
 (stamp_year) exch definefont pop
 
 (GOST2930-62forMarks) findfont
@@ -238,25 +238,13 @@ grestore
 } def
 
 % знак калибровки
-/K % H_size --> -
-{
-  currentpoint
-  matrix currentmatrix
-  
-  currentpoint translate
-
+gsave
   (stamp_K) findfont
-  5 -1 roll  scalefont  setfont
-    (K)
-    string_center_middle
-  true charpath
-
-  % восстановливаем систему координат
-  setmatrix
-  moveto
-} bind def
-
-/uK 1 /K true path_as_upath  cvlit def
+  1 scalefont  setfont
+  (K) 0 /stamp_sign_path_helper
+  true path_as_upath
+  /uK exch cvlit def
+grestore
 
 % генерация рисунка калибровочного клейма
 /calibration_stamp_path % размер знак_поверителя (шифр клейма) (период) год --> user path
@@ -306,19 +294,19 @@ grestore
   % год
   (stamp_year) findfont
   6 scalefont setfont
-  -7 0 moveto
+  -4 0 moveto
         stamp_year 4 string cvs
         dup length 2 sub
         1
       getinterval
-    string_left_middle 
+    string_right_middle 
   true charpath
-  7 0 moveto
+  4 0 moveto
         stamp_year 4 string cvs
         dup length 1 sub
         1
       getinterval
-    string_right_middle 
+    string_left_middle 
   true charpath
 
   % период
