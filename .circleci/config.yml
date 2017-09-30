@@ -11,8 +11,9 @@ jobs:
       - run:
           name: Install tools
           command: |
+            sudo apt-get update -y
             sudo apt-get install -y make ghostscript
-            sudo apt-get install -y --fix-missing libunwind8 libicu52 wget
+            sudo apt-get install -y libunwind8 libicu52 wget
             wget https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-alpha.9/powershell_6.0.0-alpha.9-1ubuntu1.14.04.1_amd64.deb
             sudo dpkg -i powershell_6.0.0-alpha.9-1ubuntu1.14.04.1_amd64.deb
 
