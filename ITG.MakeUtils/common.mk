@@ -75,18 +75,23 @@ winPath = $(shell cygpath -w $1)
 shellPath = $(shell cygpath -u $1)
 
 ifeq ($(OS),Windows_NT)
-  OSabsPath = $(winPath)
+  OSPath = $(call winPath,$1)
 else
-  OSabsPath = $(abspath $1)
+  OSPath = $1
 endif
 
-# $(call psExecuteCommand,powershellScriptBlock)
-psExecuteCommand = \
+OSabsPath = $(call OSPath,$(abspath $1))
+
+PowerShell ?= \
   powershell \
     -NoLogo \
     -NonInteractive \
     -NoProfile \
-    -ExecutionPolicy unrestricted \
+    -ExecutionPolicy unrestricted
+
+# $(call psExecuteCommand,powershellScriptBlock)
+psExecuteCommand = \
+  $(PowerShell) \
     -Command "\
       Set-Variable -Name ErrorActionPreference -Value Stop; \
       & { $(1) }"
