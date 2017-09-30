@@ -42,7 +42,11 @@ STAMPSRCDIR :=
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
 STAMPINCDIR := ../inc
-STAMPINCFILES := $(wildcard $(STAMPINCDIR)/*.ps)
+
+$(eval $(call copyfile, $(STAMPINCDIR)/cp1251.ps, $(CP1251TARGET)))
+$(eval $(call copyfile, $(STAMPINCDIR)/cp1253.ps, $(CP1253TARGET)))
+
+STAMPINCFILES := $(wildcard $(STAMPINCDIR)/*.ps) $(STAMPINCDIR)/cp1251.ps $(STAMPINCDIR)/cp1253.ps
 
 STAMPFONTDIR := ../../fonts
 STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)/*.pt3)
