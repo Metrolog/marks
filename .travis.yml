@@ -11,6 +11,7 @@ addons:
     packages:
     - make
     - ghostscript
+    - powershell
 
 script:
   - make
