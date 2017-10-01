@@ -5,7 +5,7 @@ language: csharp
 os:
   - linux
 
-before_script:
+install:
   - sudo apt-get update -y
   - sudo apt-get install -y curl wget apt-transport-https
   - curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
