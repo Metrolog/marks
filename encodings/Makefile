@@ -15,10 +15,21 @@ AGLFNFILE ?= $(call OSabsPath,agl-aglfn/aglfn.txt)
 
 # download unicode mappings
 
+PowerShell2 ?= \
+  powershell
+
+# $(call psExecuteCommand2,powershellScriptBlock)
+psExecuteCommand2 = \
+  $(PowerShell2) \
+    -Command "\
+      Set-Variable -Name ErrorActionPreference -Value Stop; \
+      & { $(1) }"
+
+
 $(AUXDIR)/MAPPINGS/%.TXT:
 	$(info Download file "$(@F)"...)
 	$(MAKETARGETDIR)
-	$(call psExecuteCommand, \
+	$(call psExecuteCommand2, \
     "Congratulations! PowerShell is installed at $PSHOME"; \
     Invoke-WebRequest \
       -Uri 'http://www.unicode.org/Public/MAPPINGS/$*.TXT' \
