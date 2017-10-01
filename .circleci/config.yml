@@ -18,6 +18,7 @@ jobs:
             sudo apt-get install -y libunwind8 libicu52 wget
             wget https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-alpha.9/powershell_6.0.0-alpha.9-1ubuntu1.14.04.1_amd64.deb
             sudo dpkg -i powershell_6.0.0-alpha.9-1ubuntu1.14.04.1_amd64.deb
+            powershell -noprofile -c '"Congratulations! PowerShell is installed at $PSHOME"'
 
       - run:
           name: Build
