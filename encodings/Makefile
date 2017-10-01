@@ -30,7 +30,6 @@ $(AUXDIR)/MAPPINGS/%.TXT:
 	$(info Download file "$(@F)"...)
 	$(MAKETARGETDIR)
 	$(call psExecuteCommand2, \
-    "Congratulations! PowerShell is installed at $PSHOME"; \
     Invoke-WebRequest \
       -Uri 'http://www.unicode.org/Public/MAPPINGS/$*.TXT' \
       -OutFile '$@' \
