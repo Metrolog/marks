@@ -82,12 +82,20 @@ endif
 
 OSabsPath = $(call OSPath,$(abspath $1))
 
+ifeq ($(OS),Windows_NT)
+
 PowerShell ?= \
   powershell \
     -NoLogo \
     -NonInteractive \
     -NoProfile \
     -ExecutionPolicy unrestricted
+
+else
+
+PowerShell ?= powershell
+
+endif
 
 # $(call psExecuteCommand,powershellScriptBlock)
 psExecuteCommand = \
