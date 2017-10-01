@@ -16,7 +16,7 @@ AGLFNFILE ?= $(call OSabsPath,agl-aglfn/aglfn.txt)
 # download unicode mappings
 
 $(AUXDIR)/MAPPINGS/%.TXT:
-	$(info Download file "$(@D)"...)
+	$(info Download file "$(@F)"...)
 	$(MAKETARGETDIR)
 	$(call psExecuteCommand, \
     Invoke-WebRequest \
