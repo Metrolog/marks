@@ -14,7 +14,7 @@ jobs:
           name: Install tools
           command: |
             export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true
-            dpkg --configure -a --force-confdef --force-confold
+            dpkg --configure -a --force-confdef --force-confold --force-yes
             sudo apt-get update
             sudo apt-get install curl wget make ghostscript
             bash <(curl -fsSL https://raw.githubusercontent.com/PowerShell/PowerShell/master/tools/download.sh)
