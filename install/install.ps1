@@ -82,10 +82,21 @@ $null = (
     | Set-PackageSource -Trusted `
 );
 
+[String] $choco;
+
 if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     $null = Install-Package -Name chocolatey -MinimumVersion 0.9.10.3 -ProviderName Chocolatey;
-    
-    & choco install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    $choco = Join-Path `
+        -Path (
+            Join-Path `
+                -Path ( [Environment]::GetEnvironmentVariable( 'ChocolateyInstall', [System.EnvironmentVariableTarget]::Machine ) ) `
+                -ChildPath 'bin' `
+        ) `
+        -ChildPath 'choco.exe' `
+    ;
+
+
+    & $choco install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     $env:CygWin = Get-ItemPropertyValue `
         -Path HKLM:\SOFTWARE\Cygwin\setup `
         -Name rootdir `
@@ -93,7 +104,7 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     Write-Verbose "CygWin root directory: $env:CygWin";
     $ToPath += "$env:CygWin\bin";
 
-    #& choco install make mkdir touch zip ttfautohint --source cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    #& $choco install make mkdir touch --source cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     # исправляем проблемы совместимости chocolatey, cyg-get и cygwin
     If ( Test-Path "$env:CygWin\cygwinsetup.exe" ) {
         $cygwinsetup = "$env:CygWin\cygwinsetup.exe";
@@ -137,7 +148,7 @@ $null = (
     | Set-PackageSource -Trusted `
 );
 
-& choco install Ghostscript --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+& $choco install Ghostscript --confirm --failonstderr | Out-String -Stream | Write-Verbose;
 $ToPath += Split-Path `
     -LiteralPath (
         (
@@ -150,9 +161,8 @@ $ToPath += Split-Path `
 ;
 
 if ( $GUI ) {
-    & choco install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-    & choco install notepadplusplus --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-    & choco install gsview --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    & $choco install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    & $choco install notepadplusplus --confirm --failonstderr | Out-String -Stream | Write-Verbose;
 };
 
 Write-Verbose 'Preparing PATH environment variable...';
