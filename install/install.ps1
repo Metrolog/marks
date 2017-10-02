@@ -86,16 +86,17 @@ $null = (
 
 if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     $null = Install-Package -Name chocolatey -MinimumVersion 0.9.10.3 -ProviderName Chocolatey;
-    $choco = Join-Path `
-        -Path (
-            Join-Path `
-                -Path ( [Environment]::GetEnvironmentVariable( 'ChocolateyInstall', [System.EnvironmentVariableTarget]::Machine ) ) `
-                -ChildPath 'bin' `
-        ) `
-        -ChildPath 'choco.exe' `
-    ;
+};
+$choco = Join-Path `
+    -Path (
+        Join-Path `
+            -Path ( [Environment]::GetEnvironmentVariable( 'ChocolateyInstall', [System.EnvironmentVariableTarget]::Machine ) ) `
+            -ChildPath 'bin' `
+    ) `
+    -ChildPath 'choco.exe' `
+;
 
-
+if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     & $choco install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     $env:CygWin = Get-ItemPropertyValue `
         -Path HKLM:\SOFTWARE\Cygwin\setup `
