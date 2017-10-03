@@ -67,27 +67,12 @@ switch ( $env:PROCESSOR_ARCHITECTURE ) {
 };
 $ToPath = @();
 
-Import-Module -Name PackageManagement;
-
-$null = Install-PackageProvider -Name NuGet -Force;
-$null = Import-PackageProvider -Name NuGet -Force;
-$null = (
-    Get-PackageSource -ProviderName NuGet `
-    | Set-PackageSource -Trusted `
-);
-$null = Install-PackageProvider -Name Chocolatey -Force;
-$null = Import-PackageProvider -Name Chocolatey -Force;
-$null = (
-    Get-PackageSource -ProviderName Chocolatey `
-    | Set-PackageSource -Trusted `
-);
-
-[String] $choco;
+[String] $chocoExe;
 
 if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
-    $null = Install-Package -Name chocolatey -MinimumVersion 0.9.10.3 -ProviderName Chocolatey;
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'));
 };
-$choco = Join-Path `
+$chocoExe = Join-Path `
     -Path (
         Join-Path `
             -Path ( [Environment]::GetEnvironmentVariable( 'ChocolateyInstall', [System.EnvironmentVariableTarget]::Machine ) ) `
@@ -97,7 +82,7 @@ $choco = Join-Path `
 ;
 
 if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
-    & $choco install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    & $chocoExe install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     $env:CygWin = Get-ItemPropertyValue `
         -Path HKLM:\SOFTWARE\Cygwin\setup `
         -Name rootdir `
@@ -105,7 +90,7 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     Write-Verbose "CygWin root directory: $env:CygWin";
     $ToPath += "$env:CygWin\bin";
 
-    #& $choco install make mkdir touch --source cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    #& $chocoExe install make mkdir touch --source cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     # исправляем проблемы совместимости chocolatey, cyg-get и cygwin
     If ( Test-Path "$env:CygWin\cygwinsetup.exe" ) {
         $cygwinsetup = "$env:CygWin\cygwinsetup.exe";
@@ -143,13 +128,7 @@ $env:CygWin = Get-ItemPropertyValue `
 Write-Verbose "CygWin root directory: $env:CygWin";
 $ToPath += "$env:CygWin\bin";
 
-$null = Import-PackageProvider -Name Chocolatey -Force;
-$null = (
-    Get-PackageSource -ProviderName Chocolatey `
-    | Set-PackageSource -Trusted `
-);
-
-& $choco install Ghostscript --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+& $chocoExe install Ghostscript --confirm --failonstderr | Out-String -Stream | Write-Verbose;
 $ToPath += Split-Path `
     -LiteralPath (
         (
@@ -162,8 +141,8 @@ $ToPath += Split-Path `
 ;
 
 if ( $GUI ) {
-    & $choco install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-    & $choco install notepadplusplus --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    & $chocoExe install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    & $chocoExe install notepadplusplus --confirm --failonstderr | Out-String -Stream | Write-Verbose;
 };
 
 Write-Verbose 'Preparing PATH environment variable...';
