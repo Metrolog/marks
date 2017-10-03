@@ -1,1 +1,1 @@
-powershell -NoProfile -ExecutionPolicy unrestricted -File install.ps1 -GUI -ErrorAction Stop -Verbose
+powershell -NoProfile -ExecutionPolicy unrestricted -File "%~dp0/install.ps1" -GUI -ErrorAction Stop -Verbose

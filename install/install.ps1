@@ -20,6 +20,12 @@ param (
     # По умолчанию устанавливаются только средства для командной строки.
     [Switch]
     $GUI
+,
+    # Для какой области выполняются действия.
+    # Все необходимые средства устанавливаются на машину (Machine),
+    # переменные окружения необходимо изменить для пользователя (User).
+    [System.EnvironmentVariableTarget]
+    $Scope = ( [System.EnvironmentVariableTarget]::Machine )
 )
 
 Function Execute-ExternalInstaller {
@@ -41,22 +47,24 @@ Function Execute-ExternalInstaller {
     $pinfo.RedirectStandardOutput = $true;
     $pinfo.UseShellExecute = $false;
     $pinfo.Arguments = $ArgumentList;
-    $p = [System.Diagnostics.Process]::new();
-    try {
-        $p.StartInfo = $pinfo;
-        $p.Start() | Out-Null;
-        $p.WaitForExit();
-        $LASTEXITCODE = $p.ExitCode;
-        $p.StandardOutput.ReadToEnd() `
-        | Write-Verbose `
-        ;
-        if ( $p.ExitCode -ne 0 ) {
-            $p.StandardError.ReadToEnd() `
-            | Write-Error `
+    if ($PSCmdLet.ShouldProcess($LiteralPath, 'Запустить')) {
+        $p = [System.Diagnostics.Process]::new();
+        try {
+            $p.StartInfo = $pinfo;
+            $p.Start() | Out-Null;
+            $p.WaitForExit();
+            $LASTEXITCODE = $p.ExitCode;
+            $p.StandardOutput.ReadToEnd() `
+            | Write-Verbose `
             ;
+            if ( $p.ExitCode -ne 0 ) {
+                $p.StandardError.ReadToEnd() `
+                | Write-Error `
+                ;
+            };
+        } finally {
+            $p.Close();
         };
-    } finally {
-        $p.Close();
     };
 }
 
@@ -70,7 +78,12 @@ $ToPath = @();
 [String] $chocoExe;
 
 if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
-    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'));
+    if (
+        ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
+        -and $PSCmdLet.ShouldProcess('chocolatey', 'Установить')
+    ) {
+        iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'));
+    };
 };
 $chocoExe = Join-Path `
     -Path (
@@ -82,11 +95,17 @@ $chocoExe = Join-Path `
 ;
 
 if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
-    & $chocoExe install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    if (
+        ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
+        -and $PSCmdLet.ShouldProcess('cygwin', 'Установить')
+    ) {
+        & $chocoExe install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    };
     $env:CygWin = Get-ItemPropertyValue `
         -Path HKLM:\SOFTWARE\Cygwin\setup `
         -Name rootdir `
     ;
+
     Write-Verbose "CygWin root directory: $env:CygWin";
     $ToPath += "$env:CygWin\bin";
 
@@ -107,17 +126,18 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     };
     Write-Verbose "CygWin setup: $cygwinsetup";
     if ($PSCmdLet.ShouldProcess('CygWin', 'Установить переменную окружения')) {
-        [System.Environment]::SetEnvironmentVariable( 'CygWin', $env:CygWin, [System.EnvironmentVariableTarget]::Machine );
+        [System.Environment]::SetEnvironmentVariable( 'CygWin', $env:CygWin, $Scope );
     };
     $ToPath += "$env:CygWin\bin";
 
-    Write-Verbose 'Install CygWin tools...';
-    if ($PSCmdLet.ShouldProcess('make, mkdir, touch', 'Установить пакет CygWin')) {
+    if (
+        ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
+        -and $PSCmdLet.ShouldProcess('Пакеты CygWin make, mkdir, touch', 'Установить')
+    ) {
         Execute-ExternalInstaller `
             -LiteralPath $cygwinsetup `
             -ArgumentList '--packages make,mkdir,touch --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
         ;
-
     };
 };
 
@@ -128,7 +148,12 @@ $env:CygWin = Get-ItemPropertyValue `
 Write-Verbose "CygWin root directory: $env:CygWin";
 $ToPath += "$env:CygWin\bin";
 
-& $chocoExe install Ghostscript --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+if (
+    ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
+    -and $PSCmdLet.ShouldProcess('GhostScript', 'Установить')
+) {
+    & $chocoExe install Ghostscript --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+};
 $ToPath += Split-Path `
     -LiteralPath (
         (
@@ -141,21 +166,31 @@ $ToPath += Split-Path `
 ;
 
 if ( $GUI ) {
-    & $chocoExe install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-    & $chocoExe install notepadplusplus --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    if (
+        ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
+        -and $PSCmdLet.ShouldProcess('SourceTree', 'Установить')
+    ) {
+        & $chocoExe install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    };
+    if (
+        ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
+        -and $PSCmdLet.ShouldProcess('Notepad++', 'Установить')
+    ) {
+        & $chocoExe install notepadplusplus --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+    };
 };
 
-Write-Verbose 'Preparing PATH environment variable...';
+$Path = `
+    ( `
+        ( ( [Environment]::GetEnvironmentVariable( 'PATH', [System.EnvironmentVariableTarget]::Process ) ) -split ';' ) `
+        + $ToPath `
+        | Sort-Object -Unique `
+    ) `
+;
+Write-Verbose 'Path variable:';
+$Path | % { Write-Verbose "    $_" };
+
 if ($PSCmdLet.ShouldProcess('PATH', 'Установить переменную окружения')) {
-    $Path = `
-        ( `
-            ( ( [Environment]::GetEnvironmentVariable( 'PATH', [System.EnvironmentVariableTarget]::Process ) ) -split ';' ) `
-            + $ToPath `
-            | Sort-Object -Unique `
-        ) `
-    ;
-    Write-Verbose 'Path variable:';
-    $Path | % { Write-Verbose "    $_" };
     $env:Path = $Path -join ';';
     [System.Environment]::SetEnvironmentVariable( 'PATH', $env:Path, [System.EnvironmentVariableTarget]::User );
 };
