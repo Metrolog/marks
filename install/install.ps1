@@ -12,7 +12,7 @@
 [CmdletBinding(
     SupportsShouldProcess = $true
     , ConfirmImpact = 'Medium'
-    , HelpUri = 'https://github.com/Metrolog/marks'
+#    , HelpUri = 'https://github.com/Metrolog/marks'
 )]
  
 param (
