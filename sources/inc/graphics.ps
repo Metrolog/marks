@@ -8,11 +8,9 @@
 
 /stringheight
 {
-  gsave
-    newpath
-    0 0 moveto
-    false charpath pathbbox exch pop sub exch pop
-  grestore
+  string_BBox
+  size_of_BBox
+  exch pop
 } bind def
 
 /string_center_bottom
@@ -27,7 +25,7 @@
 {
   dup
     dup stringwidth pop 2 div neg
-    exch stringheight 2 div
+    exch stringheight 2 div neg
   rmoveto
 } bind def
 
@@ -35,7 +33,7 @@
 {
   dup
     0
-    exch stringheight 2 div
+    exch stringheight 2 div neg
   rmoveto
 } bind def
 
@@ -43,7 +41,7 @@
 {
   dup
     dup stringwidth pop neg
-    exch stringheight 2 div
+    exch stringheight 2 div neg
   rmoveto
 } bind def
 

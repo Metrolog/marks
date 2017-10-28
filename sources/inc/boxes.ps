@@ -16,7 +16,7 @@
 }
 def
 
-/size_of_BBox % [ x1 x2 y1 y2 ] --> x2-x1  y2-y1
+/size_of_BBox % [ x1 y1 x2 y2 ] --> x2-x1  y2-y1
 {
   dup type  /arraytype  eq  { aload pop } if
   exch  3 1 roll
@@ -26,7 +26,7 @@ def
   exch
 } bind def
 
-/size_of_BBox_def % /sizeX /sizeY [ x1 x2 y1 y2 ] --> - ; /sizeX = x2-x1; /sizeY = y2-y1;
+/size_of_BBox_def % /sizeX /sizeY [ x1 y1 x2 y2 ] --> - ; /sizeX = x2-x1; /sizeY = y2-y1;
 {
   size_of_BBox
   3 -1 roll exch def
@@ -39,6 +39,15 @@ def
     newpath
     0 0 moveto
     uappend flattenpath pathbbox
+  grestore
+} bind def
+
+/string_BBox % string --> x1 y1 x2 y2
+{
+  gsave
+    newpath
+    0 0 moveto
+    false charpath pathbbox
   grestore
 } bind def
 
