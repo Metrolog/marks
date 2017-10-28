@@ -93,7 +93,7 @@ PowerShell ?= \
 
 else
 
-PowerShell ?= powershell
+PowerShell ?= pwsh
 
 endif
 
