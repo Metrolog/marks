@@ -15,33 +15,33 @@
 
 /string_center_bottom
 {
-  dup
-    stringwidth pop  2 div  neg
-    0
+  dup string_BBox
+    exch  4 -1 roll  sub  2 div  neg
+    3 1 roll  pop  neg
   rmoveto
 } bind def
 
 /string_center_middle
 {
-  dup
-    dup stringwidth pop 2 div neg
-    exch stringheight 2 div neg
+  dup string_BBox
+    exch  4 -1 roll  sub  2 div  neg
+    3 1 roll  add  2 div  neg
   rmoveto
 } bind def
 
 /string_left_middle
 {
-  dup
-    0
-    exch stringheight 2 div neg
+  dup string_BBox
+    exch  4 -1 roll  exch pop  neg
+    3 1 roll  add  2 div  neg
   rmoveto
 } bind def
 
 /string_right_middle
 {
-  dup
-    dup stringwidth pop neg
-    exch stringheight 2 div neg
+  dup string_BBox
+    exch  4 -1 roll  pop  neg
+    3 1 roll  add  2 div  neg
   rmoveto
 } bind def
 
