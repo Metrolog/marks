@@ -175,13 +175,6 @@ grestore
     string_center_bottom
   true charpath
 
-  % индивидуальный знак поверителя
-  matrix currentmatrix
-  0 0 moveto
-  1 1 scale
-  verification_stamp_sign stamp_sign_upath uappend
-  setmatrix
-  
   % год
   (stamp_year) findfont
   verification_stamp_year_h_size scalefont setfont
@@ -190,16 +183,30 @@ grestore
         dup length 2 sub
         1
       getinterval
+      dup
     string_left_middle
   true charpath
+  string_BBox size_of_BBox pop
   7.0 0 moveto
         verification_stamp_year 4 string cvs
         dup length 1 sub
         1
       getinterval
+      dup
     string_right_middle 
   true charpath
-
+  string_BBox size_of_BBox pop  neg
+  
+    add  2 div
+  % индивидуальный знак поверителя
+  matrix currentmatrix
+      exch
+      0
+    translate
+    1 1 scale
+    verification_stamp_sign stamp_sign_upath uappend
+  setmatrix
+  
     verification_stamp_period () eq
     {
       % знак СТ
