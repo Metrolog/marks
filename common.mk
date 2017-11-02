@@ -80,7 +80,7 @@ else
   OSPath = $1
 endif
 
-OSabsPath = $(call OSPath,$(abspath $1))
+OSabsPath = $(abspath $(call OSPath,$1))
 
 ifeq ($(OS),Windows_NT)
 
