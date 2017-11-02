@@ -178,22 +178,30 @@ grestore
   % год
   (stamp_year) findfont
   verification_stamp_year_h_size scalefont setfont
-  -7.0 0 moveto
+  % -7.0 0 moveto
+  % -4.0 0 moveto
+  -5.5 0 moveto
         verification_stamp_year 4 string cvs
         dup length 2 sub
         1
       getinterval
       dup
-    string_left_middle
+    % string_left_middle
+    % string_right_middle 
+    string_center_middle
   true charpath
   string_BBox size_of_BBox pop
-  7.0 0 moveto
+  % 7.0 0 moveto
+  % 4.0 0 moveto
+  5.5 0 moveto
         verification_stamp_year 4 string cvs
         dup length 1 sub
         1
       getinterval
       dup
-    string_right_middle 
+    % string_right_middle 
+    % string_left_middle
+    string_center_middle
   true charpath
   string_BBox size_of_BBox pop  neg
   
@@ -202,7 +210,7 @@ grestore
   matrix currentmatrix
       exch
       0
-    translate
+    pop pop % translate
     1 1 scale
     verification_stamp_sign stamp_sign_upath uappend
   setmatrix
