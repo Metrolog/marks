@@ -309,19 +309,23 @@ grestore
   % год
   (stamp_year) findfont
   6 scalefont setfont
-  -4 0 moveto
+  % -4 0 moveto
+  -5.5 0 moveto
         stamp_year 4 string cvs
         dup length 2 sub
         1
       getinterval
-    string_right_middle 
+    % string_right_middle 
+    string_center_middle
   true charpath
-  4 0 moveto
+  % 4 0 moveto
+  5.5 0 moveto
         stamp_year 4 string cvs
         dup length 1 sub
         1
       getinterval
-    string_left_middle 
+    % string_left_middle 
+    string_center_middle
   true charpath
 
   % период
