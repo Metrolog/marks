@@ -7,6 +7,8 @@
 Генератор оттисков поверительных и калибровочных клейм
 ======================================================
 
+[![Join the chat at https://gitter.im/Metrolog/marks](https://badges.gitter.im/Metrolog/marks.svg)](https://gitter.im/Metrolog/marks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Данный проект - библиотека [PostScript][] функций и примеры сценариев для генерациии
 цифрового негатива для производства полимерных клише для поверительных и
 калибровочных клейм.
