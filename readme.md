@@ -1,11 +1,13 @@
+Генератор оттисков поверительных и калибровочных клейм
+======================================================
+
 [![Build status](https://ci.appveyor.com/api/projects/status/ng2qyleq6jqm1ko0/branch/master?svg=true)](https://ci.appveyor.com/project/sergey-s-betke/marks/branch/master)
 [![Build status](https://travis-ci.org/Metrolog/marks.svg?branch=master)](https://travis-ci.org/Metrolog/marks)
 [![Build status](https://circleci.com/gh/Metrolog/marks/tree/master.svg?&style=shield&circle-token=7e53954cd6f7704d6897c3f8b21502e6d0e920d7)](https://circleci.com/gh/Metrolog/marks)
 
 [![GitHub release](https://img.shields.io/github/release/Metrolog/marks.svg)](https://github.com/Metrolog/marks/releases)
-
-Генератор оттисков поверительных и калибровочных клейм
-======================================================
+ 
+[![Присоединиться к обсуждению на https://gitter.im/Metrolog/marks](https://badges.gitter.im/Metrolog/marks.svg)](https://gitter.im/Metrolog/marks?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Данный проект - библиотека [PostScript][] функций и примеры сценариев для генерациии
 цифрового негатива для производства полимерных клише для поверительных и
