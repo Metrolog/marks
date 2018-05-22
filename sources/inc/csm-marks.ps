@@ -259,14 +259,6 @@ grestore
 % генераци€ рисунка поверительного клейма дл€ государственных научных метрологических
 % институтов
 
-% знак √мц
-%gsave
-%  (stamp_id) findfont
-%  1 scalefont  setfont
-%  (√мц) 0 stamp_sign_upath_helper
-%  /uGMC exch cvlit def
-%grestore
-
 /gmc_verification_stamp_path % диаметр знак_поверител€ (шифр клейма) (период) год --> -
 {
   6 dict begin
@@ -290,12 +282,6 @@ grestore
   0 0  18 2 div 0.5 sub  360 0 arcn  closepath
 
   % знак √мц
-%  matrix currentmatrix
-%    0 -7.5 moveto
-%    currentpoint translate
-%    verification_stamp_id_h_size verification_stamp_id_h_size scale
-%    uGMC uappend
-%  setmatrix
   (stamp_gmc) findfont
   verification_stamp_id_h_size scalefont setfont
   0 -7.5 moveto
