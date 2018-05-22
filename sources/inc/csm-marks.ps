@@ -25,7 +25,7 @@
 {
   { int_to_roman } forall
 } bind def
-% [ 1 4 range ]  quarters == 
+% [ 1 4 range ]  quarters ==
 
 /year % --> ()
 {
@@ -67,6 +67,18 @@ dup length dict begin
   currentdict
 end
 (stamp_id) exch definefont pop
+
+(GOST2930-62forMarks) findfont
+dup length dict begin
+  { 1 index /FID ne
+    {def}
+    {pop pop}
+    ifelse
+  } forall
+  /Encoding CP1251Encoding def
+  currentdict
+end
+(stamp_gmc) exch definefont pop
 
 (GOST2930-62forMarks) findfont
 (stamp_period) exch definefont pop
@@ -112,7 +124,7 @@ gsave
     [ 0 180 90 270 ]
     {
       /angle exch def
-      
+
       (stamp_sign_cyr) findfont
       sign_scale scalefont setfont
         stamp_signs_cyr
@@ -166,7 +178,7 @@ grestore
   0 0  18 2 div  0 360 arc  closepath
   18 2 div 0.5 sub  0  moveto
   0 0  18 2 div 0.5 sub  360 0 arcn  closepath
-  
+
   % шифр поверительного клейма организации
   (stamp_id) findfont
   verification_stamp_id_h_size scalefont setfont
@@ -178,33 +190,25 @@ grestore
   % год
   (stamp_year) findfont
   verification_stamp_year_h_size scalefont setfont
-  % -7.0 0 moveto
-  % -4.0 0 moveto
   -5.5 0 moveto
         verification_stamp_year 4 string cvs
         dup length 2 sub
         1
       getinterval
       dup
-    % string_left_middle
-    % string_right_middle 
     string_center_middle
   true charpath
   string_BBox size_of_BBox pop
-  % 7.0 0 moveto
-  % 4.0 0 moveto
   5.5 0 moveto
         verification_stamp_year 4 string cvs
         dup length 1 sub
         1
       getinterval
       dup
-    % string_right_middle 
-    % string_left_middle
     string_center_middle
   true charpath
   string_BBox size_of_BBox pop  neg
-  
+
     add  2 div
   % индивидуальный знак поверителя
   matrix currentmatrix
@@ -214,7 +218,7 @@ grestore
     1 1 scale
     verification_stamp_sign stamp_sign_upath uappend
   setmatrix
-  
+
     verification_stamp_period () eq
     {
       % знак СТ
@@ -239,7 +243,7 @@ grestore
       ust uappend
     }
   ifelse
-  
+
   % восстановливаем систему координат
   setmatrix
 
@@ -252,12 +256,132 @@ grestore
   false path_as_upath
 } def
 
+% генерация рисунка поверительного клейма для государственных научных метрологических
+% институтов
+
+% знак Гмц
+%gsave
+%  (stamp_id) findfont
+%  1 scalefont  setfont
+%  (Гмц) 0 stamp_sign_upath_helper
+%  /uGMC exch cvlit def
+%grestore
+
+/gmc_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год --> -
+{
+  6 dict begin
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+  /scale_k size 18 div def % рассчитаем коэффициент для последующего масштабирования
+
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  currentpoint translate
+  scale_k scale_k scale
+  9 9 translate
+
+  % окружность
+  18 2 div  0  moveto
+  0 0  18 2 div  0 360 arc  closepath
+  18 2 div 0.5 sub  0  moveto
+  0 0  18 2 div 0.5 sub  360 0 arcn  closepath
+
+  % знак Гмц
+%  matrix currentmatrix
+%    0 -7.5 moveto
+%    currentpoint translate
+%    verification_stamp_id_h_size verification_stamp_id_h_size scale
+%    uGMC uappend
+%  setmatrix
+  (stamp_gmc) findfont
+  verification_stamp_id_h_size scalefont setfont
+  0 -7.5 moveto
+    (Гмц)
+    string_center_bottom
+  true charpath
+
+  % год
+  (stamp_year) findfont
+  verification_stamp_year_h_size scalefont setfont
+  -5.5 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 2 sub
+        1
+      getinterval
+      dup
+    string_center_middle
+  true charpath
+  string_BBox size_of_BBox pop
+  5.5 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 1 sub
+        1
+      getinterval
+      dup
+    string_center_middle
+  true charpath
+  string_BBox size_of_BBox pop  neg
+
+    add  2 div
+  % шифр поверительного клейма
+  matrix currentmatrix
+      exch
+      0
+    pop pop % translate
+    1 1 scale
+    (stamp_id) findfont
+    verification_stamp_id_h_size scalefont setfont
+    0 0 moveto
+      verification_stamp_id
+      string_center_middle
+    true charpath
+  setmatrix
+
+    verification_stamp_period () eq
+    {
+      % знак СТ
+      0 5.5 moveto
+      currentpoint translate
+      3 3 scale
+      ust uappend
+    }
+    {
+      % период
+      (stamp_period) findfont
+      verification_stamp_period_h_size scalefont setfont
+      -2.0 5.5 moveto
+        verification_stamp_period
+        string_center_middle
+      true charpath
+
+      % знак СТ
+      2.5 5.5 moveto
+      currentpoint translate
+      3 3 scale
+      ust uappend
+    }
+  ifelse
+
+  % восстановливаем систему координат
+  setmatrix
+
+  end
+} bind def
+
+/gmc_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год --> user path
+{
+  /gmc_verification_stamp_path
+  false path_as_upath
+} def
+
 % знак калибровки
 gsave
   (stamp_K) findfont
   1 scalefont  setfont
-  (K) 0 /stamp_sign_path_helper
-  true path_as_upath
+  (K) 0 stamp_sign_upath_helper
   /uK exch cvlit def
 grestore
 
@@ -289,7 +413,7 @@ grestore
   17 0 rlineto
   0 -17 rlineto
   closepath
-  
+
   % шифр клейма организации
   (stamp_id) findfont
   4 scalefont setfont
@@ -305,7 +429,7 @@ grestore
     3 4 div  dup  scale
     stamp_sign stamp_sign_upath uappend
   setmatrix
-  
+
   % год
   (stamp_year) findfont
   6 scalefont setfont
@@ -315,7 +439,7 @@ grestore
         dup length 2 sub
         1
       getinterval
-    % string_right_middle 
+    % string_right_middle
     string_center_middle
   true charpath
   % 4 0 moveto
@@ -324,7 +448,7 @@ grestore
         dup length 1 sub
         1
       getinterval
-    % string_left_middle 
+    % string_left_middle
     string_center_middle
   true charpath
 
@@ -341,7 +465,7 @@ grestore
   currentpoint translate
   6 6 scale
   uK uappend
-  
+
   % восстановливаем систему координат
   setmatrix
 
@@ -370,7 +494,7 @@ grestore
     ifelse
     {
       /verification_stamp_current_period exch def
-      
+
           verification_stamp_sign type /arraytype eq
           { verification_stamp_sign }
           { [ verification_stamp_sign ] }
@@ -387,7 +511,7 @@ grestore
       forall
     }
   forall
-  
+
   end
 } def
 
