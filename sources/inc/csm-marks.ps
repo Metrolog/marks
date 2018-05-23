@@ -157,6 +157,8 @@ grestore
 /verification_stamp_year_h_size  6.0 mm  800 1000 div  div  1 mm div  def
 /verification_stamp_period_h_size  3 mm  800 1000 div  div  1 mm div  def
 /verification_stamp_rst_size  verification_stamp_period_h_size  def
+/verification_stamp_h_size  18.0 mm  1 mm  div  def
+/verification_stamp_thickness  0.5 mm  1 mm  div  def
 
 % генерация рисунка поверительного клейма
 /csm_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
@@ -177,10 +179,10 @@ grestore
   9 9 translate
 
   % окружность
-  18 2 div  0  moveto
-  0 0  18 2 div  0 360 arc  closepath
-  18 2 div 0.5 sub  0  moveto
-  0 0  18 2 div 0.5 sub  360 0 arcn  closepath
+  verification_stamp_h_size 2 div  0  moveto
+  0 0  verification_stamp_h_size 2 div  0 360 arc  closepath
+  verification_stamp_h_size 2 div verification_stamp_thickness sub  0  moveto
+  0 0  verification_stamp_h_size 2 div verification_stamp_thickness sub  360 0 arcn  closepath
 
   % шифр поверительного клейма организации
   (stamp_id) findfont
@@ -378,7 +380,7 @@ grestore
 /verification_stamp_rect_rst_size  verification_stamp_rect_period_h_size  def
 /verification_stamp_rect_h_size  18.0 mm  1 mm  div  def
 /verification_stamp_rect_v_size  12.0 mm  1 mm  div  def
-/verification_stamp_rect_thickness  0.5 mm  1 mm  div  def
+/verification_stamp_rect_thickness  verification_stamp_thickness  def
 
 /ul_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
