@@ -157,9 +157,10 @@ grestore
 /verification_stamp_period_h_size  3 mm  800 1000 div  div  1 mm div  def
 
 % генерация рисунка поверительного клейма
-/csm_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год --> -
+/csm_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
-  6 dict begin
+  7 dict begin
+  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
   /size exch def % размер клейма
   /verification_stamp_sign exch def % индивидуальный знак поверителя
   /verification_stamp_id exch def % шифр поверительного клейма
@@ -250,7 +251,7 @@ grestore
   end
 } bind def
 
-/csm_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год --> user path
+/csm_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
   /csm_verification_stamp_path
   false path_as_upath
@@ -259,9 +260,10 @@ grestore
 % генерация рисунка поверительного клейма для государственных научных метрологических
 % институтов
 
-/gmc_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год --> -
+/gmc_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
-  6 dict begin
+  7 dict begin
+  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
   /size exch def % размер клейма
   /verification_stamp_sign exch def % индивидуальный знак поверителя
   /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
@@ -357,16 +359,16 @@ grestore
   end
 } bind def
 
-/gmc_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год --> user path
+/gmc_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
   /gmc_verification_stamp_path
   false path_as_upath
 } def
 
 % генерация рисунка поверительного клейма
-/verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год --> -
+/verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
-  2 index length  % verification_stamp_id length
+  3 index length  % verification_stamp_id length
     dup  1 eq
     { pop  gmc_verification_stamp_path }
     {
@@ -377,7 +379,7 @@ grestore
           %   { pop  csm_verification_stamp_path }
           %   {
               pop
-              pop pop pop pop pop
+              pop pop pop pop pop pop
               (Error: stamp Id length must be less than or equal to 3.) =
               stop
           %   }
@@ -388,7 +390,7 @@ grestore
   ifelse
 } bind def
 
-/verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год --> user path
+/verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
   /verification_stamp_path
   false path_as_upath
@@ -404,9 +406,10 @@ gsave
 grestore
 
 % генерация рисунка калибровочного клейма
-/calibration_stamp_path % размер знак_поверителя (шифр клейма) (период) год --> user path
+/calibration_stamp_path % размер знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
   6 dict begin
+  /stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
   /size exch def % размер клейма
   /stamp_sign exch def % индивидуальный знак поверителя
   /stamp_id exch def % шифр клейма
@@ -490,16 +493,17 @@ grestore
   end
 } bind def
 
-/calibration_stamp_upath % размер знак_поверителя (шифр клейма) (период) год --> user path
+/calibration_stamp_upath % размер знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
   /calibration_stamp_path
   false path_as_upath
 } def
 
-/create_stamps % год [массив периодов] (шифр клейма) [массив знаков поверителей] размер функция_генерации  --> выполнение функции генерации для всех заданных клейм
+/create_stamps % год [массив периодов] (шифр клейма) [массив знаков поверителей] размер при_выпуске_из_производства функция_генерации  --> выполнение функции генерации для всех заданных клейм
 {
-  8 dict begin
+  9 dict begin
   /stamp_functor exch def
+  /stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
   /size exch def % размер клейма
   /verification_stamp_sign exch def % индивидуальный знак поверителя
   /verification_stamp_id exch def % шифр поверительного клейма
@@ -524,6 +528,7 @@ grestore
             verification_stamp_id
             verification_stamp_current_sign
             size
+            stamp_for_production
           stamp_functor load exec
         }
       forall

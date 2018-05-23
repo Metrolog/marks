@@ -37,10 +37,11 @@ gsave
   [
       2017
       % [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
-      [ [ 3 ] quarters ]
-      (СП)
-      [ 1 256 range ]
-      18.0 mm
+      [ [ 3 ] quarters ]     % периоды
+      (СП)                   % шифр поверительного клейма
+      [ 1 256 range ]        % диапазон знаков поверителей
+      18.0 mm                % размер клейма
+      false                  % поверка в эксплуатации или после ремонта
       /verification_stamp_upath
     create_stamps
       2017
@@ -49,6 +50,7 @@ gsave
       (СП)
       [ 1 ]
       18.0 mm
+      true                   % при выпуске из производства
       /calibration_stamp_upath
     create_stamps
   ]
