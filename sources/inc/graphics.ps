@@ -85,4 +85,92 @@
   end
 } def
 
+% рисование рамки
+/centered_frame % ширина высота толщина радиус_углов --> -
+{
+  9 dict begin
+  /radius exch def % радиус скругления углов
+  /thickness exch def % толщина рамки
+  /size_v exch def % высота рамки
+  /size_h exch def % ширина рамки
+
+  /size_h_2_ext  size_h 2 div  def
+  /size_v_2_ext  size_v 2 div  def
+  /radius_ext  radius thickness add  def
+  /size_h_2  size_h_2_ext thickness sub  def
+  /size_v_2  size_v_2_ext thickness sub  def
+
+    radius 0 eq
+    {
+      size_h_2_ext neg  size_v_2_ext neg  moveto
+      size_h  0  rlineto
+      0  size_v  rlineto
+      size_h neg  0  rlineto
+      closepath
+      thickness dup  rmoveto
+      0  size_v thickness 2 mul sub  rlineto
+      size_h thickness 2 mul sub  0  rlineto
+      0  size_v thickness 2 mul sub neg  rlineto
+      closepath
+    }
+    {
+      size_h_2_ext neg  0  moveto
+        size_h_2_ext neg
+        size_v_2_ext neg
+        0
+        size_v_2_ext neg
+        radius_ext
+      arct
+        size_h_2_ext
+        size_v_2_ext neg
+        size_h_2_ext
+        0
+        radius_ext
+      arct
+        size_h_2_ext
+        size_v_2_ext
+        0
+        size_v_2_ext
+        radius_ext
+      arct
+        size_h_2_ext neg
+        size_v_2_ext
+        size_h_2_ext neg
+        0
+        radius_ext
+      arct
+      closepath
+
+      size_h_2 neg  0  moveto
+        size_h_2 neg
+        size_v_2
+        0
+        size_v_2
+        radius
+      arct
+        size_h_2
+        size_v_2
+        size_h_2
+        0
+        radius
+      arct
+        size_h_2
+        size_v_2 neg
+        0
+        size_v_2 neg
+        radius
+      arct
+        size_h_2 neg
+        size_v_2 neg
+        size_h_2 neg
+        0
+        radius
+      arct
+      closepath
+    }
+  ifelse
+
+  end
+} bind def
+
 %%EOF
