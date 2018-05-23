@@ -120,7 +120,7 @@ gsave
 
 /stamp_signs_upaths [
   2 dict begin
-  /sign_scale 5  800 1000 div  div  def
+  /sign_scale 1  800 1000 div  div  def
     [ 0 180 90 270 ]
     {
       /angle exch def
@@ -153,8 +153,10 @@ grestore
 } def
 
 /verification_stamp_id_h_size  3.8 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_sing_h_size  4.0 mm  800 1000 div  div  1 mm div  def
 /verification_stamp_year_h_size  6.0 mm  800 1000 div  div  1 mm div  def
 /verification_stamp_period_h_size  3 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rst_size  verification_stamp_period_h_size  def
 
 % генерация рисунка поверительного клейма
 /csm_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
@@ -216,7 +218,7 @@ grestore
       exch
       0
     pop pop % translate
-    1 1 scale
+    verification_stamp_sing_h_size dup scale
     verification_stamp_sign stamp_sign_upath uappend
   setmatrix
 
@@ -225,7 +227,7 @@ grestore
       % знак СТ
       0 5.5 moveto
       currentpoint translate
-      3 3 scale
+      verification_stamp_rst_size dup scale
       ust uappend
     }
     {
@@ -240,7 +242,7 @@ grestore
       % знак СТ
       2.5 5.5 moveto
       currentpoint translate
-      3 3 scale
+      verification_stamp_rst_size dup scale
       ust uappend
     }
   ifelse
@@ -333,7 +335,7 @@ grestore
       % знак СТ
       0 5.5 moveto
       currentpoint translate
-      3 3 scale
+      verification_stamp_rst_size dup scale
       ust uappend
     }
     {
@@ -348,7 +350,7 @@ grestore
       % знак СТ
       2.5 5.5 moveto
       currentpoint translate
-      3 3 scale
+      verification_stamp_rst_size dup scale
       ust uappend
     }
   ifelse
@@ -365,6 +367,219 @@ grestore
   false path_as_upath
 } def
 
+
+
+% генерация рисунка поверительного клейма для юридических лиц и индивидуальных предпринимателей
+
+/verification_stamp_rect_id_h_size  2.5 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rect_sing_h_size  2.25 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rect_year_h_size  5.0 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rect_period_h_size  2 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rect_rst_size  verification_stamp_rect_period_h_size  def
+/verification_stamp_rect_h_size  18.0 mm  1 mm  div  def
+/verification_stamp_rect_v_size  12.0 mm  1 mm  div  def
+/verification_stamp_rect_thickness  0.5 mm  1 mm  div  def
+
+/ul_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
+{
+  7 dict begin
+  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+  /scale_k size verification_stamp_rect_h_size div def % рассчитаем коэффициент для последующего масштабирования
+
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  currentpoint translate
+  scale_k scale_k scale
+
+    verification_stamp_for_production
+    {
+        verification_stamp_rect_h_size 2 div
+        verification_stamp_rect_v_size 2 div
+      translate
+
+      % прямоугольник
+      verification_stamp_rect_h_size 2 div neg  verification_stamp_rect_v_size 2 div neg  moveto
+      verification_stamp_rect_h_size  0  rlineto
+      0  verification_stamp_rect_v_size  rlineto
+      verification_stamp_rect_h_size neg  0  rlineto
+      closepath
+      verification_stamp_rect_thickness  verification_stamp_rect_thickness  rmoveto
+      0  verification_stamp_rect_v_size verification_stamp_rect_thickness 2 mul sub  rlineto
+      verification_stamp_rect_h_size verification_stamp_rect_thickness 2 mul sub  0  rlineto
+      0  verification_stamp_rect_v_size verification_stamp_rect_thickness 2 mul sub neg  rlineto
+      closepath
+
+      % индивидуальный знак поверителя
+      matrix currentmatrix
+        0 -3.5 translate
+        verification_stamp_rect_sing_h_size dup scale
+        verification_stamp_sign stamp_sign_upath uappend
+      setmatrix
+
+      % год
+      (stamp_year) findfont
+      verification_stamp_rect_year_h_size scalefont setfont
+      -6.0 0 moveto
+            verification_stamp_year 4 string cvs
+            dup length 2 sub
+            1
+          getinterval
+          dup
+        string_center_middle
+      true charpath
+      string_BBox size_of_BBox pop
+      6.0 0 moveto
+            verification_stamp_year 4 string cvs
+            dup length 1 sub
+            1
+          getinterval
+          dup
+        string_center_middle
+      true charpath
+      string_BBox size_of_BBox pop  neg
+
+        add  2 div
+      % шифр поверительного клейма
+      matrix currentmatrix
+          exch
+          0
+        pop pop % translate
+        1 1 scale
+        (stamp_id) findfont
+        verification_stamp_rect_id_h_size scalefont setfont
+        0 0 moveto
+          verification_stamp_id
+          string_center_middle
+        true charpath
+      setmatrix
+
+        verification_stamp_period () eq
+        {
+          % знак СТ
+          0 3.5 moveto
+          currentpoint translate
+          verification_stamp_rect_rst_size dup scale
+          ust uappend
+        }
+        {
+          % период
+          (stamp_period) findfont
+          verification_stamp_rect_period_h_size scalefont setfont
+          -2.0 3.5 moveto
+            verification_stamp_period
+            string_center_middle
+          true charpath
+
+          % знак СТ
+          2.5 3.5 moveto
+          currentpoint translate
+          verification_stamp_rect_rst_size dup scale
+          ust uappend
+        }
+      ifelse
+    }
+    {
+        verification_stamp_rect_h_size 2 div
+        verification_stamp_rect_h_size 2 div
+      translate
+
+      % прямоугольник
+      verification_stamp_rect_h_size 2 div neg  verification_stamp_rect_h_size 2 div neg  moveto
+      verification_stamp_rect_h_size  0  rlineto
+      0  verification_stamp_rect_h_size  rlineto
+      verification_stamp_rect_h_size neg  0  rlineto
+      closepath
+      verification_stamp_rect_thickness  verification_stamp_rect_thickness  rmoveto
+      0  verification_stamp_rect_h_size verification_stamp_rect_thickness 2 mul sub  rlineto
+      verification_stamp_rect_h_size verification_stamp_rect_thickness 2 mul sub  0  rlineto
+      0  verification_stamp_rect_h_size verification_stamp_rect_thickness 2 mul sub neg  rlineto
+      closepath
+
+      % шифр поверительного клейма организации
+      (stamp_id) findfont
+      verification_stamp_id_h_size scalefont setfont
+      0 -7.5 moveto
+        verification_stamp_id
+        string_center_bottom
+      true charpath
+
+      % год
+      (stamp_year) findfont
+      verification_stamp_year_h_size scalefont setfont
+      -5.5 0 moveto
+            verification_stamp_year 4 string cvs
+            dup length 2 sub
+            1
+          getinterval
+          dup
+        string_center_middle
+      true charpath
+      string_BBox size_of_BBox pop
+      5.5 0 moveto
+            verification_stamp_year 4 string cvs
+            dup length 1 sub
+            1
+          getinterval
+          dup
+        string_center_middle
+      true charpath
+      string_BBox size_of_BBox pop  neg
+
+        add  2 div
+      % индивидуальный знак поверителя
+      matrix currentmatrix
+          exch
+          0
+        pop pop % translate
+        verification_stamp_sing_h_size dup scale
+        verification_stamp_sign stamp_sign_upath uappend
+      setmatrix
+
+        verification_stamp_period () eq
+        {
+          % знак СТ
+          0 5.5 moveto
+          currentpoint translate
+          3 3 scale
+          ust uappend
+        }
+        {
+          % период
+          (stamp_period) findfont
+          verification_stamp_period_h_size scalefont setfont
+          -2.0 5.5 moveto
+            verification_stamp_period
+            string_center_middle
+          true charpath
+
+          % знак СТ
+          2.5 5.5 moveto
+          currentpoint translate
+          3 3 scale
+          ust uappend
+        }
+      ifelse
+    }
+  ifelse
+
+  % восстановливаем систему координат
+  setmatrix
+
+  end
+} bind def
+
+/ul_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
+{
+  /ul_verification_stamp_path
+  false path_as_upath
+} def
+
+
 % генерация рисунка поверительного клейма
 /verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
@@ -375,15 +590,15 @@ grestore
         dup  2 eq
         { pop  csm_verification_stamp_path }
         {
-          %   dup  3 eq
-          %   { pop  csm_verification_stamp_path }
-          %   {
+            dup  3 eq
+            { pop  ul_verification_stamp_path }
+            {
               pop
               pop pop pop pop pop pop
               (Error: stamp Id length must be less than or equal to 3.) =
               stop
-          %   }
-          % ifelse
+            }
+          ifelse
         }
       ifelse
     }
@@ -404,6 +619,10 @@ gsave
   (K) 0 stamp_sign_upath_helper
   /uK exch cvlit def
 grestore
+
+/calibration_stamp_period_h_size  verification_stamp_period_h_size  def
+/calibration_stamp_sing_h_size  calibration_stamp_period_h_size  def
+/calibration_stamp_K_h_size  6 mm  1 mm  div  def
 
 % генерация рисунка калибровочного клейма
 /calibration_stamp_path % размер знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
@@ -447,7 +666,7 @@ grestore
   matrix currentmatrix
     2.5 5.5 moveto
     currentpoint translate
-    3 4 div  dup  scale
+    calibration_stamp_sing_h_size  dup  scale
     stamp_sign stamp_sign_upath uappend
   setmatrix
 
@@ -475,7 +694,7 @@ grestore
 
   % период
   (stamp_period) findfont
-  3 scalefont setfont
+  calibration_stamp_period_h_size scalefont setfont
   -2.5 5.5 moveto
     stamp_period
     string_center_middle
@@ -484,7 +703,7 @@ grestore
   % знак калибровки
   0 0 moveto
   currentpoint translate
-  6 6 scale
+  calibration_stamp_K_h_size dup scale
   uK uappend
 
   % восстановливаем систему координат
