@@ -201,29 +201,25 @@ grestore
         dup length 2 sub
         1
       getinterval
-      dup
     string_center_middle
   true charpath
-  string_BBox size_of_BBox pop
   5.5 0 moveto
         verification_stamp_year 4 string cvs
         dup length 1 sub
         1
       getinterval
-      dup
     string_center_middle
   true charpath
-  string_BBox size_of_BBox pop  neg
 
-    add  2 div
   % индивидуальный знак поверителя
-  matrix currentmatrix
-      exch
-      0
-    pop pop % translate
-    verification_stamp_sing_h_size dup scale
-    verification_stamp_sign stamp_sign_upath uappend
-  setmatrix
+    verification_stamp_sign 0 ne
+    {
+      matrix currentmatrix
+        verification_stamp_sing_h_size dup scale
+        verification_stamp_sign stamp_sign_upath uappend
+      setmatrix
+    }
+  if
 
     verification_stamp_period () eq
     {
@@ -413,11 +409,15 @@ grestore
       centered_frame
 
       % индивидуальный знак поверителя
-      matrix currentmatrix
-        0 -3.5 translate
-        verification_stamp_rect_sing_h_size dup scale
-        verification_stamp_sign stamp_sign_upath uappend
-      setmatrix
+        verification_stamp_sign 0 ne
+        {
+          matrix currentmatrix
+            0 -3.5 translate
+            verification_stamp_rect_sing_h_size dup scale
+            verification_stamp_sign stamp_sign_upath uappend
+          setmatrix
+        }
+      if
 
       % год
       (stamp_year) findfont
@@ -509,29 +509,25 @@ grestore
             dup length 2 sub
             1
           getinterval
-          dup
         string_center_middle
       true charpath
-      string_BBox size_of_BBox pop
       5.5 0 moveto
             verification_stamp_year 4 string cvs
             dup length 1 sub
             1
           getinterval
-          dup
         string_center_middle
       true charpath
-      string_BBox size_of_BBox pop  neg
 
-        add  2 div
       % индивидуальный знак поверителя
-      matrix currentmatrix
-          exch
-          0
-        pop pop % translate
-        verification_stamp_sing_h_size dup scale
-        verification_stamp_sign stamp_sign_upath uappend
-      setmatrix
+        verification_stamp_sign 0 ne
+        {
+          matrix currentmatrix
+            verification_stamp_sing_h_size dup scale
+            verification_stamp_sign stamp_sign_upath uappend
+          setmatrix
+        }
+      if
 
         verification_stamp_period () eq
         {
@@ -653,12 +649,16 @@ grestore
   true charpath
 
   % индивидуальный знак поверителя
-  matrix currentmatrix
-    2.5 5.5 moveto
-    currentpoint translate
-    calibration_stamp_sing_h_size  dup  scale
-    stamp_sign stamp_sign_upath uappend
-  setmatrix
+    stamp_sign 0 ne
+    {
+      matrix currentmatrix
+        2.5 5.5 moveto
+        currentpoint translate
+        calibration_stamp_sing_h_size  dup  scale
+        stamp_sign stamp_sign_upath uappend
+      setmatrix
+    }
+  if
 
   % год
   (stamp_year) findfont
