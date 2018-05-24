@@ -31,4 +31,4 @@ jobs:
           command: make
 
       - store_artifacts:
-          path: sources/stamps/release/test.pdf
+        #  path: sources/stamps/release/test.pdf
