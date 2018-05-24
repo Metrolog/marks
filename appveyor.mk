@@ -10,7 +10,14 @@ ifeq ($(APPVEYOR),True)
 APPVEYORTOOL ?= appveyor
 
 # $(call pushDeploymentArtifactFile, DeploymentName, Path)
-pushDeploymentArtifactFile = for file in $2; do $(APPVEYORTOOL) PushArtifact $$file -DeploymentName '$(1)'; done
+# pushDeploymentArtifactFile = for file in $2; do $(APPVEYORTOOL) PushArtifact $$file -DeploymentName '$(1)'; done
+
+pushDeploymentArtifactFile = \
+  $(foreach file,$2,$(call psExecuteCommand,\
+    Push-AppveyorArtifact \
+      '$file' \
+      -DeploymentName '$(1)' \
+  ))
 
 pushDeploymentArtifact = $(call pushDeploymentArtifactFile,$@,$^)
 
