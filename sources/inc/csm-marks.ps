@@ -427,26 +427,18 @@ grestore
             dup length 2 sub
             1
           getinterval
-          dup
         string_center_middle
       true charpath
-      string_BBox size_of_BBox pop
       6.0 0 moveto
             verification_stamp_year 4 string cvs
             dup length 1 sub
             1
           getinterval
-          dup
         string_center_middle
       true charpath
-      string_BBox size_of_BBox pop  neg
 
-        add  2 div
       % шифр поверительного клейма
       matrix currentmatrix
-          exch
-          0
-        pop pop % translate
         1 1 scale
         (stamp_id) findfont
         verification_stamp_rect_id_h_size scalefont setfont
@@ -565,6 +557,104 @@ grestore
 /ul_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
   /ul_verification_stamp_path
+  false path_as_upath
+} def
+
+
+% генерация рисунка поверительного клейма стального ударного (ромбовидного)
+
+/verification_stamp_rhombus_h_size  18.0 mm  1 mm  div  def
+/verification_stamp_rhombus_radius  verification_stamp_rhombus_h_size  4 div  def
+/verification_stamp_rhombus_thickness  verification_stamp_thickness  def
+/verification_stamp_rhombus_rst_size  5.0 mm  1 mm div  def
+/verification_stamp_rhombus_id_h_size  2.5 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rhombus_sing_h_size  4.0 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rhombus_year_h_size  verification_stamp_year_h_size  def
+
+/verification_stamp_rhombus_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
+{
+  7 dict begin
+  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+  /scale_k size verification_stamp_rhombus_h_size div def % рассчитаем коэффициент для последующего масштабирования
+
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  currentpoint translate
+  scale_k scale_k scale
+  45 rotate
+
+  verification_stamp_rhombus_h_size 2 div  dup  translate
+
+  % рамка
+  matrix currentmatrix
+    45 rotate
+      verification_stamp_rhombus_h_size
+      dup
+      verification_stamp_rhombus_thickness
+      verification_stamp_rhombus_radius
+    centered_frame
+  setmatrix
+
+  % индивидуальный знак поверителя
+    verification_stamp_sign 0 ne
+    {
+      matrix currentmatrix
+        0 6.0 translate
+        verification_stamp_rhombus_sing_h_size dup scale
+        verification_stamp_sign stamp_sign_upath uappend
+      setmatrix
+    }
+  if
+
+  % год
+  (stamp_year) findfont
+  verification_stamp_rhombus_year_h_size scalefont setfont
+  -6.0 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 2 sub
+        1
+      getinterval
+    string_center_middle
+  true charpath
+  6.0 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 1 sub
+        1
+      getinterval
+    string_center_middle
+  true charpath
+
+  % шифр поверительного клейма
+  matrix currentmatrix
+    1 1 scale
+    (stamp_id) findfont
+    verification_stamp_rhombus_id_h_size scalefont setfont
+    0 0 moveto
+      verification_stamp_id
+      string_center_middle
+    true charpath
+  setmatrix
+
+  % знак СТ
+  0 -6.0 moveto
+  currentpoint translate
+  verification_stamp_rhombus_rst_size dup scale
+  ust uappend
+
+  % восстановливаем систему координат
+  setmatrix
+
+  end
+} bind def
+
+/verification_stamp_rhombus_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
+{
+  /verification_stamp_rhombus_path
   false path_as_upath
 } def
 

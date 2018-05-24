@@ -1,0 +1,129 @@
+%!PS-Adobe-2.0
+%%Creator: Sergei S. Betke
+%%Title: CSM makrs
+%%Pages: 1
+%%PageOrder: Ascend
+%%EndComments
+
+(lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
+
+(distiller.ps) require_once
+(si.ps) require_once
+(csm-marks.ps) require_once
+
+%%BeginSetup
+%%EndSetup
+
+%%Page: A 1
+%%BeginSetup
+%%BeginFeature: *PageSize A5
+<<
+  % /HWResolution [2400 2400]
+  % /PageSize [ 210 mm  297 2 div mm ]
+  % /ImagingBBox [ 5 mm  5 mm  210 5 sub mm  297 2 div 5 sub mm ]
+  /PageSize [ 297 2 div mm  210 mm ]
+  /ImagingBBox [ 5 mm  8 mm  297 2 div 5 sub mm  210 5 sub mm ]
+  /MirrorPrint false
+  /NegativePrint true
+>> setpagedevice
+%%EndFeature
+%%EndSetup
+
+gsave
+
+%------------------------------------------------------------------------------
+% тестируем генерацию знака поверки для государственных научных метрологических
+% институтов
+%
+% для подготовки оттисков править код ниже !!!
+%------------------------------------------------------------------------------
+  [
+      2002
+      [ year ]
+      (МШ)
+      [ 1 ]
+      6.0 mm
+      true
+      /verification_stamp_upath
+    create_stamps
+      2002
+      [ year ]
+      (МШ)
+      [ 1 ]
+      8.0 mm
+      true
+      /verification_stamp_upath
+    create_stamps
+      2002
+      [ year ]
+      (МШ)
+      [ 1 ]
+      12.0 mm
+      true
+      /verification_stamp_upath
+    create_stamps
+
+      2002
+      [ year ]
+      (МШ)
+      [ 0 ]
+      3.0 mm
+      true
+      /verification_stamp_upath
+    create_stamps
+      2002
+      [ year ]
+      (МШ)
+      [ 0 ]
+      3.5 mm
+      true
+      /verification_stamp_upath
+    create_stamps
+
+      2002
+      [ [ 4 ] months ]
+      (МШ)
+      [ 1 ]
+      8.0 mm
+      true
+      /verification_stamp_upath
+    create_stamps
+      2002
+      [ [ 4 ] months ]
+      (МШ)
+      [ 1 ]
+      12.0 mm
+      true
+      /verification_stamp_upath
+    create_stamps
+      2002
+      [ [ 4 ] months ]
+      (МШ)
+      [ 1 ]
+      18.0 mm
+      true
+      /verification_stamp_upath
+    create_stamps
+
+      2002
+      [ year ]
+      (МШ)
+      [ 1 ]
+      6.0 mm
+      true
+      /verification_stamp_rhombus_upath
+    create_stamps
+  ]
+  GetPageBBox
+  2 mm
+align_upaths_in_BBox
+
+%------------------------------------------------------------------------------
+% конец области для кода генерации оттисков
+%------------------------------------------------------------------------------
+
+grestore
+
+showpage
+
+%%EOF
