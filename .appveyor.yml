@@ -1,9 +1,12 @@
-image: WMF 5
+image:
+  - WMF 5
+  - Ubuntu
+
 version: 1.0.0 (Build {build})
 
 install:
-  - cmd: GitVersion /output buildserver
+  - GitVersion /output buildserver
   - ps: .\install\install.ps1 -ErrorAction Stop -InformationAction Continue -Verbose
 
 build_script:
-  - cmd: make
+  - make
