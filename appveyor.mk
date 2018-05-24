@@ -14,7 +14,7 @@ APPVEYORTOOL ?= appveyor
 
 pushDeploymentArtifactFile = \
   $(call psExecuteCommand,\
-    '$(2)' -split ' ' | Resolve-Path | Get-Item | % { Push-AppveyorArtifact -Path ( $$_.FullName ) -FileName ( $$_.Name ) -DeploymentName '$(1)' } \
+    '$(2)' -split ' ' | Resolve-Path | Get-Item | % { Push-AppveyorArtifact -Path $$input.FullName -FileName $$input.Name -DeploymentName '$(1)' } \
   )
 
 pushDeploymentArtifact = $(call pushDeploymentArtifactFile,$@,$^)
