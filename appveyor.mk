@@ -5,16 +5,18 @@ ITG_MAKEUTILS_DIR ?= $(MAKE_APPVEYOR_DIR)
 include $(ITG_MAKEUTILS_DIR)/common.mk
 include $(ITG_MAKEUTILS_DIR)/nuget.mk
 
-ifeq ($(APPVEYOR),True)
+ifdef APPVEYOR
 
 APPVEYORTOOL ?= appveyor
 
 # $(call pushDeploymentArtifactFile, DeploymentName, Path)
 # pushDeploymentArtifactFile = for file in $2; do $(APPVEYORTOOL) PushArtifact $$file -DeploymentName '$(1)'; done
 
+#    '$(2)' -split ' ' | Resolve-Path | Get-Item | % { Push-AppveyorArtifact -Path $$$$_.FullName -FileName $$$$_.Name -DeploymentName '$(1)' } \
+
 pushDeploymentArtifactFile = \
   $(call psExecuteCommand,\
-    '$(2)' -split ' ' | Resolve-Path | Get-Item | % { Push-AppveyorArtifact -Path $$$$_.FullName -FileName $$$$_.Name -DeploymentName '$(1)' } \
+    '$(2)' -split ' ' | Resolve-Path | Get-Item | Out-Host \
   )
 
 pushDeploymentArtifact = $(call pushDeploymentArtifactFile,$@,$^)
