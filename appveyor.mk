@@ -13,11 +13,9 @@ APPVEYORTOOL ?= appveyor
 # pushDeploymentArtifactFile = for file in $2; do $(APPVEYORTOOL) PushArtifact $$file -DeploymentName '$(1)'; done
 
 pushDeploymentArtifactFile = \
-  $(foreach file,$2,$(call psExecuteCommand,\
-    Push-AppveyorArtifact \
-      '$file' \
-      -DeploymentName '$(1)' \
-  ))
+  $(call psExecuteCommand,\
+		'$(2)' -split ' ' | % { Push-AppveyorArtifact $$_ -DeploymentName '$(1)' } \
+  )
 
 pushDeploymentArtifact = $(call pushDeploymentArtifactFile,$@,$^)
 
