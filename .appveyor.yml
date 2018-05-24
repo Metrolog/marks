@@ -7,6 +7,7 @@ version: 1.0.0 (Build {build})
 install:
   - sh: |
       sudo apt-get install -y make ghostscript
+      echo $APPVEYOR
   - ps: |
       if ( -not $isLinux ) {
         .\install\install.ps1 -ErrorAction Stop -InformationAction Continue -Verbose
