@@ -11,6 +11,8 @@ SIGNCODE ?= signcode
 SIGNCODEPWD ?= signcodepwd
 CHKTRUST ?= chktrust
 
+CODE_SIGNING_TIMESTAMP_SERVER_URL ?= http://sha256timestamp.ws.symantec.com/sha256/timestamp
+
 # $(call exportCodeSigningCertificate,filePath,password)
 define exportCodeSigningCertificate
 $1:
@@ -112,7 +114,7 @@ SIGNWITHSIGNTOOL ?= \
     /f $(CODE_SIGNING_CERTIFICATE_PFX) \
     /p $(CODE_SIGNING_CERTIFICATE_PASSWORD) \
     /v \
-    /tr http://timestamp.geotrust.com/tsa \
+    /tr $(CODE_SIGNING_TIMESTAMP_SERVER_URL)   \
     /fd SHA1 \
     $(call winPath,$1)
 

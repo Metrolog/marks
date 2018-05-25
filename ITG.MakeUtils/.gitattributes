@@ -1,0 +1,2 @@
+*.mk         merge=text   diff=text   eol=lf
+Makefile     merge=text   diff        eol=lf
