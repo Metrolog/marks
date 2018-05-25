@@ -21,14 +21,67 @@ COMMA              :=,
 LEFT_BRACKET       :=(
 RIGHT_BRACKET      :=)
 DOLLAR_SIGN        :=$$
+
+# $(call winPath,sourcePathOrFileName)
+winPath = $(shell cygpath -w $1)
+
+# $(call shellPath,sourcePathOrFileName)
+shellPath = $(shell cygpath -u $1)
+
 ifeq ($(OS),Windows_NT)
-	PATHSEP          :=;
+  OSPath = $(call winPath,$1)
 else
-	PATHSEP          :=:
+  OSPath = $1
 endif
 
-MAKETARGETDIR      = /usr/bin/mkdir -p $(@D)
-MAKETARGETASDIR    = /usr/bin/mkdir -p $@
+OSabsPath = $(abspath $(call OSPath,$1))
+
+ifeq ($(OS),Windows_NT)
+
+PowerShell ?= \
+  powershell \
+    -NoLogo \
+    -NonInteractive \
+    -NoProfile \
+    -ExecutionPolicy unrestricted
+
+else
+
+PowerShell ?= pwsh
+
+endif
+
+# $(call psExecuteCommand,powershellScriptBlock)
+psExecuteCommand = \
+  $(PowerShell) \
+    -Command "\
+      Set-Variable -Name ErrorActionPreference -Value Stop; \
+      & { $(1) }"
+
+ifeq ($(OS),Windows_NT)
+
+SHELL              := cmd
+.SHELLFLAGS        := /c
+
+PATHSEP            :=;
+MKDIR              = \
+	$(PowerShell) \
+		-File $(call OSPath,$(MAKE_COMMON_DIR)/mkdir.ps1) \
+		-p \
+		-Verbose
+
+else
+
+SHELL              := /bin/sh
+.SHELLFLAGS        := -c
+
+PATHSEP            :=:
+MKDIR              = mkdir -p
+
+endif
+
+MAKETARGETDIR      = $(MKDIR) $(@D)
+MAKETARGETASDIR    = $(MKDIR) $@
 
 ZIP                ?= zip \
 	-o \
@@ -61,23 +114,6 @@ $1:$2
 	cd $3 && $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $3/%, %, $$^)
 	@touch $$@
 endef
-
-# $(call winPath,sourcePathOrFileName)
-winPath = $(shell cygpath -w $1)
-
-# $(call shellPath,sourcePathOrFileName)
-shellPath = $(shell cygpath -u $1)
-
-# $(call psExecuteCommand,powershellScriptBlock)
-psExecuteCommand = \
-  powershell \
-    -NoLogo \
-    -NonInteractive \
-    -NoProfile \
-    -ExecutionPolicy unrestricted \
-    -Command "\
-      Set-Variable -Name ErrorActionPreference -Value Stop; \
-      & { $(1) }"
 
 #
 # subprojects

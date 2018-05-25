@@ -1,0 +1,14 @@
+; Check http://editorconfig.org/ for more informations
+; Top-most EditorConfig file
+root = false
+
+[{Makefile,*.mk}]
+indent_style = tab
+tab_width = 2
+indent_size = 2
+charset = utf-8
+
+[*.ps1]
+indent_style = space
+indent_size = 4
+charset = utf-8
