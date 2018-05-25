@@ -22,11 +22,66 @@ LEFT_BRACKET       :=(
 RIGHT_BRACKET      :=)
 DOLLAR_SIGN        :=$$
 
+# $(call winPath,sourcePathOrFileName)
+winPath = $(shell cygpath -w $1)
+
+# $(call shellPath,sourcePathOrFileName)
+shellPath = $(shell cygpath -u $1)
+
+ifeq ($(OS),Windows_NT)
+  OSPath = $(call winPath,$1)
+else
+  OSPath = $1
+endif
+
+OSabsPath = $(abspath $(call OSPath,$1))
+
 ifeq ($(OS),Windows_NT)
 
+PowerShell ?= \
+  powershell \
+    -NoLogo \
+    -NonInteractive \
+    -NoProfile \
+    -ExecutionPolicy unrestricted
+
+else
+
+PowerShell ?= pwsh
+
+endif
+
+# $(call psExecuteCommand,powershellScriptBlock)
+psExecuteCommand = \
+  $(PowerShell) \
+    -Command "\
+      Set-Variable -Name ErrorActionPreference -Value Stop; \
+      & { $(1) }"
+
+ifeq ($(OS),Windows_NT)
+
+SHELL              := cmd
+.SHELLFLAGS        := /c
+
 PATHSEP            :=;
-MAKETARGETDIR      = /usr/bin/mkdir -p $(@D)
-MAKETARGETASDIR    = /usr/bin/mkdir -p $@
+MKDIR              = \
+	$(PowerShell) \
+		-File $(call OSPath,$(MAKE_COMMON_DIR)/mkdir.ps1) \
+		-p \
+		-Verbose
+
+else
+
+SHELL              := /bin/sh
+.SHELLFLAGS        := -c
+
+PATHSEP            :=:
+MKDIR              = mkdir -p
+
+endif
+
+MAKETARGETDIR      = $(MKDIR) $(@D)
+MAKETARGETASDIR    = $(MKDIR) $@
 
 else
 
@@ -67,42 +122,6 @@ $1:$2
 	cd $3 && $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $3/%, %, $$^)
 	@touch $$@
 endef
-
-# $(call winPath,sourcePathOrFileName)
-winPath = $(shell cygpath -w $1)
-
-# $(call shellPath,sourcePathOrFileName)
-shellPath = $(shell cygpath -u $1)
-
-ifeq ($(OS),Windows_NT)
-  OSPath = $(call winPath,$1)
-else
-  OSPath = $1
-endif
-
-OSabsPath = $(abspath $(call OSPath,$1))
-
-ifeq ($(OS),Windows_NT)
-
-PowerShell ?= \
-  powershell \
-    -NoLogo \
-    -NonInteractive \
-    -NoProfile \
-    -ExecutionPolicy unrestricted
-
-else
-
-PowerShell ?= pwsh
-
-endif
-
-# $(call psExecuteCommand,powershellScriptBlock)
-psExecuteCommand = \
-  $(PowerShell) \
-    -Command "\
-      Set-Variable -Name ErrorActionPreference -Value Stop; \
-      & { $(1) }"
 
 #
 # subprojects
