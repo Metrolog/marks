@@ -9,7 +9,7 @@ ifdef APPVEYOR
 
 APPVEYORTOOL ?= appveyor
 
-ifdef isLinux
+ifeq $(CI_LINUX),true
 
 .SHELLFLAGS := $(.SHELLFLAGS) \
     Import-Module -Name '/opt/appveyor/build-agent/AppVeyor.BuildAgent.PowerShell.dll';
