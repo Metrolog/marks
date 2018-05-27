@@ -17,7 +17,7 @@ ifeq ($(CI_LINUX),true)
 endif
 
 pushDeploymentArtifactFile = \
-  Push-AppveyorArtifact -DeploymentName '$(1)' -Path '$(2)';
+  Push-AppveyorArtifact $(VERBOSEFLAGS) -DeploymentName '$(1)' -Path '$(2)';
 
 pushDeploymentArtifactFiles = \
   $(foreach artifact,$(2), $(call pushDeploymentArtifactFile,$(1),$(call OSabsPath,$(artifact))))
