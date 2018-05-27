@@ -38,6 +38,6 @@ $(eval $(call convertCertificatePem2Spc,$(CODE_SIGNING_CERTIFICATE_SPC),$(CODE_S
 spc: $(CODE_SIGNING_CERTIFICATE_SPC)
 
 clean::
-	rm -rf $(CODE_SIGNING_CERTIFICATE_DIR)
+	$(RMDIR) $(CODE_SIGNING_CERTIFICATE_DIR)
 
 endif

@@ -15,6 +15,6 @@ $(NUGET_PACKAGES_DIR)/%: $(MAKEFILES)
     -ExcludeVersion
 
 clean::
-	rm -rf $(NUGET_PACKAGES_DIR)
+	$(RMDIR) $(NUGET_PACKAGES_DIR)
 
 endif

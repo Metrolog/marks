@@ -29,71 +29,49 @@ winPath = $(shell cygpath -w $1)
 shellPath = $(shell cygpath -u $1)
 
 ifeq ($(OS),Windows_NT)
-  OSPath = $(call winPath,$1)
-else
-  OSPath = $1
-endif
-
-OSabsPath = $(abspath $(call OSPath,$1))
-
-ifeq ($(OS),Windows_NT)
-
-PowerShell ?= \
-  powershell \
-    -NoLogo \
-    -NonInteractive \
-    -NoProfile \
-    -ExecutionPolicy unrestricted
-
-else
-
-PowerShell ?= pwsh
-
-endif
-
-# $(call psExecuteCommand,powershellScriptBlock)
-psExecuteCommand = \
-  $(PowerShell) \
-    -Command "\
-      Set-Variable -Name ErrorActionPreference -Value Stop; \
-      & { $(1) }"
-
-ifeq ($(OS),Windows_NT)
-
-SHELL              := cmd
-.SHELLFLAGS        := /c
 
 PATHSEP            :=;
-MKDIR              = \
-	$(PowerShell) \
-		-File $(call OSPath,$(MAKE_COMMON_DIR)/mkdir.ps1) \
-		-p \
-		-Verbose
+PowerShell         ?= powershell
+OSPath             = $(call winPath,$1)
 
 else
 
-SHELL              := /bin/sh
-.SHELLFLAGS        := -c
-
 PATHSEP            :=:
-MKDIR              = mkdir -p
+PowerShell         ?= pwsh
+OSPath             = $1
 
 endif
 
+OSabsPath = $(call OSPath,$(abspath $1))
+
+VERBOSE            ?= true
+
+ifeq ($(VERBOSE),true)
+  VERBOSEFLAGS := -Verbose
+else
+  VERBOSEFLAGS :=
+endif
+
+.ONESHELL::
+
+SHELL              := $(PowerShell)
+.SHELLFLAGS        := \
+  -NoLogo \
+  -NonInteractive \
+  -ExecutionPolicy unrestricted \
+  -Command \
+    $$ErrorActionPreference = 'Stop'; \
+    $$VerboseActionPreference = 'Continue'; \
+    $$DebugActionPreference = 'SilentContinue'; \
+    $$Null = Import-Module -Name $(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1);
+
+MKDIR              := mkdir $(VERBOSEFLAGS) -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
-
-else
-
-PATHSEP            :=:
-MAKETARGETDIR      = mkdir -p $(@D)
-MAKETARGETASDIR    = mkdir -p $@
-
-endif
-
-ZIP                ?= zip \
-	-o \
-	-9
+RMDIR              := rm $(VERBOSEFLAGS) -r -f
+TOUCH              := touch
+COPY               := cp $(VERBOSEFLAGS)
+ZIP                ?= zip -o -9
 TAR                ?= tar
 
 # $(call setvariable, var, value)
@@ -106,7 +84,7 @@ endef
 define copyfile
 $1: $2
 	$$(MAKETARGETDIR)
-	cp $$< $$@
+	$(COPY) $$< $$@
 endef
 
 # $(call copyfileto, todir, fromfile)
@@ -120,7 +98,7 @@ define copyFilesToZIP
 $1:$2
 	$$(MAKETARGETDIR)
 	cd $3 && $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $3/%, %, $$^)
-	@touch $$@
+	$(TOUCH) $$@
 endef
 
 #
@@ -201,7 +179,7 @@ $(call getSubProjectDir,$1)/%:
 all:: $1
 test: test-$1
 clean::
-	@$(call MAKE_SUBPROJECT,$1) clean
+	$(call MAKE_SUBPROJECT,$1) clean
 endef
 
 ifdef ROOT_PROJECT_DIR
@@ -215,7 +193,7 @@ test:
 
 .PHONY: clean
 clean::
-	rm -rf $(AUXDIR)
-	rm -rf $(OUTPUTDIR)
+	$(RMDIR) $(AUXDIR)
+	$(RMDIR) $(OUTPUTDIR)
 
 endif
