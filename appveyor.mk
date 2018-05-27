@@ -10,7 +10,7 @@ ifdef APPVEYOR
 APPVEYORTOOL ?= appveyor
 
 pushDeploymentArtifactFile = \
-  '$(2)' -split ' ' | % { Push-AppveyorArtifact -Path \$$_ -DeploymentName '$(1)' }
+  $(foreach artifact,$(2), Push-AppveyorArtifact -Path $(call OSabsPath,$artifact) -DeploymentName '$(1)')
 
 pushDeploymentArtifact = $(call pushDeploymentArtifactFile,$@,$^)
 
