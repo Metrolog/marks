@@ -63,7 +63,7 @@ SHELL              := $(PowerShell)
     $$ErrorActionPreference = 'Stop'; \
     $$VerboseActionPreference = 'Continue'; \
     $$DebugActionPreference = 'SilentContinue'; \
-    $$Null = Import-Module -Name $(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1);
+    Import-Module -Name $(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1);
 
 MKDIR              := mkdir $(VERBOSEFLAGS) -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
