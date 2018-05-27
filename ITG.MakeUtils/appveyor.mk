@@ -9,13 +9,20 @@ ifdef APPVEYOR
 
 APPVEYORTOOL ?= appveyor
 
+ifdef isLinux
+
 .SHELLFLAGS := $(.SHELLFLAGS) \
     Import-Module -Name '/opt/appveyor/build-agent/AppVeyor.BuildAgent.PowerShell.dll';
 
-pushDeploymentArtifactFile = \
-  $(foreach artifact,$(2), Push-AppveyorArtifact -Path $(call OSabsPath,$artifact) -DeploymentName '$(1)')
+endif
 
-pushDeploymentArtifact = $(call pushDeploymentArtifactFile,$@,$^)
+pushDeploymentArtifactFile = \
+  Push-AppveyorArtifact -DeploymentName '$(1)' -Path '$(2)';
+
+pushDeploymentArtifactFiles = \
+  $(foreach artifact,$(2), $(call pushDeploymentArtifactFile,$(1),$(call OSabsPath,$artifact)))
+
+pushDeploymentArtifact = $(call pushDeploymentArtifactFiles,$@,$^)
 
 # $(call testPlatformSetStatus,testId,status,duration)
 testPlatformSetStatus = echo Test \"$1\" $2$(if $3, in $3 ms).
