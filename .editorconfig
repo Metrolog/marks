@@ -17,16 +17,19 @@ indent_size = 2
 [*.md]
 indent_style = space
 indent_size = 2
+end_of_line = lf
 
 [{LICENSE,NOTICE}]
 indent_style = space
 indent_size = 2
+end_of_line = lf
 
 [{Makefile,*.mk}]
 indent_style = tab
 tab_width = 2
 indent_size = 2
 charset = utf-8
+end_of_line = lf
 
 [*.{cmd,bat}]
 indent_style = space
@@ -39,6 +42,6 @@ indent_size = 2
 charset = latin1
 
 [*.ps1]
-indent_style = space
+indent_style = tab
 indent_size = 4
 charset = utf-8
