@@ -100,3 +100,7 @@ Function Remove-FileOrDirectory {
 New-Alias -Name rm -Value Remove-FileOrDirectory -Option AllScope -Scope Global -Force;
 
 Export-ModuleMember -Function Remove-FileOrDirectory -Alias rm;
+
+New-Alias -Name cp -Value Copy-Item -Option AllScope -Scope Global -Force;
+
+Export-ModuleMember -Alias cp;
