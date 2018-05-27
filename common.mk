@@ -60,9 +60,11 @@ SHELL              := $(PowerShell)
   -NonInteractive \
   -ExecutionPolicy unrestricted \
   -Command \
+    $$ConfirmPreference = 'High'; \
+    $$InformationPreference = 'Continue'; \
     $$ErrorActionPreference = 'Stop'; \
-    $$VerboseActionPreference = 'Continue'; \
-    $$DebugActionPreference = 'SilentContinue'; \
+    $$VerbosePreference = 'Continue'; \
+    $$DebugPreference = 'SilentContinue'; \
     Import-Module -Name $(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1);
 
 MKDIR              := mkdir $(VERBOSEFLAGS) -p
