@@ -20,7 +20,7 @@ pushDeploymentArtifactFile = \
   Push-AppveyorArtifact -DeploymentName '$(1)' -Path '$(2)';
 
 pushDeploymentArtifactFiles = \
-  $(foreach artifact,$(2), $(call pushDeploymentArtifactFile,$(1),$(call OSabsPath,$artifact)))
+  $(foreach artifact,$(2), $(call pushDeploymentArtifactFile,$(1),$(call OSabsPath,$(artifact))))
 
 pushDeploymentArtifact = $(call pushDeploymentArtifactFiles,$@,$^)
 
