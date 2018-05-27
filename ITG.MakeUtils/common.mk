@@ -64,10 +64,11 @@ SHELL              := $(PowerShell)
     $$InformationPreference = 'Continue'; \
     $$ErrorActionPreference = 'Stop'; \
     $$VerbosePreference = 'Continue'; \
-    $$DebugPreference = 'SilentContinue'; \
+    $$DebugPreference = 'SilentlyContinue'; \
     Import-Module -Name $(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1);
 
-MKDIR              := mkdir $(VERBOSEFLAGS) -p
+#MKDIR              := mkdir $(VERBOSEFLAGS) -p
+MKDIR              := New-Directory $(VERBOSEFLAGS) -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
 RMDIR              := rm $(VERBOSEFLAGS) -r -f
