@@ -9,6 +9,9 @@ ifdef APPVEYOR
 
 APPVEYORTOOL ?= appveyor
 
+.SHELLFLAGS := $(.SHELLFLAGS) \
+    Import-Module -Name '/opt/appveyor/build-agent/AppVeyor.BuildAgent.PowerShell.dll';
+
 pushDeploymentArtifactFile = \
   $(foreach artifact,$(2), Push-AppveyorArtifact -Path $(call OSabsPath,$artifact) -DeploymentName '$(1)')
 
