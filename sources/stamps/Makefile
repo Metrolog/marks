@@ -15,22 +15,22 @@ include $(ITG_MAKEUTILS_DIR)/appveyor.mk
 ifeq ($(OS),Windows_NT)
 
 GS                 ?= gswin64c \
-	-dSAFER \
-	-dNOPAUSE \
-	-dBATCH \
-	-sDEVICE=pdfwrite \
-	-dNOPLATFONTS
+  -dSAFER \
+  -dNOPAUSE \
+  -dBATCH \
+  -sDEVICE=pdfwrite \
+  -dNOPLATFONTS
 
 PDFVIEWER          ?= start
 
 else
 
 GS                 ?= gs \
-	-dSAFER \
-	-dNOPAUSE \
-	-dBATCH \
-	-sDEVICE=pdfwrite \
-	-dNOPLATFONTS
+  -dSAFER \
+  -dNOPAUSE \
+  -dBATCH \
+  -sDEVICE=pdfwrite \
+  -dNOPLATFONTS
 
 PDFVIEWER          ?= start
 
@@ -38,7 +38,7 @@ endif
 
 # postscript to PDF build system
 
-STAMPSRCDIR := 
+STAMPSRCDIR :=
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
 STAMPINCDIR := ../inc
@@ -56,11 +56,7 @@ STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURC
 $(OUTPUTDIR)/%.pdf: $(STAMPSRCDIR)%.ps $(STAMPINCFILES) $(STAMPFONTFILES)
 	$(info Build file "$@"...)
 	$(MAKETARGETDIR)
-	$(GS) \
-    -sOutputFile=$@ \
-    -I$(call OSabsPath,$(STAMPINCDIR)) \
-    -sFONTPATH=$(call OSabsPath,$(STAMPFONTDIR)) \
-    $<
+	$(GS) -sOutputFile='$@' -I'$(call OSabsPath,$(STAMPINCDIR))' -sFONTPATH='$(call OSabsPath,$(STAMPFONTDIR))' '$<'
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)

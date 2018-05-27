@@ -18,24 +18,13 @@ AGLFNFILE ?= $(call OSabsPath,agl-aglfn/aglfn.txt)
 $(AUXDIR)/MAPPINGS/%.TXT:
 	$(info Download file "$(@F)"...)
 	$(MAKETARGETDIR)
-	$(call psExecuteCommand, \
-    Invoke-WebRequest \
-      -Uri 'http://www.unicode.org/Public/MAPPINGS/$*.TXT' \
-      -OutFile '$@' \
-      -Verbose \
-    ; \
-  )
-	@touch $@
+	Invoke-WebRequest -Uri "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -OutFile $(call OSPath,$@) $(VERBOSEFLAGS)
+	$(TOUCH) $@
 
 $(OUTPUTDIR)/%.ps:
 	$(info Create PostScript encoding file "$(@F)" from "$<"...)
 	$(MAKETARGETDIR)
-	$(PowerShell) \
-    -File New-PostscriptEncodingTable.ps1 \
-      -EncodingSourceFilePath $(call OSPath,$<) \
-      -FilePath '$@' \
-      -ErrorAction Stop \
-      -Verbose
+	./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath $(call OSPath,$<) -FilePath $(call OSPath,$@) $(VERBOSEFLAGS)
 
 # $(call mapPSEncodingFileToSource, uri, encoding)
 define mapPSEncodingFileToSource
