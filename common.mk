@@ -63,9 +63,9 @@ SHELL              := $(PowerShell)
     $$ConfirmPreference = 'High'; \
     $$InformationPreference = 'Continue'; \
     $$ErrorActionPreference = 'Stop'; \
-    $$VerbosePreference = 'Continue'; \
+    $$VerbosePreference = 'SilentlyContinue'; \
     $$DebugPreference = 'SilentlyContinue'; \
-    Import-Module -Name $(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1);
+    Import-Module -Name $(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1) -Verbose:$$False;
 
 #MKDIR              := mkdir $(VERBOSEFLAGS) -p
 MKDIR              := New-Directory $(VERBOSEFLAGS) -p
