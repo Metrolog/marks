@@ -11,6 +11,7 @@ install:
       if ( -not $isLinux ) {
         .\install\install.ps1 -ErrorAction Stop -InformationAction Continue -Verbose
       }
+  - make --version
 
 build_script:
   - make
