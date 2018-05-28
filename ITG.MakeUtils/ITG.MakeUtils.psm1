@@ -104,3 +104,7 @@ Export-ModuleMember -Function Remove-FileOrDirectory -Alias rm;
 New-Alias -Name cp -Value Copy-Item -Option AllScope -Scope Global -Force;
 
 Export-ModuleMember -Alias cp;
+
+New-Alias -Name curl -Value Invoke-WebRequest -Option AllScope -Scope Global -Force;
+
+Export-ModuleMember -Alias curl;
