@@ -18,15 +18,16 @@ jobs:
       - run:
           name: Install tools
           command: |
-            sudo apt-get update -y
-            sudo apt-get install -y curl wget apt-transport-https
+            sudo apt-get -y update
+            sudo apt-get -y install curl wget apt-transport-https
             curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
             curl https://packages.microsoft.com/config/ubuntu/14.04/prod.list | sudo tee /etc/apt/sources.list.d/microsoft.list
-            sudo apt-get update -y
-            sudo apt-get install -y powershell
-            sudo apt-get install -y make ghostscript
-            sudo apt-get update -y
-            sudo apt-get upgrade -y make ghostscript
+            sudo apt-get -y update
+            sudo apt-get -y install powershell
+            sudo apt-get -y purge make
+            sudo apt-get -y install make
+            sudo apt-get -y install ghostscript
+            sudo apt-get -y upgrade ghostscript
             make --version
 
       - run:
