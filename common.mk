@@ -80,7 +80,6 @@ SHELL              := $(PowerShell)
     $(POWERSHELLMODULES) | Import-Module -ErrorAction 'Stop' -Verbose:$$False;
 
 MKDIR              := mkdir $(VERBOSEFLAGS) -p
-MKDIR              := New-Directory $(VERBOSEFLAGS) -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
 RMDIR              := rm $(VERBOSEFLAGS) -r -f
