@@ -2,13 +2,16 @@ version: 2
 jobs:
   build:
     docker:
-      - image: buildpack-deps:trusty
+      # - image: buildpack-deps:trusty
       # - image: ruudk/ghostscript
-      # - image: ubuntu:latest
+      - image: ubuntu:latest
+      - image: ubuntu:stable
       # - image: ubuntu:16.04
       # - image: ubuntu:14.04
-      # - image: centos:latest
-      # - image: debian:stable
+      - image: centos:latest
+      - image: centos:stable
+      - image: debian:latest
+      - image: debian:stable
 
     working_directory: ~/csm-marks
 
@@ -18,15 +21,16 @@ jobs:
       - run:
           name: Install tools
           command: |
-            sudo apt-get update -y
-            sudo apt-get install -y curl wget apt-transport-https
+            sudo apt-get -y update
+            sudo apt-get -y install curl wget apt-transport-https
             curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
             curl https://packages.microsoft.com/config/ubuntu/14.04/prod.list | sudo tee /etc/apt/sources.list.d/microsoft.list
-            sudo apt-get update -y
-            sudo apt-get install -y powershell
-            sudo apt-get install -y make ghostscript
-            sudo apt-get update -y
-            sudo apt-get upgrade -y make ghostscript
+            sudo apt-get -y update
+            sudo apt-get -y install powershell
+            sudo apt-get -y purge make
+            sudo apt-get -y install make
+            sudo apt-get -y install ghostscript
+            sudo apt-get -y upgrade ghostscript
             make --version
 
       - run:
