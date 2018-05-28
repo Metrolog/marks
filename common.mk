@@ -37,7 +37,7 @@ OSPath             = $(call winPath,$1)
 else
 
 PATHSEP            :=:
-PowerShell         := ./pwsh
+PowerShell         := /usr/local/bin/pwsh
 OSPath             = $1
 
 endif
