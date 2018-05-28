@@ -12,10 +12,9 @@ install:
   - curl https://packages.microsoft.com/config/ubuntu/14.04/prod.list | sudo tee /etc/apt/sources.list.d/microsoft.list
   - sudo apt-get -y update
   - sudo apt-get -y install powershell
+  - sudo apt-get -y install ghostscript
   - sudo apt-get -y purge make
   - sudo apt-get -y install make
-  - sudo apt-get -y install ghostscript
-  - sudo apt-get -y upgrade ghostscript
   - make --version
 
 script:
