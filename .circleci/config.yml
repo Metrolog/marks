@@ -23,7 +23,7 @@ jobs:
             apt-get -y install curl
             apt-get -y install apt-transport-https
             curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-            curl https://packages.microsoft.com/config/ubuntu/14.04/prod.list | tee /etc/apt/sources.list.d/microsoft.list
+            curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/microsoft.list
             apt-get -y update
             apt-get -y install make
             apt-get -y install powershell
