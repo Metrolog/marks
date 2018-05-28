@@ -31,13 +31,13 @@ shellPath = $(shell cygpath -u $1)
 ifeq ($(OS),Windows_NT)
 
 PATHSEP            :=;
-PowerShell         ?= powershell
+PowerShell         := powershell
 OSPath             = $(call winPath,$1)
 
 else
 
 PATHSEP            :=:
-PowerShell         ?= pwsh
+PowerShell         := ./pwsh
 OSPath             = $1
 
 endif
@@ -54,12 +54,12 @@ endif
 
 .ONESHELL::
 
-.SHELLFLAGS        :=
-
 POWERSHELLMODULES  := \
   '$(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1)'
 
-SHELL              := $(PowerShell) \
+SHELL              := $(PowerShell)
+
+.SHELLFLAGS        := \
   -NoLogo \
   -NonInteractive \
   -ExecutionPolicy unrestricted \
@@ -71,7 +71,7 @@ SHELL              := $(PowerShell) \
     $$DebugPreference = 'SilentlyContinue'; \
     $(POWERSHELLMODULES) | Import-Module -Verbose:$$False;
 
-#MKDIR              := mkdir $(VERBOSEFLAGS) -p
+MKDIR              := mkdir $(VERBOSEFLAGS) -p
 MKDIR              := New-Directory $(VERBOSEFLAGS) -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
