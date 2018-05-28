@@ -11,8 +11,8 @@ APPVEYORTOOL ?= appveyor
 
 ifeq ($(CI_LINUX),true)
 
-.SHELLFLAGS := $(.SHELLFLAGS) \
-    Import-Module -Name '/opt/appveyor/build-agent/AppVeyor.BuildAgent.PowerShell.dll' -Verbose:$$False;
+POWERSHELLMODULES  := $(POWERSHELLMODULES), \
+  '/opt/appveyor/build-agent/AppVeyor.BuildAgent.PowerShell.dll'
 
 endif
 
