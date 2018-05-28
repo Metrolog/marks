@@ -2,6 +2,14 @@ ifndef MAKE_COMMON_DIR
 MAKE_COMMON_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 export ITG_MAKEUTILS_DIR := $(realpath $(MAKE_COMMON_DIR))
 
+ifeq (,$(filter oneshell,$(.FEATURES)))
+$(error Requires make version that supports .ONESHELL feature.)
+endif
+
+ifneq (3.82,$(firstword $(sort $(MAKE_VERSION) 3.82)))
+$(error Requires make version 3.82 or higher (that supports .SHELLFLAGS).)
+endif
+
 .SECONDARY::;
 .SECONDEXPANSION::;
 .DELETE_ON_ERROR::;
