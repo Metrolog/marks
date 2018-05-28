@@ -7,8 +7,8 @@ jobs:
       - image: ubuntu:latest
       # - image: ubuntu:16.04
       # - image: ubuntu:14.04
-      - image: centos:latest
-      - image: debian:stable
+      # - image: centos:latest
+      # - image: debian:stable
 
     working_directory: ~/csm-marks
 
