@@ -85,6 +85,7 @@ MAKETARGETASDIR    = $(MKDIR) $@
 RMDIR              := rm $(VERBOSEFLAGS) -r -f
 TOUCH              := touch
 COPY               := cp $(VERBOSEFLAGS)
+CURL               := curl $(VERBOSEFLAGS)
 ZIP                ?= zip -o -9
 TAR                ?= tar
 

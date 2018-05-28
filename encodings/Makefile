@@ -18,7 +18,7 @@ AGLFNFILE ?= $(call OSabsPath,agl-aglfn/aglfn.txt)
 $(AUXDIR)/MAPPINGS/%.TXT:
 	$(info Download file "$(@F)"...)
 	$(MAKETARGETDIR)
-	Invoke-WebRequest -Uri "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -OutFile $(call OSPath,$@) $(VERBOSEFLAGS)
+	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o $(call OSPath,$@)
 	$(TOUCH) $@
 
 $(OUTPUTDIR)/%.ps:
