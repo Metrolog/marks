@@ -59,7 +59,7 @@ POWERSHELLMODULES  := \
 
 SHELL              := $(PowerShell)
 
-.SHELLFLAGS        := \
+.SHELLFLAGS        = \
   -NoLogo \
   -NonInteractive \
   -ExecutionPolicy unrestricted \
@@ -69,7 +69,7 @@ SHELL              := $(PowerShell)
     $$ErrorActionPreference = 'Stop'; \
     $$VerbosePreference = 'SilentlyContinue'; \
     $$DebugPreference = 'SilentlyContinue'; \
-    $(POWERSHELLMODULES) | Import-Module -Verbose:$$False;
+    $(POWERSHELLMODULES) | Import-Module -ErrorAction 'Stop' -Verbose:$$False;
 
 MKDIR              := mkdir $(VERBOSEFLAGS) -p
 MKDIR              := New-Directory $(VERBOSEFLAGS) -p
