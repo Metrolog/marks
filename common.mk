@@ -54,8 +54,12 @@ endif
 
 .ONESHELL::
 
-SHELL              := $(PowerShell)
-.SHELLFLAGS        := \
+.SHELLFLAGS        :=
+
+POWERSHELLMODULES  := \
+  '$(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1)'
+
+SHELL              := $(PowerShell) \
   -NoLogo \
   -NonInteractive \
   -ExecutionPolicy unrestricted \
@@ -65,7 +69,7 @@ SHELL              := $(PowerShell)
     $$ErrorActionPreference = 'Stop'; \
     $$VerbosePreference = 'SilentlyContinue'; \
     $$DebugPreference = 'SilentlyContinue'; \
-    Import-Module -Name $(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1) -Verbose:$$False;
+    $(POWERSHELLMODULES) | Import-Module -Verbose:$$False;
 
 #MKDIR              := mkdir $(VERBOSEFLAGS) -p
 MKDIR              := New-Directory $(VERBOSEFLAGS) -p
