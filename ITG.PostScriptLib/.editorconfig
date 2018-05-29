@@ -1,0 +1,41 @@
+; Check http://editorconfig.org/ for more informations
+; Top-most EditorConfig file
+
+[*]
+end_of_line = crlf
+trim_trailing_whitespace = true
+insert_final_newline = true
+charset = utf-8
+
+[*.{editorconfig,gitattributes,gitignore}]
+
+[*.yml]
+indent_style = space
+indent_size = 2
+
+[*.md]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+
+[{LICENSE,NOTICE}]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+
+[{Makefile,*.mk}]
+indent_style = tab
+tab_width = 2
+indent_size = 2
+charset = utf-8
+end_of_line = lf
+
+[*.{cmd,bat}]
+indent_style = space
+indent_size = 2
+charset = utf-8
+
+[*.ps]
+indent_style = space
+indent_size = 2
+charset = latin1

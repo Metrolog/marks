@@ -41,7 +41,7 @@ endif
 STAMPSRCDIR :=
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
-STAMPINCDIR := ../inc
+STAMPINCDIR := ../../ITG.PostScriptLib
 
 $(eval $(call copyfile, $(STAMPINCDIR)/cp1251.ps, $(CP1251TARGET)))
 $(eval $(call copyfile, $(STAMPINCDIR)/cp1253.ps, $(CP1253TARGET)))
