@@ -51,6 +51,7 @@ testPlatformWrapper = \
   fi; \
   exit $$$$EXIT_CODE;
 
+# todo: удалить это определение. В этом файле не используется.
 OPENSSL := $(call shellPath,C:\OpenSSL-Win64\bin\openssl.exe)
 
 else
