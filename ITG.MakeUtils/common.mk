@@ -108,6 +108,7 @@ copyfileto = $(call copyfile,$1/$(notdir $2),$2)
 # $(call copyfilefrom, tofile, fromdir)
 copyfilefrom = $(call copyfile,$1,$2/$(notdir $1))
 
+# todo: переписать на PowerShell. Такое соединение через && - только для Windows
 # $(call copyFilesToZIP, targetZIP, sourceFiles, sourceFilesRootDir)
 define copyFilesToZIP
 $1:$2
