@@ -14,18 +14,15 @@ include $(ITG_MAKEUTILS_DIR)/appveyor.mk
 
 ifeq ($(OS),Windows_NT)
 
-GS                 ?= gswin64c \
-  -dSAFER \
-  -dNOPAUSE \
-  -dBATCH \
-  -sDEVICE=pdfwrite \
-  -dNOPLATFONTS
-
-PDFVIEWER          ?= start
+GSTOOL             ?= gswin64c
 
 else
 
-GS                 ?= gs \
+GSTOOL             ?= gs
+
+endif
+
+GS                 := $(GSTOOL) \
   -dSAFER \
   -dNOPAUSE \
   -dBATCH \
@@ -33,22 +30,20 @@ GS                 ?= gs \
   -dNOPLATFONTS
 
 PDFVIEWER          ?= start
-
-endif
 
 # postscript to PDF build system
 
 STAMPSRCDIR :=
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
-STAMPINCDIR := ../../ITG.PostScriptLib
+STAMPINCDIR := ../ITG.PostScriptLib
 
 $(eval $(call copyfile, $(STAMPINCDIR)/cp1251.ps, $(CP1251TARGET)))
 $(eval $(call copyfile, $(STAMPINCDIR)/cp1253.ps, $(CP1253TARGET)))
 
 STAMPINCFILES := $(wildcard $(STAMPINCDIR)/*.ps) $(STAMPINCDIR)/cp1251.ps $(STAMPINCDIR)/cp1253.ps
 
-STAMPFONTDIR := ../../fonts
+STAMPFONTDIR := ../fonts
 STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)/*.pt3)
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
