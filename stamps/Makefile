@@ -8,28 +8,8 @@ all: pdf
 
 ITG_MAKEUTILS_DIR  ?= ITG.MakeUtils
 include $(ITG_MAKEUTILS_DIR)/common.mk
+include $(ITG_MAKEUTILS_DIR)/ghostscript.mk
 include $(ITG_MAKEUTILS_DIR)/appveyor.mk
-
-# tools
-
-ifeq ($(OS),Windows_NT)
-
-GSTOOL             ?= gswin64c
-
-else
-
-GSTOOL             ?= gs
-
-endif
-
-GS                 := $(GSTOOL) \
-  -dSAFER \
-  -dNOPAUSE \
-  -dBATCH \
-  -sDEVICE=pdfwrite \
-  -dNOPLATFONTS
-
-PDFVIEWER          ?= start
 
 # postscript to PDF build system
 
