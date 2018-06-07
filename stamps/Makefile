@@ -16,13 +16,14 @@ include $(ITG_MAKEUTILS_DIR)/appveyor.mk
 STAMPSRCDIR := $(SOURCESDIR)/
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
-STAMPINCDIR := ../ITG.PostScriptLib
-GSINCDIR := $(GSINCDIR) $(STAMPINCDIR)
+PSLIBDIR := ../ITG.PostScriptLib
+STAMPLIBDIR := lib
+GSINCDIR := $(GSINCDIR) $(PSLIBDIR) $(STAMPLIBDIR)
 
-$(eval $(call copyfile, $(STAMPINCDIR)/cp1251.ps, $(CP1251TARGET)))
-$(eval $(call copyfile, $(STAMPINCDIR)/cp1253.ps, $(CP1253TARGET)))
+$(eval $(call copyfile, $(STAMPLIBDIR)/cp1251.ps, $(CP1251TARGET)))
+$(eval $(call copyfile, $(STAMPLIBDIR)/cp1253.ps, $(CP1253TARGET)))
 
-STAMPINCFILES := $(wildcard $(STAMPINCDIR)/*.ps) $(STAMPINCDIR)/cp1251.ps $(STAMPINCDIR)/cp1253.ps
+STAMPINCFILES := $(wildcard $(PSLIBDIR)/*.ps) $(wildcard $(STAMPLIBDIR)/*.ps) $(STAMPLIBDIR)/cp1251.ps $(STAMPLIBDIR)/cp1253.ps
 
 STAMPFONTDIR := ../fonts
 GSFONTDIR := $(GSFONTDIR) $(STAMPFONTDIR)
