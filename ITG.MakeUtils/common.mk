@@ -117,6 +117,9 @@ $1:$2
 	$(TOUCH) $$@
 endef
 
+$(OUTPUTDIR) $(AUXDIR):
+	$(MAKETARGETASDIR)
+
 #
 # subprojects
 #

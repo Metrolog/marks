@@ -8,6 +8,7 @@ all: pdf
 
 ITG_MAKEUTILS_DIR  ?= ITG.MakeUtils
 include $(ITG_MAKEUTILS_DIR)/common.mk
+include $(ITG_MAKEUTILS_DIR)/tests.mk
 include $(ITG_MAKEUTILS_DIR)/ghostscript.mk
 include $(ITG_MAKEUTILS_DIR)/appveyor.mk
 
@@ -32,6 +33,8 @@ STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)/*.pt3)
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
 
 $(STAMPSPDFFILES): $(STAMPINCFILES) $(STAMPFONTFILES)
+
+$(eval $(call definePSBuildTests,$(STAMPINCFILES) $(STAMPFONTFILES)))
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)
