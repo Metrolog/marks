@@ -181,7 +181,7 @@
                         current_stamp
                           newpath
                           current_stamp_BBox aload pop pop pop  moveto
-                          gap neg  gap neg  rmoveto
+                          gap neg  dup  rmoveto
                           0  current_stamp_SizeY gap 2 mul add  rlineto
                           current_stamp_SizeX gap 2 mul add  0  rlineto
                           0  current_stamp_SizeY gap 2 mul add neg  rlineto
@@ -195,7 +195,7 @@
                             add 2 div
                               3 1 roll  add 2 div
                             exch
-                            current_stamp_SizeX 2 div  gap 2 div add
+                            current_stamp_SizeX 2 div % gap 2 div add
                             0
                             360
                           arc
