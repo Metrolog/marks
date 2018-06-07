@@ -13,10 +13,11 @@ include $(ITG_MAKEUTILS_DIR)/appveyor.mk
 
 # postscript to PDF build system
 
-STAMPSRCDIR :=
+STAMPSRCDIR := $(SOURCESDIR)/
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
 STAMPINCDIR := ../ITG.PostScriptLib
+GSINCDIR := $(GSINCDIR) $(STAMPINCDIR)
 
 $(eval $(call copyfile, $(STAMPINCDIR)/cp1251.ps, $(CP1251TARGET)))
 $(eval $(call copyfile, $(STAMPINCDIR)/cp1253.ps, $(CP1253TARGET)))
@@ -24,14 +25,12 @@ $(eval $(call copyfile, $(STAMPINCDIR)/cp1253.ps, $(CP1253TARGET)))
 STAMPINCFILES := $(wildcard $(STAMPINCDIR)/*.ps) $(STAMPINCDIR)/cp1251.ps $(STAMPINCDIR)/cp1253.ps
 
 STAMPFONTDIR := ../fonts
+GSFONTDIR := $(GSFONTDIR) $(STAMPFONTDIR)
 STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)/*.pt3)
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
 
-$(OUTPUTDIR)/%.pdf: $(STAMPSRCDIR)%.ps $(STAMPINCFILES) $(STAMPFONTFILES)
-	$(info Build file "$@"...)
-	$(MAKETARGETDIR)
-	$(GS) -sOutputFile='$@' -I'$(call OSabsPath,$(STAMPINCDIR))' -sFONTPATH='$(call OSabsPath,$(STAMPFONTDIR))' '$<'
+$(STAMPSPDFFILES): $(STAMPINCFILES) $(STAMPFONTFILES)
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)
