@@ -1,7 +1,7 @@
 Генератор оттисков поверительных и калибровочных клейм
 ======================================================
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ng2qyleq6jqm1ko0/branch/master?svg=true)](https://ci.appveyor.com/project/sergey-s-betke/marks/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/Metrolog/marks?branch=master&svg=true)](https://ci.appveyor.com/project/sergey-s-betke/marks/branch/master)
 [![Build status](https://circleci.com/gh/Metrolog/marks/tree/master.svg?&style=shield&circle-token=7e53954cd6f7704d6897c3f8b21502e6d0e920d7)](https://circleci.com/gh/Metrolog/marks)
 
 [![GitHub release](https://img.shields.io/github/release/Metrolog/marks.svg)](https://github.com/Metrolog/marks/releases)
