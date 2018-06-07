@@ -63,7 +63,7 @@ endif
 .ONESHELL::
 
 POWERSHELLMODULES  := \
-  '$(call OSabsPath,$(MAKE_COMMON_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1)'
+  '$(call OSabsPath,$(ITG_MAKEUTILS_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1)'
 
 SHELL              := $(PowerShell)
 
