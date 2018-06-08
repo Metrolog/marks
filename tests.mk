@@ -10,18 +10,36 @@ TESTSDIR         ?= tests
 testPlatformSetStatus = Write-Information "Test '$1' $2$(if $3, in $3)."
 
 # $(call testPlatformWrapper,testId,testScript)
+# https://stackoverflow.com/questions/8097354/how-do-i-capture-the-output-into-a-variable-from-an-external-process-in-powershe
 testPlatformWrapper = \
   $(call testPlatformSetStatus,$1,Running); \
   $$$$sw = [Diagnostics.Stopwatch]::StartNew(); \
-  $$$$Status = 'Passed'; \
+  $$$$Passed = $$$$True; \
+  $$$$testScriptOutput = ''; \
+  $$$$CurrentErrorActionPreference = $$$$ErrorActionPreference; \
+  $$$$ErrorActionPreference = 'Continue'; \
   try { \
-    $2; \
-    if ( $$$$LASTEXITCODE -ne 0 ) { throw $$$$LASTEXITCODE; } ;\
-  } catch { \
-    $$$$Status = 'Failed'; \
-  } finally { \
+    $$$$testScriptOutput = & { $2 } 2>&1; \
     $$$$sw.Stop(); \
-    $(call testPlatformSetStatus,$1,$$$$Status,$$$$($$$$sw.Elapsed)); \
+    $$$$testScriptOutput | ? { $$$$_ -is [System.Management.Automation.ErrorRecord] } | % { $$$$Passed = $$$$False; }; \
+  } catch { \
+    $$$$sw.Stop(); \
+    $$$$Passed = $$$$False; \
+  } finally { \
+    $$$$testScriptOutput \
+    | % { \
+      if ( $$$$_ -is [System.Management.Automation.ErrorRecord] ) { \
+        $$$$_; \
+      } else { \
+        Write-Information $$$$_; \
+      }; \
+    }; \
+    if ( $$$$Passed ) { \
+      $(call testPlatformSetStatus,$1,'Passed',$$$$($$$$sw.Elapsed)); \
+    } else { \
+      $(call testPlatformSetStatus,$1,'Failed',$$$$($$$$sw.Elapsed)); \
+    }; \
+    $$$$ErrorActionPreference = $$$$CurrentErrorActionPreference; \
   };
 
 # $(call defineTest,id,targetId,script,dependencies)
