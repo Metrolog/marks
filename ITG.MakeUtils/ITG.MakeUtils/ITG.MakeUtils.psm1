@@ -250,14 +250,8 @@ Function Test-UnitTest {
 			};
 		};
 		if ( $Passed ) {
-			if ( $testScriptStdOutput ) {
-				Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Passed', ($sw.Elapsed), $testScriptStdOutput;
-			} else {
-				Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Passed', ($sw.Elapsed);
-			};
+			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Passed', ($sw.Elapsed), $testScriptStdOutput;
 		} else {
-			if ( -not $testScriptStdOutput ) {	$testScriptStdOutput = '...'; };
-			if ( -not $testScriptStdError ) {	$testScriptStdError = '...'; };
 			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Failed', ($sw.Elapsed), $testScriptStdOutput, $testScriptStdError;
 		};
 		$ErrorActionPreference = $CurrentErrorActionPreference;
