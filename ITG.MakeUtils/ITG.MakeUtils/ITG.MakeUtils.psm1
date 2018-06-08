@@ -126,7 +126,7 @@ Function Set-UnitTestStatusInformation {
 		$TestId
 	,
 		[Parameter( Mandatory = $true )]
-		[ValidateSet( 'Running', 'Passed', 'Failed' )]
+		[ValidateSet( 'None', 'Running', 'Passed', 'Failed', 'Ignored', 'Skipped', 'Inconclusive', 'NotFound', 'Cancelled', 'NotRunnable')]
 		[Alias('Outcome')]
 		[String]
 		$Status
