@@ -15,3 +15,6 @@ install:
 
 build_script:
   - make
+
+test_script:
+  - make test
