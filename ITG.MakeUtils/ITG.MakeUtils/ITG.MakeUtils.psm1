@@ -108,3 +108,112 @@ Export-ModuleMember -Alias cp;
 New-Alias -Name curl -Value Invoke-WebRequest -Option AllScope -Scope Global -Force;
 
 Export-ModuleMember -Alias curl;
+
+Function Set-UnitTestStatusInformation {
+<#
+.Synopsis
+	Загрушка. Аналогичные функции применяются для отображения информации о текущем состоянии теста.
+#>
+	[CmdletBinding(
+		SupportsShouldProcess = $false
+	)]
+
+	param (
+		[Parameter( Mandatory = $true )]
+		[ValidateNotNull()]
+		[Alias('Name')]
+		[String]
+		$TestId
+	,
+		[Parameter( Mandatory = $true )]
+		[ValidateSet( 'Running', 'Passed', 'Failed' )]
+		[Alias('Outcome')]
+		[String]
+		$Status
+	,
+		[Parameter( Mandatory = $false )]
+		[Alias('Duration')]
+		[System.TimeSpan]
+		$TimeElapsed = 0
+	,
+		[Parameter( Mandatory = $false )]
+		[String]
+		$StdOut = ''
+	,
+		[Parameter( Mandatory = $false )]
+		[String]
+		$StdErr = ''
+	)
+	
+	Write-Information "Test '$TestId' is $Status$( & { if ( $TimeElapsed -ne 0 ) { "" in $($TimeElapsed)"" } } ).";
+	
+}
+
+Export-ModuleMember -Function Set-UnitTestStatusInformation;
+
+Function Test-UnitTest {
+<#
+.Synopsis
+	Обёртка для выполнения модульных тестов.
+#>
+	[CmdletBinding(
+		SupportsShouldProcess = $false
+	)]
+
+	param (
+		[Parameter(
+			Mandatory = $true
+		)]
+		[ValidateNotNull()]
+		[String]
+		$TestId
+	,
+		[Parameter(
+			Mandatory = $true
+		)]
+		[ScriptBlock]
+		$ScriptBlock
+	,
+		[Parameter(
+			Mandatory = $false
+		)]
+		[ValidateNotNull()]
+		[ScriptBlock]
+		$StatusWriter = ${Function:Set-UnitTestStatusInformation}
+	)
+
+	Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, 'Running';
+	$sw = [Diagnostics.Stopwatch]::StartNew();
+	$Passed = $true;
+	$testScriptOutput = '';
+	$CurrentErrorActionPreference = $ErrorActionPreference;
+	$ErrorActionPreference = 'Continue';
+	try {
+		# https://stackoverflow.com/questions/8097354/how-do-i-capture-the-output-into-a-variable-from-an-external-process-in-powershe
+		$testScriptOutput = & { trap {}; & $ScriptBlock; } 2>&1;
+		$sw.Stop();
+		$testScriptOutput | ? { $_ -is [System.Management.Automation.ErrorRecord] } | % { $Passed = $false; };
+	} catch {
+		$sw.Stop();
+		$Passed = $false;
+	} finally {
+		$testScriptStdOutput = $testScriptOutput | ? { $_ -isnot [System.Management.Automation.ErrorRecord] } | Out-String;
+		$testScriptStdError = $testScriptOutput | ? { $_ -is [System.Management.Automation.ErrorRecord] } | Out-String;
+		$testScriptOutput `
+		| % {
+			if ( $_ -is [System.Management.Automation.ErrorRecord] ) {
+				$_;
+			} else {
+				Write-Information $_;
+			};
+		};
+		if ( $Passed ) {
+			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, 'Passed', ($sw.Elapsed), $testScriptStdOutput;
+		} else {
+			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, 'Failed', ($sw.Elapsed), $testScriptStdOutput, $testScriptStdError;
+		};
+		$ErrorActionPreference = $CurrentErrorActionPreference;
+	};
+}
+
+Export-ModuleMember -Function Test-UnitTest;
