@@ -206,7 +206,9 @@ Function Test-UnitTest {
 		$Passed = $false;
 	} finally {
 		$testScriptStdOutput = $testScriptOutput | ? { $_ -isnot [System.Management.Automation.ErrorRecord] } | Out-String;
+    if ( -not $testScriptStdOutput ) { $testScriptStdOutput = ' '; };
 		$testScriptStdError = $testScriptOutput | ? { $_ -is [System.Management.Automation.ErrorRecord] } | Out-String;
+    if ( -not $testScriptStdError ) { $testScriptStdError = ' '; };
 		$testScriptOutput `
 		| % {
 			if ( $_ -is [System.Management.Automation.ErrorRecord] ) {
