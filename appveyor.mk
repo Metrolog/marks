@@ -36,8 +36,11 @@ testPlatformSetStatus = \
   { param ( $$$$Name, $$$$FileName, $$$$Outcome, [System.TimeSpan] $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
     Set-UnitTestStatusInformation \
       -Name $$$$Name -FileName $$$$FileName -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
-    Update-AppveyorTest -Framework 'MSTest' \
-      -Name $$$$Name -FileName $$$$FileName -Duration $$$$($$$$Duration.TotalMilliseconds) -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
+      $$$$Params = $$$$PSBoundParameters; \
+      if ( -not $$$$StdOut ) { $$$$Params.Remove('StdOut'); }; \
+      if ( -not $$$$StdErr ) { $$$$Params.Remove('StdErr'); }; \
+      $$$$Params.Duration = $$$$Duration.TotalMilliseconds; \
+      Update-AppveyorTest -Framework 'MSTest' @Params; \
   }
 
 # todo: удалить это определение. В этом файле не используется.
