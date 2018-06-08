@@ -24,42 +24,12 @@ pushDeploymentArtifactFiles = \
 
 pushDeploymentArtifact = $(call pushDeploymentArtifactFiles,$@,$^)
 
-# $(call testPlatformWrapper,testId,testScript)
-testPlatformWrapper = \
-  $(call testPlatformSetStatus,$1,Running); \
-  $(APPVEYORTOOL) AddTest -Name "$1" -Framework "MSTest" -FileName "" -Outcome Running; \
-  $$$$sw = [Diagnostics.Stopwatch]::StartNew(); \
-  $$$$Passed = $$$$True; \
-  $$$$testScriptOutput = ''; \
-  $$$$CurrentErrorActionPreference = $$$$ErrorActionPreference; \
-  $$$$ErrorActionPreference = 'Continue'; \
-  try { \
-    $$$$testScriptOutput = & { $2 } 2>&1; \
-    $$$$sw.Stop(); \
-    $$$$testScriptOutput | ? { $$$$_ -is [System.Management.Automation.ErrorRecord] } | % { $$$$Passed = $$$$False; }; \
-  } catch { \
-    $$$$sw.Stop(); \
-    $$$$Passed = $$$$False; \
-  } finally { \
-    $$$$testScriptOutput \
-    | % { \
-      if ( $$$$_ -is [System.Management.Automation.ErrorRecord] ) { \
-        $$$$_; \
-      } else { \
-        Write-Information $$$$_; \
-      }; \
-    }; \
-    $$$$testScriptStdOutput = $$$$testScriptOutput | ? { $$$$_ -isnot [System.Management.Automation.ErrorRecord] } | Out-String; \
-    $$$$testScriptStdError = $$$$testScriptOutput | ? { $$$$_ -is [System.Management.Automation.ErrorRecord] } | Out-String; \
-    if ( $$$$Passed ) { \
-      $(APPVEYORTOOL) UpdateTest -Name "$1" -Duration `"$$$$($$$$sw.Elapsed)`" -Framework "MSTest" -FileName `"`" -Outcome Passed -StdOut `"$$$$testScriptStdOutput`"; \
-      $(call testPlatformSetStatus,$1,'Passed',$$$$($$$$sw.Elapsed)); \
-    } else { \
-      $(APPVEYORTOOL) UpdateTest -Name "$1" -Duration `"$$$$($$$$sw.Elapsed)`" -Framework "MSTest" -FileName `"`" -Outcome Failed -StdOut `"$$$$testScriptStdOutput`" -StdErr `"$$$$testScriptStdError`"; \
-      $(call testPlatformSetStatus,$1,'Failed',$$$$($$$$sw.Elapsed)); \
-    }; \
-    $$$$ErrorActionPreference = $$$$CurrentErrorActionPreference; \
-  };
+# $(call testPlatformSetStatus,testId,status,duration)
+testPlatformSetStatus = \
+  { param ( $$$$Name, $$$$Outcome, $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
+    Set-UnitTestStatusInformation -Name $$$$Name -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
+    $(APPVEYORTOOL) UpdateTest -Name "$$$$Name" -Duration `"$$$$Duration`" -Framework "MSTest" -FileName `"`" -Outcome `"$$$$Outcome`" -StdOut `"$$$$StdOut`" -StdErr `"$$$$StdErr`"; \
+  }
 
 # todo: удалить это определение. В этом файле не используется.
 OPENSSL := $(call shellPath,C:\OpenSSL-Win64\bin\openssl.exe)
