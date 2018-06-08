@@ -11,30 +11,17 @@ testPlatformSetStatus = Write-Information "Test '$1' $2$(if $3, in $3)."
 
 # $(call testPlatformWrapper,testId,testScript)
 testPlatformWrapper = \
-  set +e; \
-  $(call testPlatformSetStatus,$1,Running); \
-  START_TIME=$$$$(($$$$(date +%s%3N))); \
-  ( $2 ); \
-  EXIT_CODE=$$$$?; \
-  FINISH_TIME=$$$$(($$$$(date +%s%3N))); \
-  DURATION=$$$$(($$$$FINISH_TIME-$$$$START_TIME)); \
-  if [[ $$$$EXIT_CODE -eq 0 ]]; then \
-    $(call testPlatformSetStatus,$1,Passed,$$$$DURATION); \
-  else \
-    $(call testPlatformSetStatus,$1,Failed,$$$$DURATION); \
-  fi; \
-  exit $$$$EXIT_CODE;
-
-testPlatformWrapper = \
   $(call testPlatformSetStatus,$1,Running); \
   $$$$sw = [Diagnostics.Stopwatch]::StartNew(); \
+  $$$$Status = 'Passed'; \
   try { \
     $2; \
-    $$$$sw.Stop(); \
-    $(call testPlatformSetStatus,$1,Passed,$$$$($$$$sw.Elapsed)); \
+    if ( $$$$LASTEXITCODE -ne 0 ) { throw $$$$LASTEXITCODE; } ;\
   } catch { \
+    $$$$Status = 'Failed'; \
+  } finally { \
     $$$$sw.Stop(); \
-    $(call testPlatformSetStatus,$1,Failed,$$$$($$$$sw.Elapsed)); \
+    $(call testPlatformSetStatus,$1,$$$$Status,$$$$($$$$sw.Elapsed)); \
   };
 
 # $(call defineTest,id,targetId,script,dependencies)
