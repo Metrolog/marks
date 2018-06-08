@@ -109,6 +109,31 @@ New-Alias -Name curl -Value Invoke-WebRequest -Option AllScope -Scope Global -Fo
 
 Export-ModuleMember -Alias curl;
 
+Function Add-UnitTest {
+<#
+.Synopsis
+	Загрушка. Аналогичные функции применяются для добавления теста в консоль build серверов.
+#>
+	[CmdletBinding(
+		SupportsShouldProcess = $false
+	)]
+
+	param (
+		[Parameter( Mandatory = $true )]
+		[ValidateNotNull()]
+		[Alias('Name')]
+		[String]
+		$TestId
+	,
+		[Parameter( Mandatory = $false )]
+		[String]
+		$FileName = ''
+	)
+	
+}
+
+Export-ModuleMember -Function Add-UnitTest;
+
 Function Set-UnitTestStatusInformation {
 <#
 .Synopsis
@@ -188,8 +213,16 @@ Function Test-UnitTest {
 		[ValidateNotNull()]
 		[ScriptBlock]
 		$StatusWriter = ${Function:Set-UnitTestStatusInformation}
+	,
+		[Parameter(
+			Mandatory = $false
+		)]
+		[ValidateNotNull()]
+		[ScriptBlock]
+		$TestCreator = ${Function:Add-UnitTest}
 	)
 
+	Invoke-Command -ScriptBlock $TestCreator -ArgumentList $TestId, $FileName;
 	Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Running';
 	$sw = [Diagnostics.Stopwatch]::StartNew();
 	$Passed = $true;
@@ -206,7 +239,6 @@ Function Test-UnitTest {
 		$Passed = $false;
 	} finally {
 		$testScriptStdOutput = $testScriptOutput | ? { $_ -isnot [System.Management.Automation.ErrorRecord] } | Out-String;
-    if ( -not $testScriptStdOutput ) { $testScriptStdOutput = ' '; };
 		$testScriptStdError = $testScriptOutput | ? { $_ -is [System.Management.Automation.ErrorRecord] } | Out-String;
     if ( -not $testScriptStdError ) { $testScriptStdError = ' '; };
 		$testScriptOutput `
@@ -218,8 +250,14 @@ Function Test-UnitTest {
 			};
 		};
 		if ( $Passed ) {
-			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Passed', ($sw.Elapsed), $testScriptStdOutput;
+			if ( $testScriptStdOutput ) {
+				Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Passed', ($sw.Elapsed), $testScriptStdOutput;
+			} else {
+				Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Passed', ($sw.Elapsed);
+			};
 		} else {
+			if ( -not $testScriptStdOutput ) {	$testScriptStdOutput = '...'; };
+			if ( -not $testScriptStdError ) {	$testScriptStdError = '...'; };
 			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Failed', ($sw.Elapsed), $testScriptStdOutput, $testScriptStdError;
 		};
 		$ErrorActionPreference = $CurrentErrorActionPreference;
