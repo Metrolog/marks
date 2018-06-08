@@ -11,7 +11,7 @@ testPlatformSetStatus = $$$${Function:Set-UnitTestStatusInformation}
 
 # $(call testPlatformWrapper,testId,testScript)
 testPlatformWrapper = \
-  Test-UnitTest -TestId '$1' -ScriptBlock { $2 } -StatusWriter $(testPlatformSetStatus);
+  Test-UnitTest -TestId '$1' -FileName '$$(call OSPath,$$<)' -ScriptBlock { $2 } -StatusWriter $(testPlatformSetStatus);
 
 # $(call defineTest,id,targetId,script,dependencies)
 define defineTest
