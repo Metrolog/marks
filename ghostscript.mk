@@ -39,7 +39,8 @@ TESTSPDFFILES = $(patsubst $(TESTSDIR)/%.ps,$(AUXDIR)/%.pdf,$(TESTSPSFILES))
 define definePSBuildTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
-  $$(GS) -q -sOutputFile='$$(call OSPath,$1)' $$(foreach incdir,$$(GSINCDIR),-I'$$(call OSabsPath,$$(incdir))') -sFONTPATH='$$(call OSabsPath,$(GSFONTDIR))' '$$(call OSPath,$2)';,\
+  $$(GS) -q -sOutputFile='$$(call OSPath,$1)' $$(foreach incdir,$$(GSINCDIR),-I'$$(call OSabsPath,$$(incdir))') -sFONTPATH='$$(call OSabsPath,$(GSFONTDIR))' '$$(call OSPath,$2)';\
+  $$(call pushDeploymentArtifactFile,$$(notdir $1),$$(call OSPath,$1));,\
   $2 $3 \
 )
 
