@@ -29,6 +29,8 @@ testPlatformSetStatus = \
   { param ( $$$$Name, $$$$FileName, $$$$Outcome, [System.TimeSpan] $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
     Set-UnitTestStatusInformation \
       -Name $$$$Name -FileName $$$$FileName -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
+    Add-AppveyorTest -Framework 'MSTest' \
+      -Name $$$$Name -FileName $$$$FileName -Outcome 'None'; \
     Update-AppveyorTest -Framework 'MSTest' \
       -Name $$$$Name -FileName $$$$FileName -Duration $$$$($$$$Duration.TotalMilliseconds) -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
   }
