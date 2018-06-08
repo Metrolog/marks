@@ -52,10 +52,10 @@ testPlatformWrapper = \
     $$$$testScriptStdOutput = $$$$testScriptOutput | ? { $$$$_ -isnot [System.Management.Automation.ErrorRecord] } | Out-String; \
     $$$$testScriptStdError = $$$$testScriptOutput | ? { $$$$_ -is [System.Management.Automation.ErrorRecord] } | Out-String; \
     if ( $$$$Passed ) { \
-      $(APPVEYORTOOL) UpdateTest -Name "$1" -Duration "$$$$($$$$sw.Elapsed)" -Framework "MSTest" -FileName "" -Outcome Passed -StdOut "$$$$testScriptStdOutput"; \
+      $(APPVEYORTOOL) UpdateTest -Name "$1" -Duration `"$$$$($$$$sw.Elapsed)`" -Framework "MSTest" -FileName `"`" -Outcome Passed -StdOut `"$$$$testScriptStdOutput`"; \
       $(call testPlatformSetStatus,$1,'Passed',$$$$($$$$sw.Elapsed)); \
     } else { \
-      $(APPVEYORTOOL) UpdateTest -Name "$1" -Duration "$$$$($$$$sw.Elapsed)" -Framework "MSTest" -FileName "" -Outcome Failed -StdOut "$$$$testScriptStdOutput" -StdErr "$$$$testScriptStdError"; \
+      $(APPVEYORTOOL) UpdateTest -Name "$1" -Duration `"$$$$($$$$sw.Elapsed)`" -Framework "MSTest" -FileName `"`" -Outcome Failed -StdOut `"$$$$testScriptStdOutput`" -StdErr `"$$$$testScriptStdError`"; \
       $(call testPlatformSetStatus,$1,'Failed',$$$$($$$$sw.Elapsed)); \
     }; \
     $$$$ErrorActionPreference = $$$$CurrentErrorActionPreference; \
