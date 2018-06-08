@@ -26,11 +26,11 @@ pushDeploymentArtifact = $(call pushDeploymentArtifactFiles,$@,$^)
 
 # $(call testPlatformSetStatus,testId,status,duration)
 testPlatformSetStatus = \
-  { param ( $$$$Name, $$$$FileName, $$$$Outcome, $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
+  { param ( $$$$Name, $$$$FileName, $$$$Outcome, [System.TimeSpan] $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
     Set-UnitTestStatusInformation \
       -Name $$$$Name -FileName $$$$FileName -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
     Update-AppveyorTest -Framework 'MSTest' \
-      -Name $$$$Name -FileName $$$$FileName -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
+      -Name $$$$Name -FileName $$$$FileName -Duration $$$$($$$$Duration.TotalMilliseconds) -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
   }
 
 # todo: удалить это определение. В этом файле не используется.
