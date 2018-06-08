@@ -25,27 +25,13 @@ pushDeploymentArtifactFiles = \
 pushDeploymentArtifact = $(call pushDeploymentArtifactFiles,$@,$^)
 
 # $(call testPlatformSetStatus,testId,status,duration)
-ifeq ($(CI_LINUX),true)
-
 testPlatformSetStatus = \
-  { param ( $$$$Name, $$$$Outcome, [System.TimeSpan] $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
+  { param ( $$$$Name, $$$$FileName, $$$$Outcome, $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
     Set-UnitTestStatusInformation \
-      -Name $$$$Name -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
-    $(APPVEYORTOOL) UpdateTest -Framework "MSTest" -FileName `"`" \
-      -Name `"$$$$Name`" -Duration $$$$($$$$Duration.TotalMilliseconds) -Outcome `"$$$$Outcome`" -StdOut `"$$$$StdOut`" -StdErr `"$$$$StdErr`"; \
+      -Name $$$$Name -FileName $$$$FileName -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
+    Update-AppveyorTest -Framework 'MSTest' \
+      -Name $$$$Name -FileName $$$$FileName -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
   }
-
-else
-
-testPlatformSetStatus = \
-  { param ( $$$$Name, $$$$Outcome, $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
-    Set-UnitTestStatusInformation \
-      -Name $$$$Name -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
-    Add-AppveyorTest -Framework 'MSTest' -FileName '' \
-      -Name $$$$Name -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
-  }
-
-endif
 
 # todo: удалить это определение. В этом файле не используется.
 OPENSSL := $(call shellPath,C:\OpenSSL-Win64\bin\openssl.exe)

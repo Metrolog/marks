@@ -125,6 +125,10 @@ Function Set-UnitTestStatusInformation {
 		[String]
 		$TestId
 	,
+		[Parameter( Mandatory = $false )]
+		[String]
+		$FileName = ''
+	,
 		[Parameter( Mandatory = $true )]
 		[ValidateSet( 'None', 'Running', 'Passed', 'Failed', 'Ignored', 'Skipped', 'Inconclusive', 'NotFound', 'Cancelled', 'NotRunnable')]
 		[Alias('Outcome')]
@@ -168,6 +172,10 @@ Function Test-UnitTest {
 		[String]
 		$TestId
 	,
+		[Parameter( Mandatory = $false )]
+		[String]
+		$FileName = ''
+	,
 		[Parameter(
 			Mandatory = $true
 		)]
@@ -182,7 +190,7 @@ Function Test-UnitTest {
 		$StatusWriter = ${Function:Set-UnitTestStatusInformation}
 	)
 
-	Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, 'Running';
+	Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Running';
 	$sw = [Diagnostics.Stopwatch]::StartNew();
 	$Passed = $true;
 	$testScriptOutput = '';
@@ -208,9 +216,9 @@ Function Test-UnitTest {
 			};
 		};
 		if ( $Passed ) {
-			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, 'Passed', ($sw.Elapsed), $testScriptStdOutput;
+			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Passed', ($sw.Elapsed), $testScriptStdOutput;
 		} else {
-			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, 'Failed', ($sw.Elapsed), $testScriptStdOutput, $testScriptStdError;
+			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Failed', ($sw.Elapsed), $testScriptStdOutput, $testScriptStdError;
 		};
 		$ErrorActionPreference = $CurrentErrorActionPreference;
 	};
