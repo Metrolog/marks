@@ -99,8 +99,8 @@ writeinformationauxII ?= \
   Write-Information '$(1)';
 
 writeinformation = \
-  $(call writeinformationauxII,$(1),$(2)) \
-  $(call writeinformationaux,$(1),$(2))
+  $(call writeinformationaux,$(1),$(2)) \
+  $(call writeinformationauxII,$(1),$(2))
 
 # $(call writewarning, msg, details)
 writewarningaux ?=
@@ -112,8 +112,8 @@ writewarningauxII ?= \
   Write-Warning '$(1)';
 
 writewarning = \
-  $(call writewarningauxII,$(1),$(2)) \
-  $(call writewarningaux,$(1),$(2))
+  $(call writewarningaux,$(1),$(2)) \
+  $(call writewarningauxII,$(1),$(2))
 
 # $(call writeerror, msg, details)
 writeerroraux ?=
@@ -125,8 +125,8 @@ writeerrorauxII ?= \
   Write-Error '$(1)';
 
 writeerror = \
-  $(call writeerrorauxII,$(1),$(2)) \
-  $(call writeerroraux,$(1),$(2))
+  $(call writeerroraux,$(1),$(2)) \
+  $(call writeerrorauxII,$(1),$(2))
 
 # $(call setvariable, var, value)
 define setvariable
