@@ -16,6 +16,15 @@ POWERSHELLMODULES  := $(POWERSHELLMODULES), \
 
 endif
 
+writeinformationaux = \
+  Add-AppveyorMessage -Message '$(1)' -Category 'Information' -Details '$(2)'
+
+writewarningaux = \
+  Add-AppveyorMessage -Message '$(1)' -Category 'Warning' -Details '$(2)'
+
+writeerroraux = \
+  Add-AppveyorMessage -Message '$(1)' -Category 'Error' -Details '$(2)'
+
 pushDeploymentArtifactFile = \
   Push-AppveyorArtifact $(VERBOSEFLAGS) -DeploymentName '$(1)' -Path '$(2)';
 

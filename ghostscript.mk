@@ -25,9 +25,10 @@ GSINCDIR ?=
 GSFONTDIR ?=
 
 $(OUTPUTDIR)/%.pdf: $(SOURCESDIR)/%.ps
-	$(info Build file "$@" from "$<"...)
+	$(call writeinformation,Build file "$@" from "$<"...)
 	$(MAKETARGETDIR)
 	$(GS) -sOutputFile='$(call OSPath,$@)' $(foreach incdir,$(GSINCDIR),-I'$(call OSabsPath,$(incdir))') -sFONTPATH='$(call OSabsPath,$(GSFONTDIR))' '$(call OSPath,$<)'
+	$(call writeinformation,File "$@" is ready.)
 
 
 ifdef MAKE_TESTS_DIR
