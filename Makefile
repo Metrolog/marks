@@ -4,6 +4,7 @@
 
 ITG_MAKEUTILS_DIR  ?= ITG.MakeUtils
 include $(ITG_MAKEUTILS_DIR)/common.mk
+include $(ITG_MAKEUTILS_DIR)/appveyor.mk
 
 # sub projects
 
