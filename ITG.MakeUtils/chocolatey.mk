@@ -64,7 +64,7 @@ $$($(1)TARGETS): \
     $(wildcard $(SOURCESDIR)/$2/*.ignore) \
     $(patsubst %.externalfile.xml,%.$(FILEHASHALGORITHM).checksum.txt,$(wildcard $(SOURCESDIR)/$2/*.externalfile.xml)) \
     $6
-	$$(info Generate chocolatey package file "$$@"...)
+	$$(call writeinformation,Generating chocolatey package file "$$@"...)
 	$$(MAKETARGETDIR)
 	cd $$(@D) && $$(CHOCO) \
     pack $$(subst $$(SPACE),/,$$(patsubst %,..,$$(subst /,$$(SPACE),$$(@D))))/$$< \
@@ -72,6 +72,7 @@ $$($(1)TARGETS): \
     --version $$($(1)VERSION) \
     --verbose
 	@touch $$@
+	$$(call writeinformation,File "$$@" is ready.)
 
 .PHONY: $1
 $(1): $$($(1)TARGETS)

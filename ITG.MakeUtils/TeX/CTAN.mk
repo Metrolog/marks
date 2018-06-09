@@ -178,7 +178,7 @@ $(TDSTARGET) $(CTANTARGET): | .CTAN
 else
 
 $(CTANMAKEFILE): $(MAKEFILE_LIST)
-	$(info Build intermediate makefile for CTAN: $@)
+	$(call writeinformation,Building intermediate makefile for CTAN "$@"...)
 	$(MAKETARGETDIR)
 	$(file > $@,# intermediate makefile for CTAN archive)
 	$(file >> $@,SUBMAKE_TEX_CTAN := $(dir $(lastword $(MAKEFILE_LIST))))
@@ -186,6 +186,7 @@ $(CTANMAKEFILE): $(MAKEFILE_LIST)
 	$(foreach ctanfile,$(CTANFILES),$(file >> $@,$(call copyFileToTDSandCTAN,$(ctanfile))))
 	$(file >> $@,$(call copyFilesToZIP,$(TDSTARGET),,$(LATEXTDSAUXDIR)))
 	$(file >> $@,$(call copyFilesToZIP,$(CTANTARGET),,$(LATEXCTANAUXDIR)))
+	$(call writeinformation,File "$@" is ready.)
 
 $(TDSTARGET) $(CTANTARGET): $(CTANMAKEFILE)
 	$(MAKE) --makefile $(CTANMAKEFILE) $@

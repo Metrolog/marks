@@ -89,6 +89,45 @@ CURL               := curl $(VERBOSEFLAGS)
 ZIP                ?= zip -o -9
 TAR                ?= tar
 
+# $(call writeinformation, msg, details)
+writeinformationaux ?=
+
+#writeinformationauxII ?= \
+#  $(info $(1)) \
+#  $(info $(2))
+writeinformationauxII ?= \
+  Write-Information '$(1)';
+
+writeinformation = \
+  $(call writeinformationauxII,$(1),$(2)) \
+  $(call writeinformationaux,$(1),$(2))
+
+# $(call writewarning, msg, details)
+writewarningaux ?=
+
+#writewarningauxII ?= \
+#  $(warning $(1)) \
+#  $(info $(2))
+writewarningauxII ?= \
+  Write-Warning '$(1)';
+
+writewarning = \
+  $(call writewarningauxII,$(1),$(2)) \
+  $(call writewarningaux,$(1),$(2))
+
+# $(call writeerror, msg, details)
+writeerroraux ?=
+
+#writeerrorauxII ?= \
+#  $(error $(1)) \
+#  $(info $(2))
+writeerrorauxII ?= \
+  Write-Error '$(1)';
+
+writeerror = \
+  $(call writeerrorauxII,$(1),$(2)) \
+  $(call writeerroraux,$(1),$(2))
+
 # $(call setvariable, var, value)
 define setvariable
 $1:=$2

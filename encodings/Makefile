@@ -16,15 +16,17 @@ AGLFNFILE ?= $(call OSabsPath,agl-aglfn/aglfn.txt)
 # download unicode mappings
 
 $(AUXDIR)/MAPPINGS/%.TXT:
-	$(info Download file "$(@F)"...)
+	$(call writeinformation,Downloading file "$(@F)"...)
 	$(MAKETARGETDIR)
 	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o $(call OSPath,$@)
 	$(TOUCH) $@
+	$(call writeinformation,File "$(@F)" is downloaded.)
 
 $(OUTPUTDIR)/%.ps:
-	$(info Create PostScript encoding file "$(@F)" from "$<"...)
+	$(call writeinformation,Creating PostScript encoding file "$(@F)" from "$<"...)
 	$(MAKETARGETDIR)
 	./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath $(call OSPath,$<) -FilePath $(call OSPath,$@) $(VERBOSEFLAGS)
+	$(call writeinformation,File "$(@F)" is ready.)
 
 # $(call mapPSEncodingFileToSource, uri, encoding)
 define mapPSEncodingFileToSource
