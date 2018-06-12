@@ -17,4 +17,4 @@ GSINCDIR := $(GSINCDIR) $(PSLIBDIR)
 
 PSLIBFILES := $(wildcard $(PSLIBDIR)/*.ps)
 
-$(eval $(call definePSBuildTests,$(PSLIBFILES)))
+$(eval $(call definePostScriptTests,$(PSLIBFILES)))

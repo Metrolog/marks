@@ -40,8 +40,21 @@ ifdef MAKE_TESTS_DIR
 TESTSPSFILES = $(wildcard $(TESTSDIR)/*.ps)
 TESTSPDFFILES = $(patsubst $(TESTSDIR)/%.ps,$(AUXDIR)/%.pdf,$(TESTSPSFILES))
 
-# $(call definePSBuildTest,target,source,dependencies)
-define definePSBuildTest
+# $(call definePostScriptTest,target,source,dependencies)
+define definePostScriptTest
+
+$(call defineTest,$(basename $(notdir $1)),ps_build,\
+  $(GSCMDLINE) -q -sOutputFile='$$(call OSPath,$1)' '$$(call OSPath,$2)';,\
+  $2 $3 \
+)
+
+endef
+
+# $(call definePostScriptTests,dependencies)
+definePostScriptTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptTest,$(patsubst $(TESTSDIR)/%.ps,$(AUXDIR)/%.pdf,$(test)),$(test),$1))
+
+# $(call definePostScriptBuildTest,target,source,dependencies)
+define definePostScriptBuildTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
   $(GSCMDLINE) -q -sOutputFile='$$(call OSPath,$1)' '$$(call OSPath,$2)';\
@@ -51,8 +64,8 @@ $(call defineTest,$(basename $(notdir $1)),ps_build,\
 
 endef
 
-# $(call definePSBuildTests,dependencies)
-definePSBuildTests = $(foreach test,$(TESTSPSFILES),$(call definePSBuildTest,$(patsubst $(TESTSDIR)/%.ps,$(AUXDIR)/%.pdf,$(test)),$(test),$1))
+# $(call definePostScriptBuildTests,dependencies)
+definePostScriptBuildTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptBuildTest,$(patsubst $(TESTSDIR)/%.ps,$(AUXDIR)/%.pdf,$(test)),$(test),$1))
 
 endif
 
