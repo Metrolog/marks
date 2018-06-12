@@ -24,10 +24,14 @@ GS = $(GSTOOL) \
 GSINCDIR ?=
 GSFONTDIR ?=
 
+GSCMDLINE = $(GS) \
+  $(foreach incdir,$(GSINCDIR), -I'$(call OSabsPath,$(incdir))') \
+  $(if $(GSFONTDIR),-sFONTPATH='$(foreach fontdir,$(GSFONTDIR),$(call OSabsPath,$(fontdir))$(PATHSEP))')
+
 $(OUTPUTDIR)/%.pdf: $(SOURCESDIR)/%.ps
 	$(call writeinformation,Build file "$@" from "$<"...)
 	$(MAKETARGETDIR)
-	$(GS) -sOutputFile='$(call OSPath,$@)' $(foreach incdir,$(GSINCDIR),-I'$(call OSabsPath,$(incdir))') -sFONTPATH='$(call OSabsPath,$(GSFONTDIR))' '$(call OSPath,$<)'
+	$(GSCMDLINE) -sOutputFile='$(call OSPath,$@)' '$(call OSPath,$<)'
 	$(call writeinformation,File "$@" is ready.)
 
 
@@ -40,7 +44,7 @@ TESTSPDFFILES = $(patsubst $(TESTSDIR)/%.ps,$(AUXDIR)/%.pdf,$(TESTSPSFILES))
 define definePSBuildTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
-  $$(GS) -q -sOutputFile='$$(call OSPath,$1)' $$(foreach incdir,$$(GSINCDIR),-I'$$(call OSabsPath,$$(incdir))') -sFONTPATH='$$(call OSabsPath,$(GSFONTDIR))' '$$(call OSPath,$2)';\
+  $(GSCMDLINE) -q -sOutputFile='$$(call OSPath,$1)' '$$(call OSPath,$2)';\
   $$(call pushDeploymentArtifactFile,$$(notdir $1),$$(call OSPath,$1));,\
   $2 $3 \
 )
