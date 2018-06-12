@@ -1,0 +1,57 @@
+%!PS-Adobe-2.0
+%%Creator: Sergei S. Betke
+%%Title: Test: upath_BBox должен возвращать корректные результаты при наличии поворота холста внутри upath на любые углы
+%%EndComments
+
+(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
+(assert.ps) require_once
+(graphics.ps) require_once
+(boxes.ps) require_once
+
+matrix currentmatrix
+gsave
+  /testupath1
+      newpath
+      0 0 moveto
+      10 0 rlineto
+      0 10 rlineto
+      -10 0 rlineto
+      closepath
+    false upath
+  cvlit def
+grestore
+setmatrix
+
+matrix currentmatrix
+gsave
+  /testupath2
+      45 rotate
+      newpath
+      0 0 moveto
+      10 0 rlineto
+      0 10 rlineto
+      -10 0 rlineto
+      closepath
+    false upath
+  cvlit def
+grestore
+setmatrix
+
+    testupath1 upath_BBox size_of_BBox
+    (size of testupath1: ) = 1 index  1 index  exch = =
+    testupath2 upath_BBox size_of_BBox
+    (size of testupath2: ) = 1 index  1 index  exch = =
+  sizes_almost_equal
+  (upath_BBox must return the same box size for upaths with rotated canvas in upath)
+assert
+
+    testupath1 upath_BBox size_of_BBox
+    (size of testupath1: ) = 1 index  1 index  exch = =
+    30 rotate
+    testupath1 upath_BBox size_of_BBox
+    (size of testupath2: ) = 1 index  1 index  exch = =
+  sizes_almost_equal
+  (upath_BBox must return the same box size for upaths with rotated canvas)
+assert
+
+%%EOF
