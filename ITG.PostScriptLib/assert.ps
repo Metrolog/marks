@@ -1,0 +1,34 @@
+%!PS-Adobe-2.0
+%%Creator: Sergei S. Betke
+%%EndComments
+
+/assert % bool string --> -
+{
+  dup type  /booleantype  eq  { (untitled) } if
+    exch not
+    {
+      (%stderr) (w) file
+      dup (Assertion ') writestring
+      dup  3 -1 roll  writestring
+      (' failed!\n) writestring
+      stop
+    }
+    {
+      (%stdout) (w) file
+      dup (Assertion ') writestring
+      dup  3 -1 roll  writestring
+      (' passed.\n) writestring
+    }
+  ifelse
+} def
+
+/almost_equal % a b --> bool
+{
+  1 index % a b a
+  sub abs
+  100 mul % a  |b-a|*100
+  exch abs % |b-a|*100  |a|
+  le
+} def
+
+%%EOF
