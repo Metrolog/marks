@@ -12,13 +12,12 @@
 12 scalefont setfont
 
 /teststring (Test string) def
-teststring string_BBox size_of_BBox % sx1 sy1
-45 rotate
-teststring string_BBox size_of_BBox % sx1 sy1 sx2 sy2
-      3 -1 roll exch  % sx1 sx2 sy1 sy2
-    almost_equal
-    3 1 roll  almost_equal
-  and
+    teststring string_BBox size_of_BBox % sx1 sy1
+    (size of test string:) = 1 index  1 index  exch = =
+    45 rotate
+    teststring string_BBox size_of_BBox % sx1 sy1 sx2 sy2
+    (size of rotated test string:) = 1 index  1 index  exch = =
+  sizes_almost_equal
   (string_BBox must return the same string size and for rotated canvas)
 assert
 
