@@ -5,7 +5,7 @@
 %%PageOrder: Ascend
 %%EndComments
 
-(lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
+(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
 (distiller.ps) require_once
 (si.ps) require_once

@@ -2,7 +2,7 @@
 %%Creator: Sergei S. Betke
 %%EndComments
 
-(lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
+(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
 (boxes.ps) require_once
 (cp1251.ps) require_once

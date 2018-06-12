@@ -2,7 +2,7 @@
 %%Creator: Sergei S. Betke
 %%EndComments
 
-(lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
+(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
 
 (boxes.ps) require_once
 (math.ps) require_once
@@ -22,7 +22,7 @@
   /y4  3 sqrt  2 div  H mul  H 2 div  sub  def
   /x5  x4  def
   /y5  R2 dup mul  x5 x2 sub  dup mul  sub  sqrt  y2 sub  def
-  
+
   % сохран€ем на стеке текущую матрицу преобразовани€ системы координат дл€ последующего восстановлени€
   matrix currentmatrix
   % переносим начало координат в центр символа —т
@@ -50,7 +50,7 @@
     x5 y5  arc_angle_to
   arcn
   closepath
-  
+
   % “
     0.5  0.18 2 div  add  H mul
     0.25 H mul  2 div  neg
@@ -63,7 +63,7 @@
   0.35 0.18 sub  2 div  H mul  0  rlineto
   0  0.25 0.1 sub  H mul  neg  rlineto
   closepath
-  
+
   % восстановливаем систему координат
   setmatrix
 

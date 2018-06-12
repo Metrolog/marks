@@ -2,7 +2,7 @@
 %%Creator: Sergei S. Betke
 %%EndComments
 
-(lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
+(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
 
 (boxes.ps) require_once
 (math.ps) require_once
@@ -17,7 +17,7 @@
   /stamps_length  stamps length  def
   /current_stamp_index 0 def
   /BBox_SizeX /BBox_SizeY  BBox  size_of_BBox_def
-  
+
   /no_prev_line_props <<
     /line_height 0
     /possible_staggered_align_for_next_line false
@@ -25,15 +25,15 @@
     /ItemSize null
     /is_odd_line false
   >> def
-  
+
   /new_line_props  no_prev_line_props  dup length dict  copy  def
   new_line_props begin
     /possible_staggered_align_for_next_line true def
   end
-  
+
   /current_line_props  new_line_props  dup length dict  copy  def
   /prev_line_props  no_prev_line_props  dup length dict  copy  def
-  
+
   /setup_new_page
   {
     BBox aload pop pop pop  translate
@@ -45,7 +45,7 @@
       /is_odd_line false def
     end
   } def
-  
+
   /is_EOL
   {
       current_stamp_index stamps_length ge
@@ -60,7 +60,7 @@
       }
     ifelse
   } def
-  
+
   /is_EOP
   {
       currentpoint exch pop  current_line_props /line_height get  add
@@ -75,7 +75,7 @@
       BBox_SizeY
     gt
   } def
-  
+
   matrix currentmatrix
     setup_new_page
       {
@@ -87,7 +87,7 @@
             /current_stamp_SizeX /current_stamp_SizeY  current_stamp_BBox  size_of_BBox_def
           }
         if
-          
+
           is_EOP
           {
             false upath
@@ -101,7 +101,7 @@
           is_EOL
           {
             false upath % сохранили текущую строку в user path
-            
+
             matrix currentmatrix
                 current_line_props /possible_staggered_align get
                 {
@@ -133,12 +133,12 @@
               2 -1 roll
               ufill
             setmatrix
-            
+
               0
               currentpoint exch pop  current_line_props /line_height get  add  gap add
                 newpath % готовим новую строку
             moveto
-            
+
             /prev_line_props  current_line_props  dup length dict  copy  def
             /current_line_props  new_line_props  dup length dict  copy  def
             current_line_props begin
