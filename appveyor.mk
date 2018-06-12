@@ -9,13 +9,6 @@ ifdef APPVEYOR
 
 APPVEYORTOOL ?= appveyor
 
-ifeq ($(CI_LINUX),true)
-
-POWERSHELLMODULES  := $(POWERSHELLMODULES), \
-  '/opt/appveyor/build-agent/AppVeyor.BuildAgent.PowerShell.dll'
-
-endif
-
 writeinformationaux = \
   Add-AppveyorMessage -Message '$(1)' -Category 'Information' $(if $(2),-Details '$(2)');
 
