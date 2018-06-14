@@ -52,6 +52,8 @@ endif
 
 OSabsPath = $(call OSPath,$(abspath $1))
 
+MAKETOOL := $(call OSPath,$(MAKE))
+
 VERBOSE            ?= true
 
 ifeq ($(VERBOSE),true)
@@ -200,7 +202,7 @@ export $(1)_DIR := $2
 endef
 
 # $(call MAKE_SUBPROJECT, Project)
-MAKE_SUBPROJECT = $(MAKE) -C $(call getSubProjectDir,$1) \
+MAKE_SUBPROJECT = $(MAKETOOL) -C $(call getSubProjectDir,$1) \
   SUBPROJECT=$1 \
   SUBPROJECT_DIR=$(call getSubProjectDir,$1)/ \
   ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
@@ -242,7 +244,7 @@ endef
 
 ifdef ROOT_PROJECT_DIR
 $(ROOT_PROJECT_DIR)/%:
-	$(MAKE) -C $(ROOT_PROJECT_DIR) $*
+	$(MAKETOOL) -C $(ROOT_PROJECT_DIR) $*
 
 endif
 
