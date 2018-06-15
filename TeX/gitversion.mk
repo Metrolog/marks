@@ -6,7 +6,7 @@ include $(realpath $(ITG_MAKEUTILS_DIR)/common.mk)
 include $(realpath $(ITG_MAKEUTILS_DIR)/gitversion.mk)
 
 %/version.tex %/version.dtx: $(REPOVERSION)
-	$(info Generate latex version file "$@"...)
+	$(call writeinformation,Generating latex version file "$@"...)
 	$(MAKETARGETDIR)
 	@git log -1 --date=format:%Y/%m/%d --format="format:\
 %%\iffalse%n\
@@ -24,5 +24,6 @@ include $(realpath $(ITG_MAKEUTILS_DIR)/gitversion.mk)
 %%\fi%n\
 " > $@
 	touch $@
+	$(call writeinformation,File "$@" is ready.)
 
 endif

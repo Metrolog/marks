@@ -2,6 +2,14 @@ ifndef MAKE_COMMON_DIR
 MAKE_COMMON_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 export ITG_MAKEUTILS_DIR := $(realpath $(MAKE_COMMON_DIR))
 
+ifeq (,$(filter oneshell,$(.FEATURES)))
+$(error Requires make version that supports .ONESHELL feature.)
+endif
+
+ifneq (3.82,$(firstword $(sort $(MAKE_VERSION) 3.82)))
+$(error Requires make version 3.82 or higher (that supports .SHELLFLAGS).)
+endif
+
 .SECONDARY::;
 .SECONDEXPANSION::;
 .DELETE_ON_ERROR::;
@@ -29,64 +37,98 @@ winPath = $(shell cygpath -w $1)
 shellPath = $(shell cygpath -u $1)
 
 ifeq ($(OS),Windows_NT)
-  OSPath = $(call winPath,$1)
-else
-  OSPath = $1
-endif
-
-OSabsPath = $(abspath $(call OSPath,$1))
-
-ifeq ($(OS),Windows_NT)
-
-PowerShell ?= \
-  powershell \
-    -NoLogo \
-    -NonInteractive \
-    -NoProfile \
-    -ExecutionPolicy unrestricted
-
-else
-
-PowerShell ?= pwsh
-
-endif
-
-# $(call psExecuteCommand,powershellScriptBlock)
-psExecuteCommand = \
-  $(PowerShell) \
-    -Command "\
-      Set-Variable -Name ErrorActionPreference -Value Stop; \
-      & { $(1) }"
-
-ifeq ($(OS),Windows_NT)
-
-SHELL              := cmd
-.SHELLFLAGS        := /c
 
 PATHSEP            :=;
-MKDIR              = \
-	$(PowerShell) \
-		-File $(call OSPath,$(MAKE_COMMON_DIR)/mkdir.ps1) \
-		-p \
-		-Verbose
+PowerShell         := powershell
+OSPath             = $(call winPath,$1)
 
 else
 
-SHELL              := /bin/sh
-.SHELLFLAGS        := -c
-
 PATHSEP            :=:
-MKDIR              = mkdir -p
+PowerShell         := /usr/bin/pwsh
+OSPath             = $1
 
 endif
 
+OSabsPath = $(call OSPath,$(abspath $1))
+
+MAKETOOL := $(call OSPath,$(MAKE))
+
+VERBOSE            ?= true
+
+ifeq ($(VERBOSE),true)
+  VERBOSEFLAGS := -Verbose
+else
+  VERBOSEFLAGS :=
+endif
+
+.ONESHELL::
+
+POWERSHELLMODULES  := \
+  '$(call OSabsPath,$(ITG_MAKEUTILS_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1)'
+
+SHELL              := $(PowerShell)
+
+.SHELLFLAGS        = \
+  -NoLogo \
+  -NonInteractive \
+  -ExecutionPolicy unrestricted \
+  -Command \
+    $$ConfirmPreference = 'High'; \
+    $$InformationPreference = 'Continue'; \
+    $$ErrorActionPreference = 'Stop'; \
+    $$VerbosePreference = 'SilentlyContinue'; \
+    $$DebugPreference = 'SilentlyContinue'; \
+    $(POWERSHELLMODULES) | Import-Module -ErrorAction 'Stop' -Verbose:$$False;
+
+MKDIR              := mkdir $(VERBOSEFLAGS) -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
-
-ZIP                ?= zip \
-	-o \
-	-9
+RMDIR              := rm $(VERBOSEFLAGS) -r -f
+TOUCH              := touch
+COPY               := cp $(VERBOSEFLAGS)
+CURL               := curl $(VERBOSEFLAGS)
+ZIP                ?= zip -o -9
 TAR                ?= tar
+
+# $(call writeinformation, msg, details)
+writeinformationaux ?=
+
+#writeinformationauxII ?= \
+#  $(info $(1)) \
+#  $(info $(2))
+writeinformationauxII ?= \
+  Write-Information '$(1)';
+
+writeinformation = \
+  $(call writeinformationaux,$(1),$(2)) \
+  $(call writeinformationauxII,$(1),$(2))
+
+# $(call writewarning, msg, details)
+writewarningaux ?=
+
+#writewarningauxII ?= \
+#  $(warning $(1)) \
+#  $(info $(2))
+writewarningauxII ?= \
+  Write-Warning '$(1)';
+
+writewarning = \
+  $(call writewarningaux,$(1),$(2)) \
+  $(call writewarningauxII,$(1),$(2))
+
+# $(call writeerror, msg, details)
+writeerroraux ?=
+
+#writeerrorauxII ?= \
+#  $(error $(1)) \
+#  $(info $(2))
+writeerrorauxII ?= \
+  Write-Error '$(1)';
+
+writeerror = \
+  $(call writeerroraux,$(1),$(2)) \
+  $(call writeerrorauxII,$(1),$(2))
 
 # $(call setvariable, var, value)
 define setvariable
@@ -98,7 +140,7 @@ endef
 define copyfile
 $1: $2
 	$$(MAKETARGETDIR)
-	cp $$< $$@
+	$(COPY) $$< $$@
 endef
 
 # $(call copyfileto, todir, fromfile)
@@ -107,13 +149,17 @@ copyfileto = $(call copyfile,$1/$(notdir $2),$2)
 # $(call copyfilefrom, tofile, fromdir)
 copyfilefrom = $(call copyfile,$1,$2/$(notdir $1))
 
+# todo: переписать на PowerShell. Такое соединение через && - только для Windows
 # $(call copyFilesToZIP, targetZIP, sourceFiles, sourceFilesRootDir)
 define copyFilesToZIP
 $1:$2
 	$$(MAKETARGETDIR)
 	cd $3 && $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $3/%, %, $$^)
-	@touch $$@
+	$(TOUCH) $$@
 endef
+
+$(OUTPUTDIR) $(AUXDIR):
+	$(MAKETARGETASDIR)
 
 #
 # subprojects
@@ -156,7 +202,7 @@ export $(1)_DIR := $2
 endef
 
 # $(call MAKE_SUBPROJECT, Project)
-MAKE_SUBPROJECT = $(MAKE) -C $(call getSubProjectDir,$1) \
+MAKE_SUBPROJECT = $(MAKETOOL) -C $(call getSubProjectDir,$1) \
   SUBPROJECT=$1 \
   SUBPROJECT_DIR=$(call getSubProjectDir,$1)/ \
   ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
@@ -193,12 +239,12 @@ $(call getSubProjectDir,$1)/%:
 all:: $1
 test: test-$1
 clean::
-	@$(call MAKE_SUBPROJECT,$1) clean
+	$(call MAKE_SUBPROJECT,$1) clean
 endef
 
 ifdef ROOT_PROJECT_DIR
 $(ROOT_PROJECT_DIR)/%:
-	$(MAKE) -C $(ROOT_PROJECT_DIR) $*
+	$(MAKETOOL) -C $(ROOT_PROJECT_DIR) $*
 
 endif
 
@@ -207,7 +253,7 @@ test:
 
 .PHONY: clean
 clean::
-	rm -rf $(AUXDIR)
-	rm -rf $(OUTPUTDIR)
+	$(RMDIR) $(AUXDIR)
+	$(RMDIR) $(OUTPUTDIR)
 
 endif

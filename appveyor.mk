@@ -5,42 +5,47 @@ ITG_MAKEUTILS_DIR ?= $(MAKE_APPVEYOR_DIR)
 include $(ITG_MAKEUTILS_DIR)/common.mk
 include $(ITG_MAKEUTILS_DIR)/nuget.mk
 
-ifeq ($(APPVEYOR),True)
+ifdef APPVEYOR
 
 APPVEYORTOOL ?= appveyor
 
-# $(call pushDeploymentArtifactFile, DeploymentName, Path)
-pushDeploymentArtifactFile = for file in $2; do $(APPVEYORTOOL) PushArtifact $$file -DeploymentName '$(1)'; done
+writeinformationaux = \
+  Add-AppveyorMessage -Message '$(1)' -Category 'Information' $(if $(2),-Details '$(2)');
 
-pushDeploymentArtifact = $(call pushDeploymentArtifactFile,$@,$^)
+writewarningaux = \
+  Add-AppveyorMessage -Message '$(1)' -Category 'Warning' $(if $(2),-Details '$(2)');
+
+writeerroraux = \
+  Add-AppveyorMessage -Message '$(1)' -Category 'Error' $(if $(2),-Details '$(2)');
+
+pushDeploymentArtifactFile = \
+  Push-AppveyorArtifact $(VERBOSEFLAGS) -DeploymentName '$(1)' -Path '$(2)';
+
+pushDeploymentArtifactFiles = \
+  $(foreach artifact,$(2), $(call pushDeploymentArtifactFile,$(1),$(call OSabsPath,$(artifact))))
+
+pushDeploymentArtifact = $(call pushDeploymentArtifactFiles,$@,$^)
 
 # $(call testPlatformSetStatus,testId,status,duration)
-testPlatformSetStatus = echo Test \"$1\" $2$(if $3, in $3 ms).
+testPlatformAddTest = \
+  { param ( $$$$Name, $$$$FileName ) \
+    Add-AppveyorTest -Framework 'MSTest' \
+      -Name $$$$Name -FileName $$$$FileName; \
+  }
 
-# $(call testPlatformWrapper,testId,testScript)
-testPlatformWrapper = \
-  set +e; \
-  $(call testPlatformSetStatus,$1,Running); \
-  $(APPVEYORTOOL) AddTest -Name "$1" -Framework "MSTest" -FileName "" -Outcome Running; \
-  STD_OUT_FILE=$$$$(mktemp); \
-  STD_ERR_FILE=$$$$(mktemp); \
-  START_TIME=$$$$(($$$$(date +%s%3N))); \
-  ( $2 ) > $$$$STD_OUT_FILE 2> $$$$STD_ERR_FILE; \
-  EXIT_CODE=$$$$?; \
-  FINISH_TIME=$$$$(($$$$(date +%s%3N))); \
-  DURATION=$$$$(($$$$FINISH_TIME-$$$$START_TIME)); \
-  STD_OUT="$$$$(cat $$$$STD_OUT_FILE)"; \
-  STD_ERR="$$$$(cat $$$$STD_ERR_FILE)"; \
-  echo $$$$STD_OUT; \
-  if [[ $$$$EXIT_CODE -eq 0 ]]; then \
-    $(call testPlatformSetStatus,$1,Passed,$$$$DURATION); \
-    $(APPVEYORTOOL) UpdateTest -Name "$1" -Duration $$$$DURATION -Framework "MSTest" -FileName "" -Outcome Passed -StdOut "$$$$STD_OUT"; \
-  else \
-    $(call testPlatformSetStatus,$1,Failed,$$$$DURATION); \
-    $(APPVEYORTOOL) UpdateTest -Name "$1" -Duration $$$$DURATION -Framework "MSTest" -FileName "" -Outcome Failed -StdOut "$$$$STD_OUT" -StdErr "$$$$STD_ERR"; \
-  fi; \
-  exit $$$$EXIT_CODE;
+# $(call testPlatformSetStatus,testId,status,duration)
+testPlatformSetStatus = \
+  { param ( $$$$Name, $$$$FileName, $$$$Outcome, [System.TimeSpan] $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
+    Set-UnitTestStatusInformation \
+      -Name $$$$Name -FileName $$$$FileName -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
+    $$$$Params = $$$$PSBoundParameters; \
+    if ( -not $$$$StdOut ) { $$$$Null = $$$$Params.Remove('StdOut'); }; \
+    if ( -not $$$$StdErr ) { $$$$Null = $$$$Params.Remove('StdErr'); }; \
+    $$$$Params.Duration = $$$$Duration.TotalMilliseconds; \
+    Update-AppveyorTest -Framework 'MSTest' @Params; \
+  }
 
+# todo: удалить это определение. В этом файле не используется.
 OPENSSL := $(call shellPath,C:\OpenSSL-Win64\bin\openssl.exe)
 
 else
