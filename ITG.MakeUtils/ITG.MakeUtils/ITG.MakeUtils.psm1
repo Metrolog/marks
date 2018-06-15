@@ -1,10 +1,10 @@
-Function New-Directory {
+п»їFunction New-Directory {
 <#
 .Synopsis
-	ЉроссплатформеннаЯ альтернатива mkdir.
+	РљСЂРѕСЃСЃРїР»Р°С‚С„РѕСЂРјРµРЅРЅР°СЏ Р°Р»СЊС‚РµСЂРЅР°С‚РёРІР° mkdir.
 .Inputs
 	System.String
-	Џуть к каталогу.
+	РџСѓС‚СЊ Рє РєР°С‚Р°Р»РѕРіСѓ.
 #>
 	[CmdletBinding(
 		SupportsShouldProcess = $true,
@@ -21,12 +21,12 @@ Function New-Directory {
 		$Path
 	,
 		# no error if existing, make parent directories as needed.
-		# Ќе используетсЯ. „обавлен ради совместимости с параметром -p от mkdir
+		# РќРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ. Р”РѕР±Р°РІР»РµРЅ СЂР°РґРё СЃРѕРІРјРµСЃС‚РёРјРѕСЃС‚Рё СЃ РїР°СЂР°РјРµС‚СЂРѕРј -p РѕС‚ mkdir
 		[Alias('p')]
 		[Switch]
 		$Parents
 	,
-		# передавать домены далее по конвейеру или нет
+		# РїРµСЂРµРґР°РІР°С‚СЊ РґРѕРјРµРЅС‹ РґР°Р»РµРµ РїРѕ РєРѕРЅРІРµР№РµСЂСѓ РёР»Рё РЅРµС‚
 		[Switch]
 		$PassThru
 	)
@@ -54,10 +54,10 @@ Export-ModuleMember -Function New-Directory -Alias mkdir;
 Function Remove-FileOrDirectory {
 <#
 .Synopsis
-	ЉроссплатформеннаЯ альтернатива rm.
+	РљСЂРѕСЃСЃРїР»Р°С‚С„РѕСЂРјРµРЅРЅР°СЏ Р°Р»СЊС‚РµСЂРЅР°С‚РёРІР° rm.
 .Inputs
 	System.String
-	Џуть к каталогу, файлу.
+	РџСѓС‚СЊ Рє РєР°С‚Р°Р»РѕРіСѓ, С„Р°Р№Р»Сѓ.
 #>
 	[CmdletBinding(
 		SupportsShouldProcess = $true,
@@ -112,7 +112,7 @@ Export-ModuleMember -Alias curl;
 Function Add-UnitTest {
 <#
 .Synopsis
-	‡агрушка. Ђналогичные функции применЯютсЯ длЯ добавлениЯ теста в консоль build серверов.
+	Р—Р°РіСЂСѓС€РєР°. РђРЅР°Р»РѕРіРёС‡РЅС‹Рµ С„СѓРЅРєС†РёРё РїСЂРёРјРµРЅСЏСЋС‚СЃСЏ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ С‚РµСЃС‚Р° РІ РєРѕРЅСЃРѕР»СЊ build СЃРµСЂРІРµСЂРѕРІ.
 #>
 	[CmdletBinding(
 		SupportsShouldProcess = $false
@@ -137,7 +137,7 @@ Export-ModuleMember -Function Add-UnitTest;
 Function Set-UnitTestStatusInformation {
 <#
 .Synopsis
-	‡агрушка. Ђналогичные функции применЯютсЯ длЯ отображениЯ информации о текущем состоЯнии теста.
+	Р—Р°РіСЂСѓС€РєР°. РђРЅР°Р»РѕРіРёС‡РЅС‹Рµ С„СѓРЅРєС†РёРё РїСЂРёРјРµРЅСЏСЋС‚СЃСЏ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё С‚РµСЃС‚Р°.
 #>
 	[CmdletBinding(
 		SupportsShouldProcess = $false
@@ -183,7 +183,7 @@ Export-ModuleMember -Function Set-UnitTestStatusInformation;
 Function Test-UnitTest {
 <#
 .Synopsis
-	ЋбЮртка длЯ выполнениЯ модульных тестов.
+	РћР±С‘СЂС‚РєР° РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РјРѕРґСѓР»СЊРЅС‹С… С‚РµСЃС‚РѕРІ.
 #>
 	[CmdletBinding(
 		SupportsShouldProcess = $false
