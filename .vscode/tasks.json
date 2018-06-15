@@ -55,7 +55,7 @@
         {
             "label": "Получить изменения из ITG.MakeUtils",
             "type": "shell",
-            "command": "git remote add makeutils git@github.com:IT-Service/ITG.MakeUtils.git; git subtree pull --prefix=ITG.MakeUtils --squash makeutils master",
+            "command": "git remote add makeutils git@github.com:IT-Service/ITG.MakeUtils.git; git fetch makeutils; git subtree pull --prefix=ITG.MakeUtils --squash makeutils master",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
@@ -65,7 +65,7 @@
         {
             "label": "Получить изменения из agl-aglfn",
             "type": "shell",
-            "command": "git remote add agl-aglfn git@github.com:adobe-type-tools/agl-aglfn.git; git subtree pull --prefix=encodings/agl-aglfn --squash agl-aglfn master",
+            "command": "git remote add agl-aglfn git@github.com:adobe-type-tools/agl-aglfn.git; git fetch agl-aglfn; git subtree pull --prefix=encodings/agl-aglfn --squash agl-aglfn master",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
