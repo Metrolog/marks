@@ -4,5 +4,18 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"search.exclude": {
+			"**/obj": true,
+			"**/release": true,
+			"**/make.log": true,
+			"ReleaseNotes.md": true
+		},
+		"files.exclude": {
+			"**/obj": true,
+			"**/release": true,
+			"**/make.log": true,
+			"ReleaseNotes.md": true
+		}
+	}
 }
