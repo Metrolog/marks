@@ -129,7 +129,7 @@ Function Add-UnitTest {
 		[String]
 		$FileName = ''
 	)
-	
+
 }
 
 Export-ModuleMember -Function Add-UnitTest;
@@ -173,9 +173,9 @@ Function Set-UnitTestStatusInformation {
 		[String]
 		$StdErr = ''
 	)
-	
+
 	Write-Information "Test '$TestId' is $Status$( & { if ( $TimeElapsed -ne 0 ) { "" in $($TimeElapsed)"" } } ).";
-	
+
 }
 
 Export-ModuleMember -Function Set-UnitTestStatusInformation;
@@ -233,15 +233,18 @@ Function Test-UnitTest {
 		# https://stackoverflow.com/questions/8097354/how-do-i-capture-the-output-into-a-variable-from-an-external-process-in-powershe
 		$testScriptOutput = & { trap {}; & $ScriptBlock; } 2>&1;
 		$sw.Stop();
-		$testScriptOutput | ? { $_ -is [System.Management.Automation.ErrorRecord] } | % { $Passed = $false; };
+		$testScriptOutput | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] } | ForEach-Object {
+			[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseDeclaredVarsMoreThanAssignments", "Passed")]
+			$Passed = $false;
+		};
 	} catch {
 		$sw.Stop();
 		$Passed = $false;
 	} finally {
-		$testScriptStdOutput = $testScriptOutput | ? { $_ -isnot [System.Management.Automation.ErrorRecord] } | Out-String;
-		$testScriptStdError = $testScriptOutput | ? { $_ -is [System.Management.Automation.ErrorRecord] } | Out-String;
+		$testScriptStdOutput = $testScriptOutput | Where-Object { $_ -isnot [System.Management.Automation.ErrorRecord] } | Out-String;
+		$testScriptStdError = $testScriptOutput | Where-Object { $_ -is [System.Management.Automation.ErrorRecord] } | Out-String;
 		$testScriptOutput `
-		| % {
+		| ForEach-Object {
 			if ( $_ -is [System.Management.Automation.ErrorRecord] ) {
 				$_;
 			} else {
