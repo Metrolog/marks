@@ -5,6 +5,7 @@
 		"eamodio.gitlens",
 		"EditorConfig.EditorConfig",
 		"DavidAnson.vscode-markdownlint",
+		"bierner.markdown-preview-github-styles",
 		"stubailo.ignore-gitignore",
 		"Gruntfuggly.todo-tree",
 		"ms-vscode.PowerShell",
