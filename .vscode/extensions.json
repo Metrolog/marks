@@ -6,6 +6,7 @@
 		"EditorConfig.EditorConfig",
 		"DavidAnson.vscode-markdownlint",
 		"bierner.markdown-preview-github-styles",
+		"redhat.vscode-yaml",
 		"stubailo.ignore-gitignore",
 		"Gruntfuggly.todo-tree",
 		"ms-vscode.PowerShell",
