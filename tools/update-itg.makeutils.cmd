@@ -1,1 +1,1 @@
-git subtree pull --prefix=ITG.MakeUtils makeutils master
+git subtree pull --squah --prefix=ITG.MakeUtils makeutils master
