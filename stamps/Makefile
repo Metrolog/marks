@@ -24,6 +24,10 @@ GSINCDIR := $(GSINCDIR) $(PSLIBDIR) $(STAMPLIBDIR)
 $(eval $(call copyfile, $(STAMPLIBDIR)/cp1251.ps, $(CP1251TARGET)))
 $(eval $(call copyfile, $(STAMPLIBDIR)/cp1253.ps, $(CP1253TARGET)))
 
+maintainer-clean::
+	$(RM) $(STAMPLIBDIR)/cp1251.ps
+	$(RM) $(STAMPLIBDIR)/cp1253.ps
+
 STAMPINCFILES := $(wildcard $(PSLIBDIR)/*.ps) $(wildcard $(STAMPLIBDIR)/*.ps) $(STAMPLIBDIR)/cp1251.ps $(STAMPLIBDIR)/cp1253.ps
 
 STAMPFONTDIR := ../fonts
