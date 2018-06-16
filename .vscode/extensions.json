@@ -3,11 +3,11 @@
 	// for the documentation about the extensions.json format
 	"recommendations": [
 		"eamodio.gitlens",
+		"sidneys1.gitconfig",
 		"EditorConfig.EditorConfig",
 		"DavidAnson.vscode-markdownlint",
 		"bierner.markdown-preview-github-styles",
 		"redhat.vscode-yaml",
-		"stubailo.ignore-gitignore",
 		"Gruntfuggly.todo-tree",
 		"ms-vscode.PowerShell",
 		"mxschmitt.postscript"
