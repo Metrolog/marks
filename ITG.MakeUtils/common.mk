@@ -220,7 +220,7 @@ $(SUBPROJECTS_EXPORTS_DIR)/$1.mk: $(call getSubProjectDir,$1)/Makefile
 	$$(MAKETARGETDIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
 .PHONY: $1 $3
-ifeq ($(filter clean,$(MAKECMDGOALS)),)
+ifeq ($(filter %clean,$(MAKECMDGOALS)),)
 include $(SUBPROJECTS_EXPORTS_DIR)/$1.mk
 endif
 $1:
@@ -237,8 +237,20 @@ $(call getSubProjectDir,$1)/%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 all:: $1
 test: test-$1
+ifeq ($(filter clean distclean maintainer-clean,$(MAKECMDGOALS)),)
+mostlyclean::
+	$(call MAKE_SUBPROJECT,$1) mostlyclean
+endif
+ifeq ($(filter distclean maintainer-clean,$(MAKECMDGOALS)),)
 clean::
 	$(call MAKE_SUBPROJECT,$1) clean
+endif
+ifeq ($(filter maintainer-clean,$(MAKECMDGOALS)),)
+distclean::
+	$(call MAKE_SUBPROJECT,$1) distclean
+endif
+maintainer-clean::
+	$(call MAKE_SUBPROJECT,$1) maintainer-clean
 endef
 
 ifdef ROOT_PROJECT_DIR
@@ -253,9 +265,18 @@ test:
 .PHONY: check
 check: test
 
-.PHONY: clean
-clean::
+.PHONY: mostlyclean
+mostlyclean::
 	$(RMDIR) $(AUXDIR)
 	$(RMDIR) $(OUTPUTDIR)
+
+.PHONY: clean
+clean:: mostlyclean
+
+.PHONY: distclean
+distclean:: clean
+
+.PHONY: maintainer-clean
+maintainer-clean:: distclean
 
 endif
