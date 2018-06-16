@@ -1,0 +1,5 @@
+*.mk         merge=text   diff=text   eol=lf
+Makefile     merge=text   diff        eol=lf
+*.ps1        merge=text   diff=text   eol=lf
+*.psd1       merge=text   diff=text   eol=lf
+*.psm1       merge=text   diff=text   eol=lf
