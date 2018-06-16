@@ -16,7 +16,9 @@ AGLFNFILE ?= $(call OSabsPath,agl-aglfn/aglfn.txt)
 
 # download unicode mappings
 
-$(AUXDIR)/MAPPINGS/%.TXT:
+MAPPINGSDIR = maps
+
+$(MAPPINGSDIR)/MAPPINGS/%.TXT:
 	$(call writeinformation,Downloading file "$(@F)"...)
 	$(MAKETARGETDIR)
 	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o $(call OSPath,$@)
@@ -35,7 +37,7 @@ define mapPSEncodingFileToSource
 export $(2)TARGET := $(OUTPUTDIR)/$(2).ps
 $(call pushArtifactTargets,$(2)TARGET)
 
-$(OUTPUTDIR)/$(2).ps: $(AUXDIR)/MAPPINGS/$(1)/$(2).TXT
+$(OUTPUTDIR)/$(2).ps: $(MAPPINGSDIR)/MAPPINGS/$(1)/$(2).TXT
 
 .PHONY: $2
 $2: $$($(2)TARGET)
@@ -57,3 +59,6 @@ $(foreach encoding, CP874 CP932 CP936 CP949 CP950 CP1250 CP1251 CP1252 CP1253 CP
 $(foreach encoding, KOI8-R KOI8-U, \
   $(eval $(call mapPSEncodingFileToSource,VENDORS/MISC,$(encoding))) \
 )
+
+clean::
+	$(RMDIR) $(MAPPINGSDIR)
