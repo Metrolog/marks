@@ -16,7 +16,6 @@ endif
 
 .DEFAULT_GOAL      := all
 .PHONY: all
-.PHONY: test
 
 AUXDIR             ?= obj
 OUTPUTDIR          ?= release
@@ -250,6 +249,9 @@ endif
 
 .PHONY: test
 test:
+
+.PHONY: check
+check: test
 
 .PHONY: clean
 clean::
