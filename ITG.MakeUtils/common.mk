@@ -20,6 +20,7 @@ endif
 AUXDIR             ?= obj
 OUTPUTDIR          ?= release
 SOURCESDIR         ?= sources
+CONFIGDIR          ?= config
 export REPOROOT    ?= $(abspath ./$(ROOT_PROJECT_DIR))/
 REPOVERSION        = $(REPOROOT).git/logs/HEAD
 
@@ -275,6 +276,7 @@ clean:: mostlyclean
 
 .PHONY: distclean
 distclean:: clean
+	$(RMDIR) $(CONFIGDIR)
 
 .PHONY: maintainer-clean
 maintainer-clean:: distclean
