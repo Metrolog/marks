@@ -55,7 +55,7 @@
         {
             "label": "Получить изменения из ITG.MakeUtils",
             "type": "shell",
-            "command": "git remote add makeutils git@github.com:IT-Service/ITG.MakeUtils.git; git fetch makeutils; git subtree pull --prefix=ITG.MakeUtils --squash makeutils master",
+            "command": "git remote add makeutils git@github.com:IT-Service/ITG.MakeUtils.git; git fetch makeutils; git subtree pull --prefix=ITG.MakeUtils makeutils master",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
