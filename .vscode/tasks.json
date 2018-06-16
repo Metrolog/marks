@@ -26,7 +26,16 @@
                 "reveal": "always",
                 "panel": "shared"
             },
-            "problemMatcher": []
+            "problemMatcher":  {
+                "fileLocation": ["relative", "${workspaceFolder}"],
+
+                "pattern": {
+                    "regexp": "^([^\\s].*?):(\\d+|):\\s+(.*?) Stop.$",
+                    "file": 1,
+                    "line": 2,
+                    "message": 3
+                }
+            }
         },
         {
             "label": "Выполнить тесты",
@@ -40,7 +49,16 @@
                 "reveal": "always",
                 "panel": "shared"
             },
-            "problemMatcher": []
+            "problemMatcher":  {
+                "fileLocation": ["relative", "${workspaceFolder}"],
+
+                "pattern": {
+                    "regexp": "^([^\\s].*?):(\\d+|):\\s+(.*?) Stop.$",
+                    "file": 1,
+                    "line": 2,
+                    "message": 3
+                }
+            }
         },
         {
             "label": "Отправить изменения в ITG.MakeUtils",
