@@ -85,6 +85,7 @@ MKDIR              := mkdir $(VERBOSEFLAGS) -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
 RMDIR              := rm $(VERBOSEFLAGS) -r -f
+RM                 := rm $(VERBOSEFLAGS) -r -f
 TOUCH              := touch
 COPY               := cp $(VERBOSEFLAGS)
 CURL               := curl $(VERBOSEFLAGS)
