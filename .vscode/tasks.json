@@ -17,7 +17,12 @@
         {
             "label": "Выполнить сборку",
             "type": "shell",
-            "command": "make",
+            "windows": {
+                "command": "cmd /c 'make 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+            },
+            "linux": {
+                "command": "/bin/sh -c 'make 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -26,21 +31,30 @@
                 "reveal": "always",
                 "panel": "shared"
             },
-            "problemMatcher":  {
-                "fileLocation": ["relative", "${workspaceFolder}"],
-
-                "pattern": {
-                    "regexp": "^([^\\s].*?):(\\d+|):\\s+(.*?) Stop.$",
-                    "file": 1,
-                    "line": 2,
-                    "message": 3
+            "problemMatcher":  [
+                {
+                    "owner": "custom",
+                    "fileLocation": "absolute",
+                    "pattern": [
+                        {
+                            "regexp": "^(.+?):(\\d+):\\s+(.*?) Stop\\.$",
+                            "file": 1,
+                            "line": 2,
+                            "message": 3
+                        }
+                    ]
                 }
-            }
+            ]
         },
         {
             "label": "Выполнить тесты",
             "type": "shell",
-            "command": "make check",
+            "windows": {
+                "command": "cmd /c 'make check 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+            },
+            "linux": {
+                "command": "/bin/sh -c 'make check 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+            },
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -49,16 +63,20 @@
                 "reveal": "always",
                 "panel": "shared"
             },
-            "problemMatcher":  {
-                "fileLocation": ["relative", "${workspaceFolder}"],
-
-                "pattern": {
-                    "regexp": "^([^\\s].*?):(\\d+|):\\s+(.*?) Stop.$",
-                    "file": 1,
-                    "line": 2,
-                    "message": 3
+            "problemMatcher":  [
+                {
+                    "owner": "custom",
+                    "fileLocation": "absolute",
+                    "pattern": [
+                        {
+                            "regexp": "^(.+?):(\\d+):\\s+(.*?) Stop\\.$",
+                            "file": 1,
+                            "line": 2,
+                            "message": 3
+                        }
+                    ]
                 }
-            }
+            ]
         },
         {
             "label": "Отправить изменения в ITG.MakeUtils",
