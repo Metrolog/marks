@@ -203,11 +203,12 @@ export $(1)_DIR := $2
 endef
 
 # $(call MAKE_SUBPROJECT, Project)
-MAKE_SUBPROJECT = $(MAKETOOL) -C $(call getSubProjectDir,$1) \
-  SUBPROJECT=$1 \
-  SUBPROJECT_DIR=$(call getSubProjectDir,$1)/ \
-  ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
-  SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)/$(SUBPROJECTS_EXPORTS_DIR)/$1.mk
+MAKE_SUBPROJECT = \
+  $(MAKETOOL) -C $(call getSubProjectDir,$1) \
+    SUBPROJECT=$1 \
+    SUBPROJECT_DIR=$(call getSubProjectDir,$1)/ \
+    ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
+    SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)/$(SUBPROJECTS_EXPORTS_DIR)/$1.mk
 
 # $(call declareProjectTargets, Project)
 define declareProjectTargets
