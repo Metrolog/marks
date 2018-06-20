@@ -1,9 +1,11 @@
-ifndef MAKE_TEX_GITVERSION_DIR
-MAKE_TEX_GITVERSION_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR ?= $(realpath $(MAKE_TEX_GITVERSION_DIR)/..)
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
 
-include $(realpath $(ITG_MAKEUTILS_DIR)/common.mk)
-include $(realpath $(ITG_MAKEUTILS_DIR)/gitversion.mk)
+ifndef MAKE_TEX_GITVERSION_DIR
+MAKE_TEX_GITVERSION_DIR = $(ITG_MAKEUTILS_DIR)TeX/
+
+include $(realpath $(ITG_MAKEUTILS_DIR)gitversion.mk)
 
 %/version.tex %/version.dtx: $(REPOVERSION)
 	$(call writeinformation,Generating latex version file "$@"...)

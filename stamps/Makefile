@@ -15,27 +15,27 @@ include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
 # postscript to PDF build system
 
-STAMPSRCDIR := $(SOURCESDIR)/
+STAMPSRCDIR := $(SOURCESDIR)
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
-PSLIBDIR := ../ITG.PostScriptLib
-STAMPLIBDIR := lib
+PSLIBDIR := $(ROOT_PROJECT_DIR)ITG.PostScriptLib/
+STAMPLIBDIR := lib/
 GSINCDIR := $(GSINCDIR) $(PSLIBDIR) $(STAMPLIBDIR)
 
-$(eval $(call copyfile, $(STAMPLIBDIR)/cp1251.ps, $(CP1251TARGET)))
-$(eval $(call copyfile, $(STAMPLIBDIR)/cp1253.ps, $(CP1253TARGET)))
+$(eval $(call copyfile, $(STAMPLIBDIR)cp1251.ps, $(CP1251TARGET)))
+$(eval $(call copyfile, $(STAMPLIBDIR)cp1253.ps, $(CP1253TARGET)))
 
 maintainer-clean::
-	$(RM) $(STAMPLIBDIR)/cp1251.ps
-	$(RM) $(STAMPLIBDIR)/cp1253.ps
+	$(RM) $(STAMPLIBDIR)cp1251.ps
+	$(RM) $(STAMPLIBDIR)cp1253.ps
 
-STAMPINCFILES := $(wildcard $(PSLIBDIR)/*.ps) $(wildcard $(STAMPLIBDIR)/*.ps) $(STAMPLIBDIR)/cp1251.ps $(STAMPLIBDIR)/cp1253.ps
+STAMPINCFILES := $(wildcard $(PSLIBDIR)*.ps) $(wildcard $(STAMPLIBDIR)*.ps) $(STAMPLIBDIR)cp1251.ps $(STAMPLIBDIR)cp1253.ps
 
-STAMPFONTDIR := ../fonts
+STAMPFONTDIR := $(ROOT_PROJECT_DIR)fonts/
 GSFONTDIR := $(GSFONTDIR) $(STAMPFONTDIR)
-STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)/*.pt3)
+STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)*.pt3)
 
-STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)/%.pdf,$(STAMPSSOURCEFILES))
+STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCEFILES))
 
 $(STAMPSPDFFILES): $(STAMPINCFILES) $(STAMPFONTFILES)
 

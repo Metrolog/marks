@@ -30,7 +30,7 @@ GSCMDLINE = $(GS) \
   $(foreach incdir,$(GSINCDIR), -I'$(call OSabsPath,$(incdir))') \
   $(if $(GSFONTDIR),-sFONTPATH='$(foreach fontdir,$(GSFONTDIR),$(call OSabsPath,$(fontdir))$(PATHSEP))')
 
-$(OUTPUTDIR)/%.pdf: $(SOURCESDIR)/%.ps
+$(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
 	$(call writeinformation,Build file "$@" from "$<"...)
 	$(MAKETARGETDIR)
 	$(GSCMDLINE) -sOutputFile='$(call OSPath,$@)' '$(call OSPath,$<)'
@@ -39,8 +39,8 @@ $(OUTPUTDIR)/%.pdf: $(SOURCESDIR)/%.ps
 
 ifdef MAKE_TESTS_DIR
 
-TESTSPSFILES = $(wildcard $(TESTSDIR)/*.ps)
-TESTSPDFFILES = $(patsubst $(TESTSDIR)/%.ps,$(AUXDIR)/%.pdf,$(TESTSPSFILES))
+TESTSPSFILES = $(wildcard $(TESTSDIR)*.ps)
+TESTSPDFFILES = $(patsubst $(TESTSDIR)%.ps,$(AUXDIR)%.pdf,$(TESTSPSFILES))
 
 # $(call definePostScriptTest,target,source,dependencies)
 define definePostScriptTest
@@ -53,7 +53,7 @@ $(call defineTest,$(basename $(notdir $1)),ps_build,\
 endef
 
 # $(call definePostScriptTests,dependencies)
-definePostScriptTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptTest,$(patsubst $(TESTSDIR)/%.ps,$(AUXDIR)/%.pdf,$(test)),$(test),$1))
+definePostScriptTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptTest,$(patsubst $(TESTSDIR)%.ps,$(AUXDIR)%.pdf,$(test)),$(test),$1))
 
 # $(call definePostScriptBuildTest,target,source,dependencies)
 define definePostScriptBuildTest
@@ -67,7 +67,7 @@ $(call defineTest,$(basename $(notdir $1)),ps_build,\
 endef
 
 # $(call definePostScriptBuildTests,dependencies)
-definePostScriptBuildTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptBuildTest,$(patsubst $(TESTSDIR)/%.ps,$(AUXDIR)/%.pdf,$(test)),$(test),$1))
+definePostScriptBuildTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptBuildTest,$(patsubst $(TESTSDIR)%.ps,$(AUXDIR)%.pdf,$(test)),$(test),$1))
 
 endif
 

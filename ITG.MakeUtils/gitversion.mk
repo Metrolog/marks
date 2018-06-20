@@ -7,7 +7,7 @@ MAKE_GITVERSION_DIR = $(ITG_MAKEUTILS_DIR)
 
 GITVERSION ?= gitversion
 
-export GITVERSIONMAKEFILE ?= $(abspath $(AUXDIR)/version.mk)
+export GITVERSIONMAKEFILE ?= $(abspath $(AUXDIR)version.mk)
 
 $(GITVERSIONMAKEFILE): $(REPOVERSION)
 	$(call writeinformation,Generating version data file "$@" with GitVersion...)

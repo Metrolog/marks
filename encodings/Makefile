@@ -18,16 +18,16 @@ AGLFNFILE ?= $(call OSabsPath,agl-aglfn/aglfn.txt)
 
 # download unicode mappings
 
-MAPPINGSDIR = maps
+MAPPINGSDIR = maps/
 
-$(MAPPINGSDIR)/MAPPINGS/%.TXT:
+$(MAPPINGSDIR)MAPPINGS/%.TXT:
 	$(call writeinformation,Downloading file "$(@F)"...)
 	$(MAKETARGETDIR)
 	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o $(call OSPath,$@)
 	$(TOUCH) $@
 	$(call writeinformation,File "$(@F)" is downloaded.)
 
-$(OUTPUTDIR)/%.ps:
+$(OUTPUTDIR)%.ps:
 	$(call writeinformation,Creating PostScript encoding file "$(@F)" from "$<"...)
 	$(MAKETARGETDIR)
 	./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath $(call OSPath,$<) -FilePath $(call OSPath,$@) $(VERBOSEFLAGS)
@@ -36,10 +36,10 @@ $(OUTPUTDIR)/%.ps:
 # $(call mapPSEncodingFileToSource, uri, encoding)
 define mapPSEncodingFileToSource
 
-export $(2)TARGET := $(OUTPUTDIR)/$(2).ps
+export $(2)TARGET := $(OUTPUTDIR)$(2).ps
 $(call pushArtifactTargets,$(2)TARGET)
 
-$(OUTPUTDIR)/$(2).ps: $(MAPPINGSDIR)/MAPPINGS/$(1)/$(2).TXT
+$(OUTPUTDIR)$(2).ps: $(MAPPINGSDIR)MAPPINGS/$(1)/$(2).TXT
 
 .PHONY: $2
 $2: $$($(2)TARGET)

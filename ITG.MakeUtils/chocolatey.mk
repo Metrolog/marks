@@ -53,18 +53,18 @@ calcChocoPackageFileName = $1.$2.nupkg
 # $(call packChocoPackageAux, id, packageId, installerArgs, packageVersion, preReleaseSuffix, dependencies)
 define packChocoPackageAux
 
-export $(1)TARGETS ?= $(OUTPUTDIR)/$2/$$($(1)VERSION)/$(call calcChocoPackageFileName,$2,$$($(1)VERSION))
+export $(1)TARGETS ?= $(OUTPUTDIR)$2/$$($(1)VERSION)/$(call calcChocoPackageFileName,$2,$$($(1)VERSION))
 $(call declareGlobalTargets,$(1)TARGETS)
-$(1)NUSPEC      ?= $(wildcard $(SOURCESDIR)/$2/*.nuspec)
-$(1)TOOLS       ?= $(wildcard $(SOURCESDIR)/$2/chocolatey*.ps1)
+$(1)NUSPEC      ?= $(wildcard $(SOURCESDIR)$2/*.nuspec)
+$(1)TOOLS       ?= $(wildcard $(SOURCESDIR)$2/chocolatey*.ps1)
 $(1)VERSION     ?= $4
 $(1)VERSIONSUFFIX ?= $5
 
 $$($(1)TARGETS): \
     $$($(1)NUSPEC) \
     $$($(1)TOOLS) \
-    $(wildcard $(SOURCESDIR)/$2/*.ignore) \
-    $(patsubst %.externalfile.xml,%.$(FILEHASHALGORITHM).checksum.txt,$(wildcard $(SOURCESDIR)/$2/*.externalfile.xml)) \
+    $(wildcard $(SOURCESDIR)$2/*.ignore) \
+    $(patsubst %.externalfile.xml,%.$(FILEHASHALGORITHM).checksum.txt,$(wildcard $(SOURCESDIR)$2/*.externalfile.xml)) \
     $6
 	$$(call writeinformation,Generating chocolatey package file "$$@"...)
 	$$(MAKETARGETDIR)

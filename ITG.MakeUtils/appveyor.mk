@@ -57,7 +57,7 @@ pushDeploymentArtifact =
 
 endif
 
-SECURE_FILE_TOOL ?= $(NUGET_PACKAGES_DIR)/secure-file/tools/secure-file
+SECURE_FILE_TOOL ?= $(NUGET_PACKAGES_DIR)secure-file/tools/secure-file
 SECURE_FILES_SECRET ?= password
 
 getEncodedFile = $1.enc
