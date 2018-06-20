@@ -1,23 +1,25 @@
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
+
 ifndef MAKE_TEX_CTAN_DIR
-MAKE_TEX_CTAN_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR ?= $(realpath $(MAKE_TEX_CTAN_DIR)/..)
+MAKE_TEX_CTAN_DIR = $(ITG_MAKEUTILS_DIR)TeX/
 
-LATEXTDSAUXDIR ?= $(AUXDIR)/tds
+LATEXTDSAUXDIR ?= $(AUXDIR)tds/
 TDSFILE ?= $(LATEXPKG).tds.zip
-TDSTARGET ?= $(AUXDIR)/$(TDSFILE)
+TDSTARGET ?= $(AUXDIR)$(TDSFILE)
 
-LATEXCTANAUXDIR ?= $(AUXDIR)/ctan
+LATEXCTANAUXDIR ?= $(AUXDIR)ctan/
 CTANFILE ?= $(LATEXPKG).zip
-CTANTARGET ?= $(OUTPUTDIR)/ctan/$(CTANFILE)
+CTANTARGET ?= $(OUTPUTDIR)ctan/$(CTANFILE)
 
-CTAN_SUMMARYFILE ?= $(LATEXPKGMAINDIR)/summary.txt
+CTAN_SUMMARYFILE ?= $(LATEXPKGMAINDIR)summary.txt
 export CTAN_DONOTANNOUNCE ?= 1
-export CTAN_DIRECTORY ?= /macros/latex/contrib/$(LATEXPKG)
+export CTAN_DIRECTORY ?= /macros/latex/contrib/$(LATEXPKG)/
 export LICENSE ?= free
 export FREEVERSION ?= lppl
 
-include $(ITG_MAKEUTILS_DIR)/common.mk
-include $(ITG_MAKEUTILS_DIR)/appveyor.mk
+include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
 #
 # common
@@ -25,12 +27,12 @@ include $(ITG_MAKEUTILS_DIR)/appveyor.mk
 
 # $(call defineCTANTargetRule, TargetType, source, target)
 define defineCTANTargetRule
-$(LATEX$(1)AUXINCDIR)/$(2).$(1).mk: $(MAKEFILE_LIST) | $(LATEX$(1)AUXDIR)/$(3)
+$(LATEX$(1)AUXINCDIR)$(2).$(1).mk: $(MAKEFILE_LIST) | $(LATEX$(1)AUXDIR)$(3)
 	$$(file > $$@,$$($(1)TARGET): $$|)
 endef
 
 define copyFileToCTANTargetByRule
-include $(LATEX$(1)AUXINCDIR)/$(notdir $(2)).$(1).mk
+include $(LATEX$(1)AUXINCDIR)$(notdir $(2)).$(1).mk
 endef
 
 # $(call copyFilesToTarget, targetId, sourceFiles, targetDir)
@@ -41,7 +43,7 @@ endef
 
 # $(call copyFileToCTANTarget, TargetType, sourceFile)
 define copyFileToCTANTarget
-$(call copyfileto,$(LATEX$(1)AUXDIR)/%,$(2))
+$(call copyfileto,$(LATEX$(1)AUXDIR)%,$(2))
 $(call copyFileToCTANTargetByRule,$(1),$(2))
 endef
 
@@ -92,7 +94,7 @@ $(eval $(call defineTDSRule,%.ttf,fonts/truetype/public/$(LATEXPKG)/%.ttf))
 $(eval $(call defineTDSRule,%.txt,doc/latex/$(LATEXPKG)/%.txt))
 $(eval $(call defineTDSRule,%.vf,fonts/vf/public/$(LATEXPKG)/%.vf))
 
-#$(LATEXTDSPHONYDIR)/%:
+#$(LATEXTDSPHONYDIR)%:
 #	$(error Unknown TDS file extension: $@)
 
 copyFileToTDS = $(call copyFileToCTANTarget,TDS,$1)
@@ -165,7 +167,7 @@ endef
 
 ifndef SUBMAKE_TEX_CTAN
 
-CTANMAKEFILE ?= $(AUXDIR)/$(LATEXPKG).ctan.mk
+CTANMAKEFILE ?= $(AUXDIR)$(LATEXPKG).ctan.mk
 
 ifndef CTANFILES
 

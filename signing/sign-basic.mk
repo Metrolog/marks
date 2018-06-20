@@ -1,12 +1,14 @@
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
+
 ifndef MAKE_SIGNING_SIGN_BASIC_DIR
-MAKE_SIGNING_SIGN_BASIC_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR ?= $(realpath $(MAKE_SIGNING_SIGN_BASIC_DIR)/..)
+MAKE_SIGNING_SIGN_BASIC_DIR = $(ITG_MAKEUTILS_DIR)signing/
 
-include $(ITG_MAKEUTILS_DIR)/common.mk
-include $(ITG_MAKEUTILS_DIR)/signing/sign.mk
+include $(ITG_MAKEUTILS_DIR)signing/sign.mk
 
-CODE_SIGNING_CERTIFICATE_DIR = certificate
-CODE_SIGNING_CERTIFICATE := $(CODE_SIGNING_CERTIFICATE_DIR)/cert.pfx
+CODE_SIGNING_CERTIFICATE_DIR = certificate/
+CODE_SIGNING_CERTIFICATE := $(CODE_SIGNING_CERTIFICATE_DIR)cert.pfx
 export CODE_SIGNING_CERTIFICATE_PFX := $(basename $(CODE_SIGNING_CERTIFICATE)).pfx
 $(eval $(call pushArtifactTarget,CODE_SIGNING_CERTIFICATE_PFX))
 export CODE_SIGNING_CERTIFICATE_PVK := $(basename $(CODE_SIGNING_CERTIFICATE)).pvk

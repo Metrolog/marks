@@ -2,11 +2,8 @@ ifndef MAKE_COMMON_DIR
 MAKE_COMMON_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ITG_MAKEUTILS_LOADED := true
 
-# TODO: уйти от абсолютных путей
 ROOT_PROJECT_DIR ?= ../
 ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
-#export ITG_MAKEUTILS_DIR
-#export ITG_MAKEUTILS_DIR := $(realpath $(MAKE_COMMON_DIR))
 
 ifeq (,$(filter oneshell,$(.FEATURES)))
 $(error Requires make version that supports .ONESHELL feature.)
@@ -23,12 +20,12 @@ endif
 .DEFAULT_GOAL      := all
 .PHONY: all
 
-# TODO: все переменные с каталогами должны иметь / в конце
-AUXDIR             ?= obj
-OUTPUTDIR          ?= release
-SOURCESDIR         ?= sources
-CONFIGDIR          ?= config
+AUXDIR             ?= obj/
+OUTPUTDIR          ?= release/
+SOURCESDIR         ?= sources/
+CONFIGDIR          ?= config/
 # TODO: уйти от абсолютных путей
+# TODO: эти переменные вообще вынести в отдельный git.mk
 export REPOROOT    ?= $(abspath ./$(ROOT_PROJECT_DIR))/
 REPOVERSION        = $(REPOROOT).git/logs/HEAD
 
@@ -37,6 +34,9 @@ COMMA              :=,
 LEFT_BRACKET       :=(
 RIGHT_BRACKET      :=)
 DOLLAR_SIGN        :=$$
+
+# $(call dirname,dir)
+dirname = $(patsubst %/,%,$1)
 
 # TODO: уйти cygpath полностью
 # TODO: удалить winPath
@@ -81,7 +81,7 @@ endif
 
 # TODO: удалить OSabsPath
 POWERSHELLMODULES  := \
-  '$(call OSabsPath,$(ITG_MAKEUTILS_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1)'
+  '$(call OSabsPath,$(ITG_MAKEUTILS_DIR)ITG.MakeUtils/ITG.MakeUtils.psd1)'
 
 SHELL              := $(PowerShell)
 
@@ -186,12 +186,11 @@ $(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 # subprojects
 #
 
-# TODO: все переменные с каталогами должны иметь / в конце
-SUBPROJECTS_EXPORTS_DIR := $(CONFIGDIR)/subprojectExports
+SUBPROJECTS_EXPORTS_DIR := $(CONFIGDIR)subprojectExports/
 $(SUBPROJECTS_EXPORTS_DIR): | $(CONFIGDIR)
 	$(MAKETARGETASDIR)
 
-SUBPROJECT_EXPORTS_FILE ?= $(SUBPROJECTS_EXPORTS_DIR)/undefined
+SUBPROJECT_EXPORTS_FILE ?= $(SUBPROJECTS_EXPORTS_DIR)undefined
 
 .PHONY: .GLOBAL_VARIABLES
 .GLOBAL_VARIABLES: $(SUBPROJECT_EXPORTS_FILE)
@@ -211,7 +210,7 @@ exportGlobalVariables = $(call exportGlobalVariablesAux,$(1),SimpleVariableWrite
 exportGlobalVariable = $(exportGlobalVariables)
 
 # $(call pushArtifactTargets, Variables)
-TargetWriter = $$(foreach path,$$($(1)),$$$$$$$$(ROOT_PROJECT_DIR)/$(SUBPROJECT_DIR)$$(path))
+TargetWriter = $$(foreach path,$$($(1)),$$$$$$$$(ROOT_PROJECT_DIR)$(SUBPROJECT_DIR)$$(path))
 pushArtifactTargets = $(call exportGlobalVariablesAux,$(1),TargetWriter)
 pushArtifactTarget = $(pushArtifactTargets)
 
@@ -223,31 +222,31 @@ getSubProjectDir = $($(1)_DIR)
 
 # $(call setSubProjectDir, Project, ProjectDir)
 define setSubProjectDir
-export $(1)_DIR := $2
+export $(1)_DIR := $2/
 endef
 
 # $(call MAKE_SUBPROJECT, Project)
 MAKE_SUBPROJECT = \
   $(MAKETOOL) -C $(call getSubProjectDir,$1) \
     SUBPROJECT=$1 \
-    SUBPROJECT_DIR=$(call getSubProjectDir,$1)/ \
+    SUBPROJECT_DIR=$(call getSubProjectDir,$1) \
     ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
-    SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)$(SUBPROJECTS_EXPORTS_DIR)/$1.mk
+    SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
 
 # $(call declareProjectTargets, Project)
 define declareProjectTargets
-$(call getSubProjectDir,$1)/%:
+$(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 endef
 
 # $(call useSubProject, SubProject, SubProjectDir [, Targets ])
 define useSubProject
 $(eval $(call setSubProjectDir,$1,$2))
-$(SUBPROJECTS_EXPORTS_DIR)/$1.mk: $(call getSubProjectDir,$1)/Makefile | $(SUBPROJECTS_EXPORTS_DIR)
+$(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $(SUBPROJECTS_EXPORTS_DIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
 .PHONY: $1 $3
 ifeq ($(filter %clean,$(MAKECMDGOALS)),)
-include $(SUBPROJECTS_EXPORTS_DIR)/$1.mk
+include $(SUBPROJECTS_EXPORTS_DIR)$1.mk
 endif
 $1:
 	$(call MAKE_SUBPROJECT,$1)
@@ -259,7 +258,7 @@ $(foreach target,$3,test-$(target)):
 	$(call MAKE_SUBPROJECT,$1) --keep-going $$@
 $(foreach target,$3,test.%-$(target)):
 	$(call MAKE_SUBPROJECT,$1) --keep-going $$@
-$(call getSubProjectDir,$1)/%:
+$(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 all:: $1
 test: test-$1
@@ -280,7 +279,7 @@ maintainer-clean::
 endef
 
 ifdef ROOT_PROJECT_DIR
-$(ROOT_PROJECT_DIR)/%:
+$(ROOT_PROJECT_DIR)%:
 	$(MAKETOOL) -C $(ROOT_PROJECT_DIR) $*
 
 endif

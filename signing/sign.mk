@@ -1,8 +1,9 @@
-ifndef MAKE_SIGNING_SIGN_DIR
-MAKE_SIGNING_SIGN_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR ?= $(realpath $(MAKE_SIGNING_SIGN_DIR)/..)
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
 
-include $(ITG_MAKEUTILS_DIR)/common.mk
+ifndef MAKE_SIGNING_SIGN_DIR
+MAKE_SIGNING_SIGN_DIR = $(ITG_MAKEUTILS_DIR)signing/
 
 CODE_SIGNING_CERTIFICATE_PASSWORD ?= pfxpassword
 OPENSSL ?= openssl
@@ -22,7 +23,7 @@ $1:
     -NonInteractive \
     -NoProfile \
     -ExecutionPolicy unrestricted \
-    -File $(call winPath,$(MAKE_SIGNING_SIGN_DIR)/Export-CodeSigningCertificate.ps1) \
+    -File $(call winPath,$(MAKE_SIGNING_SIGN_DIR)Export-CodeSigningCertificate.ps1) \
     -FilePath $$@ \
     -Password '$(CODE_SIGNING_CERTIFICATE_PASSWORD)' \
     -ErrorAction Stop \
@@ -125,15 +126,15 @@ SIGNWITHSIGNTOOL ?= \
 # to guarantee a maximal compatibility.
 # However it can only work for binaries (.exe) and not for .msi installers.
 # To do so, simply execute the two following commands:
-# 
+#
 # signtool sign /f yourFile.pfx /p password /t "http://timestamp.verisign.com/scripts/timstamp.dll" /fd SHA1 "PATH_TO_EXECUTABLE"
 # signtool sign /as /f yourFile.pfx /p password /tr "http://sha256timestamp.ws.symantec.com/sha256/timestamp" /td SHA256 /fd SHA256 "CHEMIN_VERS_VOTRE_EXECUTABLE"
-# 
+#
 # The first command is used to sign the file using SHA1, the second one, SHA2.
 # The SHA2 signature is set as default. The timestamping server for the SHA1 signature is using Microsoft's format.
-# The example is valid for Symantec certificates. 
+# The example is valid for Symantec certificates.
 # If your want a RFC3161 compliant SHA1 signaure, you can use the following server :
-# http://timestamp.geotrust.com/tsa 
+# http://timestamp.geotrust.com/tsa
 
 SIGNWITHSIGNCODE = \
   $(SIGNCODEPWD) \

@@ -6,7 +6,7 @@ ifndef MAKE_TESTS_DIR
 
 MAKE_TESTS_DIR = $(ITG_MAKEUTILS_DIR)
 
-TESTSDIR ?= tests
+TESTSDIR ?= tests/
 
 # $(call testPlatformSetStatus,testId,status,duration)
 testPlatformAddTest = $$$${Function:Add-UnitTest}
