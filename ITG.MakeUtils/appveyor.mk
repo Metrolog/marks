@@ -1,9 +1,11 @@
-ifndef MAKE_APPVEYOR_DIR
-MAKE_APPVEYOR_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR ?= $(MAKE_APPVEYOR_DIR)
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
 
-include $(ITG_MAKEUTILS_DIR)/common.mk
-include $(ITG_MAKEUTILS_DIR)/nuget.mk
+ifndef MAKE_APPVEYOR_DIR
+MAKE_APPVEYOR_DIR = $(ITG_MAKEUTILS_DIR)
+
+include $(ITG_MAKEUTILS_DIR)nuget.mk
 
 ifdef APPVEYOR
 

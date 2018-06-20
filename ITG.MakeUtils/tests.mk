@@ -1,10 +1,12 @@
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
+
 ifndef MAKE_TESTS_DIR
-MAKE_TESTS_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR   ?= $(MAKE_TESTS_DIR)
 
-include $(realpath $(ITG_MAKEUTILS_DIR)/common.mk)
+MAKE_TESTS_DIR = $(ITG_MAKEUTILS_DIR)
 
-TESTSDIR         ?= tests
+TESTSDIR ?= tests
 
 # $(call testPlatformSetStatus,testId,status,duration)
 testPlatformAddTest = $$$${Function:Add-UnitTest}

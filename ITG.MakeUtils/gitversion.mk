@@ -1,8 +1,9 @@
-ifndef MAKE_GITVERSION_DIR
-MAKE_GITVERSION_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR ?= $(MAKE_GITVERSION_DIR)
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
 
-include $(realpath $(ITG_MAKEUTILS_DIR)/common.mk)
+ifndef MAKE_GITVERSION_DIR
+MAKE_GITVERSION_DIR = $(ITG_MAKEUTILS_DIR)
 
 GITVERSION ?= gitversion
 
@@ -11,7 +12,7 @@ export GITVERSIONMAKEFILE ?= $(abspath $(AUXDIR)/version.mk)
 $(GITVERSIONMAKEFILE): $(REPOVERSION)
 	$(call writeinformation,Generating version data file "$@" with GitVersion...)
 	$(MAKETARGETDIR)
-	$(GITVERSION) /exec $(MAKETOOL) /execargs "--makefile=$(MAKE_GITVERSION_DIR)/gitversion-buildcache.mk $@"
+	$(GITVERSION) /exec $(MAKETOOL) /execargs "--makefile=$(MAKE_GITVERSION_DIR)gitversion-buildcache.mk $@"
 	$(call writeinformation,File "$@" is ready.)
 
 ifeq ($(filter clean,$(MAKECMDGOALS)),)

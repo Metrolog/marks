@@ -1,8 +1,10 @@
-ifndef MAKE_GHOSTSCRIPT_DIR
-MAKE_GHOSTSCRIPT_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR ?= $(MAKE_GHOSTSCRIPT_DIR)
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
 
-include $(realpath $(ITG_MAKEUTILS_DIR)/common.mk)
+ifndef MAKE_GHOSTSCRIPT_DIR
+
+MAKE_GHOSTSCRIPT_DIR = $(ITG_MAKEUTILS_DIR)
 
 ifeq ($(OS),Windows_NT)
 

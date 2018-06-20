@@ -1,7 +1,12 @@
 ifndef MAKE_COMMON_DIR
 MAKE_COMMON_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+ITG_MAKEUTILS_LOADED := true
+
 # TODO: уйти от абсолютных путей
-export ITG_MAKEUTILS_DIR := $(realpath $(MAKE_COMMON_DIR))
+ROOT_PROJECT_DIR ?= ../
+ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
+#export ITG_MAKEUTILS_DIR
+#export ITG_MAKEUTILS_DIR := $(realpath $(MAKE_COMMON_DIR))
 
 ifeq (,$(filter oneshell,$(.FEATURES)))
 $(error Requires make version that supports .ONESHELL feature.)
@@ -18,6 +23,7 @@ endif
 .DEFAULT_GOAL      := all
 .PHONY: all
 
+# TODO: все переменные с каталогами должны иметь / в конце
 AUXDIR             ?= obj
 OUTPUTDIR          ?= release
 SOURCESDIR         ?= sources
@@ -180,6 +186,7 @@ $(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 # subprojects
 #
 
+# TODO: все переменные с каталогами должны иметь / в конце
 SUBPROJECTS_EXPORTS_DIR := $(CONFIGDIR)/subprojectExports
 $(SUBPROJECTS_EXPORTS_DIR): | $(CONFIGDIR)
 	$(MAKETARGETASDIR)
@@ -209,7 +216,7 @@ pushArtifactTargets = $(call exportGlobalVariablesAux,$(1),TargetWriter)
 pushArtifactTarget = $(pushArtifactTargets)
 
 # $(call calcRootProjectDir, Project)
-calcRootProjectDir = $(subst $(SPACE),/,$(patsubst %,..,$(subst /,$(SPACE),$(call getSubProjectDir,$1))))
+calcRootProjectDir = $(subst $(SPACE),/,$(patsubst %,..,$(subst /,$(SPACE),$(call getSubProjectDir,$1))))/
 
 # $(call getSubProjectDir, Project)
 getSubProjectDir = $($(1)_DIR)
@@ -225,7 +232,7 @@ MAKE_SUBPROJECT = \
     SUBPROJECT=$1 \
     SUBPROJECT_DIR=$(call getSubProjectDir,$1)/ \
     ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
-    SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)/$(SUBPROJECTS_EXPORTS_DIR)/$1.mk
+    SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)$(SUBPROJECTS_EXPORTS_DIR)/$1.mk
 
 # $(call declareProjectTargets, Project)
 define declareProjectTargets

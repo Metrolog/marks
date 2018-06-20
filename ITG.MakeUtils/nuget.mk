@@ -1,8 +1,9 @@
-ifndef MAKE_NUGET_DIR
-MAKE_NUGET_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR ?= $(MAKE_NUGET_DIR)
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
 
-include $(realpath $(ITG_MAKEUTILS_DIR)/common.mk)
+ifndef MAKE_NUGET_DIR
+MAKE_NUGET_DIR = $(ITG_MAKEUTILS_DIR)
 
 NUGET ?= nuget
 NUGET_PACKAGES_DIR ?= packages
