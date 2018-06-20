@@ -79,9 +79,8 @@ endif
 
 .ONESHELL::
 
-# TODO: удалить OSabsPath
 POWERSHELLMODULES  := \
-  '$(call OSabsPath,$(ITG_MAKEUTILS_DIR)ITG.MakeUtils/ITG.MakeUtils.psd1)'
+  '$(ITG_MAKEUTILS_DIR)ITG.MakeUtils/ITG.MakeUtils.psd1'
 
 SHELL              := $(PowerShell)
 
