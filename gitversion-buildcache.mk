@@ -1,8 +1,9 @@
-ifndef MAKE_GITVERSION_BUILDCACHE_DIR
-MAKE_GITVERSION_BUILDCACHE_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
-ITG_MAKEUTILS_DIR ?= $(MAKE_GITVERSION_BUILDCACHE_DIR)
+ifndef ITG_MAKEUTILS_LOADED
+$(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
+endif
 
-include $(realpath $(ITG_MAKEUTILS_DIR)/common.mk)
+ifndef MAKE_GITVERSION_BUILDCACHE_DIR
+MAKE_GITVERSION_BUILDCACHE_DIR = $(ITG_MAKEUTILS_DIR)
 
 GITVERSIONVARS := Major Minor Patch PreReleaseTag PreReleaseTagWithDash PreReleaseLabel PreReleaseNumber \
   BuildMetaData BuildMetaDataPadded FullBuildMetaData MajorMinorPatch SemVer LegacySemVer LegacySemVerPadded \
