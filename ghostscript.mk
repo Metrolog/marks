@@ -27,13 +27,13 @@ GSINCDIR ?=
 GSFONTDIR ?=
 
 GSCMDLINE = $(GS) \
-  $(foreach incdir,$(GSINCDIR), -I'$(call OSabsPath,$(incdir))') \
-  $(if $(GSFONTDIR),-sFONTPATH='$(foreach fontdir,$(GSFONTDIR),$(call OSabsPath,$(fontdir))$(PATHSEP))')
+  $(foreach incdir,$(GSINCDIR), -I'$(incdir)') \
+  $(if $(GSFONTDIR),-sFONTPATH='$(foreach fontdir,$(GSFONTDIR),$(fontdir)$(PATHSEP))')
 
 $(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
 	$(call writeinformation,Build file "$@" from "$<"...)
 	$(MAKETARGETDIR)
-	$(GSCMDLINE) -sOutputFile='$(call OSPath,$@)' '$(call OSPath,$<)'
+	$(GSCMDLINE) -sOutputFile='$@' '$<'
 	$(call writeinformation,File "$@" is ready.)
 
 
@@ -46,7 +46,7 @@ TESTSPDFFILES = $(patsubst $(TESTSDIR)%.ps,$(AUXDIR)%.pdf,$(TESTSPSFILES))
 define definePostScriptTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
-  $(GSCMDLINE) -q -sOutputFile='$$(call OSPath,$1)' '$$(call OSPath,$2)';,\
+  $(GSCMDLINE) -q -sOutputFile='$1' '$2';,\
   $2 $3 \
 )
 
@@ -59,8 +59,8 @@ definePostScriptTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptTe
 define definePostScriptBuildTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
-  $(GSCMDLINE) -q -sOutputFile='$$(call OSPath,$1)' '$$(call OSPath,$2)';\
-  $$(call pushDeploymentArtifactFile,$$(notdir $1),$$(call OSPath,$1));,\
+  $(GSCMDLINE) -q -sOutputFile='$1' '$2';\
+  $$(call pushDeploymentArtifactFile,$$(notdir $1),$1);,\
   $2 $3 \
 )
 

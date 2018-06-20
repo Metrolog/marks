@@ -38,6 +38,10 @@ DOLLAR_SIGN        :=$$
 # $(call dirname,dir)
 dirname = $(patsubst %/,%,$1)
 
+# TODO: корректно обернуть abspath и realpath
+abspath = $(warning Do not use absolute paths!)$1
+realpath = $(warning Do not use absolute paths!)$1
+
 # TODO: уйти cygpath полностью
 # TODO: удалить winPath
 # $(call winPath,sourcePathOrFileName)
@@ -63,11 +67,16 @@ OSPath             = $1
 
 endif
 
+# TODO: уйти от OSPath
+OSPath = $(warning Do not use OSPath!)$1
+
 # TODO: удалить OSabsPath
 OSabsPath = $(call OSPath,$(abspath $1))
 
 # TODO: удалить OSPath
-MAKETOOL := $(call OSPath,$(MAKE))
+# под cygwin $(MAKE) == '/usr/bin/make'. Поэтому приходится явно переназначать. Лучше перенести в Windows
+#MAKETOOL := $(call OSPath,$(MAKE))
+MAKETOOL := make
 
 VERBOSE            ?= true
 
@@ -113,11 +122,11 @@ TAR                ?= tar
 # $(call writeinformation, msg, details)
 writeinformationaux ?=
 
-#writeinformationauxII ?= \
-#  $(info $(1)) \
-#  $(info $(2))
 writeinformationauxII ?= \
-  Write-Information '$(1)';
+  $(info $(1)) \
+  $(info $(2))
+#writeinformationauxII ?= \
+#  Write-Information '$(1)';
 
 writeinformation = \
   $(call writeinformationaux,$(1),$(2)) \
@@ -126,11 +135,11 @@ writeinformation = \
 # $(call writewarning, msg, details)
 writewarningaux ?=
 
-#writewarningauxII ?= \
-#  $(warning $(1)) \
-#  $(info $(2))
 writewarningauxII ?= \
-  Write-Warning '$(1)';
+  $(warning $(1)) \
+  $(info $(2))
+#writewarningauxII ?= \
+#  Write-Warning '$(1)';
 
 writewarning = \
   $(call writewarningaux,$(1),$(2)) \
@@ -139,11 +148,11 @@ writewarning = \
 # $(call writeerror, msg, details)
 writeerroraux ?=
 
-#writeerrorauxII ?= \
-#  $(error $(1)) \
-#  $(info $(2))
 writeerrorauxII ?= \
-  Write-Error '$(1)';
+  $(error $(1)) \
+  $(info $(2))
+#writeerrorauxII ?= \
+#  Write-Error '$(1)';
 
 writeerror = \
   $(call writeerroraux,$(1),$(2)) \
@@ -214,7 +223,8 @@ pushArtifactTargets = $(call exportGlobalVariablesAux,$(1),TargetWriter)
 pushArtifactTarget = $(pushArtifactTargets)
 
 # $(call calcRootProjectDir, Project)
-calcRootProjectDir = $(subst $(SPACE),/,$(patsubst %,..,$(subst /,$(SPACE),$(call getSubProjectDir,$1))))/
+calcRootProjectAux = $(subst $(SPACE),/,$(patsubst %,..,$(subst /,$(SPACE),$(call getSubProjectDir,$1))))
+calcRootProjectDir = $(if $(call calcRootProjectAux,$1),$(call calcRootProjectAux,$1)/,./)
 
 # $(call getSubProjectDir, Project)
 getSubProjectDir = $($(1)_DIR)
@@ -226,11 +236,19 @@ endef
 
 # $(call MAKE_SUBPROJECT, Project)
 MAKE_SUBPROJECT = \
-  $(MAKETOOL) -C $(call getSubProjectDir,$1) \
+  $(MAKETOOL) \
+    -C $(call getSubProjectDir,$1) \
     SUBPROJECT=$1 \
     SUBPROJECT_DIR=$(call getSubProjectDir,$1) \
     ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
     SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
+
+# $(call MAKE_SUBPROJECT_TARGET, Target)
+MAKE_SUBPROJECT_TARGET = \
+  $(MAKETOOL) \
+    -C $(ROOT_PROJECT_DIR) \
+    ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
+    $1
 
 # $(call declareProjectTargets, Project)
 define declareProjectTargets
@@ -279,7 +297,7 @@ endef
 
 ifdef ROOT_PROJECT_DIR
 $(ROOT_PROJECT_DIR)%:
-	$(MAKETOOL) -C $(ROOT_PROJECT_DIR) $*
+	$(call MAKE_SUBPROJECT_TARGET, $*)
 
 endif
 
