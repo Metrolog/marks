@@ -1,5 +1,6 @@
 ifndef MAKE_COMMON_DIR
 MAKE_COMMON_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+# TODO: уйти от абсолютных путей
 export ITG_MAKEUTILS_DIR := $(realpath $(MAKE_COMMON_DIR))
 
 ifeq (,$(filter oneshell,$(.FEATURES)))
@@ -21,6 +22,7 @@ AUXDIR             ?= obj
 OUTPUTDIR          ?= release
 SOURCESDIR         ?= sources
 CONFIGDIR          ?= config
+# TODO: уйти от абсолютных путей
 export REPOROOT    ?= $(abspath ./$(ROOT_PROJECT_DIR))/
 REPOVERSION        = $(REPOROOT).git/logs/HEAD
 
@@ -30,9 +32,12 @@ LEFT_BRACKET       :=(
 RIGHT_BRACKET      :=)
 DOLLAR_SIGN        :=$$
 
+# TODO: уйти cygpath полностью
+# TODO: удалить winPath
 # $(call winPath,sourcePathOrFileName)
 winPath = $(shell cygpath -w $1)
 
+# TODO: удалить shellPath
 # $(call shellPath,sourcePathOrFileName)
 shellPath = $(shell cygpath -u $1)
 
@@ -40,18 +45,22 @@ ifeq ($(OS),Windows_NT)
 
 PATHSEP            :=;
 PowerShell         := powershell
+# TODO: удалить OSPath
 OSPath             = $(call winPath,$1)
 
 else
 
 PATHSEP            :=:
 PowerShell         := /usr/bin/pwsh
+# TODO: удалить OSPath
 OSPath             = $1
 
 endif
 
+# TODO: удалить OSabsPath
 OSabsPath = $(call OSPath,$(abspath $1))
 
+# TODO: удалить OSPath
 MAKETOOL := $(call OSPath,$(MAKE))
 
 VERBOSE            ?= true
@@ -64,6 +73,7 @@ endif
 
 .ONESHELL::
 
+# TODO: удалить OSabsPath
 POWERSHELLMODULES  := \
   '$(call OSabsPath,$(ITG_MAKEUTILS_DIR)/ITG.MakeUtils/ITG.MakeUtils.psd1)'
 
@@ -86,10 +96,13 @@ MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
 RMDIR              := rm $(VERBOSEFLAGS) -r -f
 RM                 := rm $(VERBOSEFLAGS) -r -f
+# TODO: переписать TOUCH на PowerShell
 TOUCH              := touch
 COPY               := cp $(VERBOSEFLAGS)
 CURL               := curl $(VERBOSEFLAGS)
+# TODO: переписать ZIP на PowerShell
 ZIP                ?= zip -o -9
+# TODO: переписать TAR на PowerShell
 TAR                ?= tar
 
 # $(call writeinformation, msg, details)
@@ -150,7 +163,8 @@ copyfileto = $(call copyfile,$1/$(notdir $2),$2)
 # $(call copyfilefrom, tofile, fromdir)
 copyfilefrom = $(call copyfile,$1,$2/$(notdir $1))
 
-# todo: переписать на PowerShell. Такое соединение через && - только для Windows
+# TODO: переписать на PowerShell. Такое соединение через && - только для Windows
+# TODO: и выполнить в одну строку
 # $(call copyFilesToZIP, targetZIP, sourceFiles, sourceFilesRootDir)
 define copyFilesToZIP
 $1:$2
@@ -159,14 +173,17 @@ $1:$2
 	$(TOUCH) $$@
 endef
 
-$(OUTPUTDIR) $(AUXDIR):
+$(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 	$(MAKETARGETASDIR)
 
 #
 # subprojects
 #
 
-SUBPROJECTS_EXPORTS_DIR := $(AUXDIR)/subprojectExports
+SUBPROJECTS_EXPORTS_DIR := $(CONFIGDIR)/subprojectExports
+$(SUBPROJECTS_EXPORTS_DIR): | $(CONFIGDIR)
+	$(MAKETARGETASDIR)
+
 SUBPROJECT_EXPORTS_FILE ?= $(SUBPROJECTS_EXPORTS_DIR)/undefined
 
 .PHONY: .GLOBAL_VARIABLES
@@ -219,8 +236,7 @@ endef
 # $(call useSubProject, SubProject, SubProjectDir [, Targets ])
 define useSubProject
 $(eval $(call setSubProjectDir,$1,$2))
-$(SUBPROJECTS_EXPORTS_DIR)/$1.mk: $(call getSubProjectDir,$1)/Makefile
-	$$(MAKETARGETDIR)
+$(SUBPROJECTS_EXPORTS_DIR)/$1.mk: $(call getSubProjectDir,$1)/Makefile | $(SUBPROJECTS_EXPORTS_DIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
 .PHONY: $1 $3
 ifeq ($(filter %clean,$(MAKECMDGOALS)),)
