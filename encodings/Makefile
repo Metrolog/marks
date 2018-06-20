@@ -23,14 +23,14 @@ MAPPINGSDIR = maps/
 $(MAPPINGSDIR)MAPPINGS/%.TXT:
 	$(call writeinformation,Downloading file "$(@F)"...)
 	$(MAKETARGETDIR)
-	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o $(call OSPath,$@)
+	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o '$@'
 	$(TOUCH) $@
 	$(call writeinformation,File "$(@F)" is downloaded.)
 
 $(OUTPUTDIR)%.ps:
 	$(call writeinformation,Creating PostScript encoding file "$(@F)" from "$<"...)
 	$(MAKETARGETDIR)
-	./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath $(call OSPath,$<) -FilePath $(call OSPath,$@) $(VERBOSEFLAGS)
+	./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath '$<' -FilePath '$@' $(VERBOSEFLAGS)
 	$(call writeinformation,File "$(@F)" is ready.)
 
 # $(call mapPSEncodingFileToSource, uri, encoding)
