@@ -5,6 +5,8 @@ endif
 ifndef MAKE_GITVERSION_DIR
 MAKE_GITVERSION_DIR = $(ITG_MAKEUTILS_DIR)
 
+include $(ITG_MAKEUTILS_DIR)git.mk
+
 GITVERSION ?= gitversion
 
 export GITVERSIONMAKEFILE ?= $(abspath $(AUXDIR)version.mk)
