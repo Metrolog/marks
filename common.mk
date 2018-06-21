@@ -81,10 +81,10 @@ endif
 #region deprecated functions wrappers
 
 # $(call _deprecated_function, function, replacement)
-_deprecated_function = $(call writewarning,Function $1 is deprecated.$(if $2, Please, see about $2.))
+_deprecated_function = $(call writewarning,Function $1 is deprecated.$(if $2, Please$(COMMA) see about $2.))
 
 # $(call _obsolete_function, function, replacement)
-_obsolete_function = $(call writeerror,Function $1 is not avaliable now. It is obsolete.$(if $2, Please, see about $2.))
+_obsolete_function = $(call writeerror,Function $1 is not avaliable now. It is obsolete.$(if $2, Please$(COMMA) see about $2.))
 
 #endregion deprecated functions wrappers
 
@@ -111,23 +111,6 @@ endif
 .SECONDARY::;
 .SECONDEXPANSION::;
 .DELETE_ON_ERROR::;
-
-#region common dirs
-
-AUXDIR             ?= obj/
-OUTPUTDIR          ?= release/
-SOURCESDIR         ?= sources/
-CONFIGDIR          ?= config/
-# TODO: уйти от абсолютных путей
-# TODO: эти переменные вообще вынести в отдельный git.mk
-export REPOROOT    ?= $(abspath ./$(ROOT_PROJECT_DIR))/
-
-#endregion common dirs
-
-REPOVERSION        = $(REPOROOT).git/logs/HEAD
-
-# $(call dirname,dir)
-dirname = $(patsubst %/,%,$1)
 
 #region obsolete cygpath related functions
 winPath = $(call _obsolete_function,winPath)$(shell cygpath -w $1)
@@ -186,12 +169,24 @@ RM                 := rm $(VERBOSEFLAGS) -r -f
 TOUCH              := touch
 COPY               := cp $(VERBOSEFLAGS)
 CURL               := curl $(VERBOSEFLAGS)
-# TODO: переписать ZIP на PowerShell
-ZIP                ?= zip -o -9
-# TODO: переписать TAR на PowerShell
-TAR                ?= tar
+
+# $(call dirname,dir)
+dirname = $(patsubst %/,%,$1)
 
 #endregion setup shell
+
+#region common dirs
+
+AUXDIR             ?= obj/
+OUTPUTDIR          ?= release/
+SOURCESDIR         ?= sources/
+CONFIGDIR          ?= config/
+
+$(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
+	$(MAKETARGETASDIR)
+
+#endregion common dirs
+
 
 # $(call setvariable, var, value)
 define setvariable
@@ -213,23 +208,6 @@ copyfileto = $(call copyfile,$1/$(notdir $2),$2)
 
 # $(call copyfilefrom, tofile, fromdir)
 copyfilefrom = $(call copyfile,$1,$2/$(notdir $1))
-
-# TODO: переписать на PowerShell. Такое соединение через && - только для Windows
-# TODO: и выполнить в одну строку
-# $(call copyFilesToZIP, targetZIP, sourceFiles, sourceFilesRootDir)
-define copyFilesToZIP
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
-$(call _assert_not_null,$3)
-$1:$2
-	$$(MAKETARGETDIR)
-	cd $3 && $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $3/%, %, $$^)
-	$(TOUCH) $$@
-endef
-
-$(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
-	$(MAKETARGETASDIR)
-
 
 #region subprojects support
 
