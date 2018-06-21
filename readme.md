@@ -223,7 +223,8 @@ stamps/sources (папку sources необходимо создать) и на�
 [PostScript Language reference manual]: http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/postscript/pdfs/psrefman.pdf
 [CygWin]: http://cygwin.com/install.html "Cygwin"
 [MinGW]: http://mingw-w64.org "MinGW"
-[CygWin make]: http://cygwin.com/install.html "make"
+[make]: https://ru.wikipedia.org/wiki/Make
+"make"
 [GhostScript]: https://www.ghostscript.com/ "GhostScript"
 [VSCode]: https://code.visualstudio.com/ "Visual Studio Code"
 [PowerShellCore]: https://github.com/PowerShell/PowerShell "PowerShell Core"
