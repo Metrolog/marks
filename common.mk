@@ -130,6 +130,7 @@ MAKETOOL := make
 else
 
 PowerShell         := /usr/bin/pwsh
+MAKETOOL := $(MAKE)
 
 endif
 
