@@ -4,4 +4,9 @@
 			"path": "."
 		}
 	],
+	"settings": {
+		"[postscript]": {
+			"files.encoding": "windows1251"
+		}
+	},
 }
