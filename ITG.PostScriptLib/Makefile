@@ -1,6 +1,4 @@
-###
-### GNU make Makefile
-###
+#!/usr/bin/make
 
 all:
 

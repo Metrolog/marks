@@ -1,6 +1,4 @@
-###
-### GNU make Makefile
-###
+#!/usr/bin/make
 
 ROOT_PROJECT_DIR ?= ./
 ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
