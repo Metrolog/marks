@@ -17,14 +17,21 @@
 
 Для внесения изменений в пакет и повторной сборки проекта потребуются следующие продукты:
 
-- [CygWin][]
-- [CygWin make][]
+Под Windows:
+
+- [make][] (под [CygWin][], [MinGW][] (для последнего необходимо тестирование))
 - [GhostScript][]
-- текстовый редактор, рекомендую [Notepad++][]
+- текстовый редактор, настоятельно рекомендую [VSCode][]
+
+Под Linux:
+
+- [PowerShellCore][]
+- [GhostScript][]
+- [VSCode][]
+
+Для [VSCode][] рекомендую установить расширения, указанные в рабочей области.
 
 Существенно удобнее будет работать с репозиторием, имея установленный `git`.
-Если работа с `git` в командной строке вызывает сложности, рекомендую установить
-[SourceTree][].
 
 Далее следует скопировать репозиторий проекта либо как zip архив из [последнего
 релиза](https://github.com/Metrolog/marks/releases), либо клонировав git репозиторий.
@@ -75,9 +82,7 @@
 ------------------
 
 Репозиторий проекта размещён по адресу [github.com/Metrolog/marks](https://github.com/Metrolog/marks).
-Стратегия ветвления - [GitHub Flow](http://githubflow.github.io/). В качестве GUI
-к локальному репозиторию рекомендую
-[SourceTree](https://www.sourcetreeapp.com/).
+Стратегия ветвления - [GitHub Flow](http://githubflow.github.io/).
 
 Для внесения изменений в проект подготовьте собственный fork проекта, в соответствии
 с GitHub Flow добавляйте свои файлы в ветку master.
@@ -90,8 +95,10 @@
 Собственно [PostScript файл](sources/stamps/test.ps) должен быть сохранён в кодировке Windows-1251.
 
 Для подготовки файла с оттисками клейм для фотовывода
-[файл test.ps](sources/stamps/test.ps) следует скопировать в ту же папку
-и внести изменения в область, отмеченную комментариями:
+[файл примера.ps](stamps/tests/4.1.ps) следует скопировать в папку
+stamps/sources (папку sources необходимо создать) и назвать по имени заказа
+(в имени файлов не допускаются пробелы, только латинские буквы и цифры, знаки пунктуации.)
+После чего запускаем редактор ([VSCode][]) и вносим изменения в область, отмеченную комментариями:
 
     %------------------------------------------------------------------------------
     % для подготовки оттисков править код ниже !!!
@@ -102,6 +109,7 @@
           (СП)
           [ 1 256 range ]
           18.0 mm
+          false                  % поверка в эксплуатации или после ремонта
           /verification_stamp_upath
         create_stamps
           2017
@@ -109,6 +117,7 @@
           (СП)
           [ 1 ]
           18.0 mm
+          true                   % при выпуске из производства
           /calibration_stamp_upath
         create_stamps
       ]
@@ -125,6 +134,9 @@
 А так же - квадратные калибровочные клейма
 на все месяцы, кварталы и год 2017 года, с шифром клейма "СП",
 размером 18 мм, для индивидуального знака поверителя с номером 1.
+
+Примеры для подготовки оттисков калибровочных клейм, фигурных клейм,
+можно найти в [других тестовых файлах](stamps/tests/).
 
 Во втором аргументе функции `create_stamps` должен быть указан
 массив, определяющий периоды года, для которых будут сформированы
@@ -193,7 +205,7 @@
     make
 
 из корневого каталога репозитория проекта.
-Файлы будут .pdf будут созданы в каталоге sources/stamps/release.
+Файлы будут .pdf будут созданы в каталоге stamps/release.
 
 Благодарности
 -------------
@@ -210,7 +222,8 @@
 [PostScript]: https://ru.wikipedia.org/wiki/PostScript
 [PostScript Language reference manual]: http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/postscript/pdfs/psrefman.pdf
 [CygWin]: http://cygwin.com/install.html "Cygwin"
+[MinGW]: http://mingw-w64.org "MinGW"
 [CygWin make]: http://cygwin.com/install.html "make"
 [GhostScript]: https://www.ghostscript.com/ "GhostScript"
-[Notepad++]: https://notepad-plus-plus.org/ "Notepad++"
-[SourceTree]: https://www.sourcetreeapp.com/ "SourceTree"
+[VSCode]: https://code.visualstudio.com/ "Visual Studio Code"
+[PowerShellCore]: https://github.com/PowerShell/PowerShell "PowerShell Core"

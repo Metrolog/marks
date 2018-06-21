@@ -1,20 +1,20 @@
-﻿<# 
-.Synopsis 
+﻿<#
+.Synopsis
     Скрипт подготовки среды сборки и тестирования проекта
-.Description 
+.Description
     Скрипт подготовки среды сборки и тестирования проекта.
-.Link 
+.Link
     https://github.com/Metrolog/marks
-.Example 
+.Example
     .\install.ps1 -GUI;
     Устанавливаем необходимые пакеты, в том числе - и графические среды.
-#> 
+#>
 [CmdletBinding(
     SupportsShouldProcess = $true
     , ConfirmImpact = 'Medium'
 #    , HelpUri = 'https://github.com/Metrolog/marks'
 )]
- 
+
 param (
     # Ключ, определяющий необходимость установки визуальных средств.
     # По умолчанию устанавливаются только средства для командной строки.
@@ -168,15 +168,15 @@ $ToPath += Split-Path `
 if ( $GUI ) {
     if (
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
-        -and $PSCmdLet.ShouldProcess('SourceTree', 'Установить')
+        -and $PSCmdLet.ShouldProcess('Visual Studio Code', 'Установить')
     ) {
-        & $chocoExe install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+        & $chocoExe install vscode --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     };
     if (
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
-        -and $PSCmdLet.ShouldProcess('Notepad++', 'Установить')
+        -and $PSCmdLet.ShouldProcess('SourceTree', 'Установить')
     ) {
-        & $chocoExe install notepadplusplus --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+        & $chocoExe install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     };
 };
 
