@@ -5,7 +5,7 @@ endif
 ifndef MAKE_TEX_GITVERSION_DIR
 MAKE_TEX_GITVERSION_DIR = $(ITG_MAKEUTILS_DIR)TeX/
 
-include $(realpath $(ITG_MAKEUTILS_DIR)gitversion.mk)
+include $(ITG_MAKEUTILS_DIR)gitversion.mk
 
 %/version.tex %/version.dtx: $(REPOVERSION)
 	$(call writeinformation,Generating latex version file "$@"...)
