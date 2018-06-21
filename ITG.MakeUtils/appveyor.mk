@@ -48,7 +48,7 @@ testPlatformSetStatus = \
   }
 
 # TODO: удалить это определение. В этом файле не используется.
-OPENSSL := $(call shellPath,C:\OpenSSL-Win64\bin\openssl.exe)
+OPENSSL := C:/OpenSSL-Win64/bin/openssl.exe
 
 else
 
