@@ -12,13 +12,13 @@ ifdef APPVEYOR
 APPVEYORTOOL ?= appveyor
 
 writeinformationaux = \
-  Add-AppveyorMessage -Message '$(1)' -Category 'Information' $(if $(2),-Details '$(2)');
+  $(shell Add-AppveyorMessage -Message '$(1)' -Category 'Information' $(if $(2),-Details '$(2)'))
 
 writewarningaux = \
-  Add-AppveyorMessage -Message '$(1)' -Category 'Warning' $(if $(2),-Details '$(2)');
+  $(shell Add-AppveyorMessage -Message '$(1)' -Category 'Warning' $(if $(2),-Details '$(2)'))
 
 writeerroraux = \
-  Add-AppveyorMessage -Message '$(1)' -Category 'Error' $(if $(2),-Details '$(2)');
+  $(shell Add-AppveyorMessage -Message '$(1)' -Category 'Error' $(if $(2),-Details '$(2)'))
 
 pushDeploymentArtifactFile = \
   Push-AppveyorArtifact $(VERBOSEFLAGS) -DeploymentName '$(1)' -Path '$(2)';
@@ -47,7 +47,7 @@ testPlatformSetStatus = \
     Update-AppveyorTest -Framework 'MSTest' @Params; \
   }
 
-# todo: удалить это определение. В этом файле не используется.
+# TODO: удалить это определение. В этом файле не используется.
 OPENSSL := $(call shellPath,C:\OpenSSL-Win64\bin\openssl.exe)
 
 else
