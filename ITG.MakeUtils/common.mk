@@ -2,23 +2,117 @@ ifndef MAKE_COMMON_DIR
 MAKE_COMMON_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ITG_MAKEUTILS_LOADED := true
 
-ROOT_PROJECT_DIR ?= ../
-ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
+#region info, warning and error wrappers
+
+# $(call writeinformation, msg, details)
+writeinformationaux ?=
+
+writeinformationauxII ?= \
+  $(info $(1)) \
+  $(info $(2))
+#writeinformationauxII ?= \
+#  Write-Information '$(1)';
+
+writeinformation = \
+  $(call writeinformationaux,$(1),$(2)) \
+  $(call writeinformationauxII,$(1),$(2))
+
+# $(call writewarning, msg, details)
+writewarningaux ?=
+
+writewarningauxII ?= \
+  $(warning $(1)) \
+  $(info $(2))
+#writewarningauxII ?= \
+#  Write-Warning '$(1)';
+
+writewarning = \
+  $(call writewarningaux,$(1),$(2)) \
+  $(call writewarningauxII,$(1),$(2))
+
+# $(call writeerror, msg, details)
+writeerroraux ?=
+
+writeerrorauxII ?= \
+  $(error $(1)) \
+  $(info $(2))
+#writeerrorauxII ?= \
+#  Write-Error '$(1)';
+
+writeerror = \
+  $(call writeerroraux,$(1),$(2)) \
+  $(call writeerrorauxII,$(1),$(2))
+
+#endregion info, warning and error wrappers
+
+#region check make tool version and features
 
 ifeq (,$(filter oneshell,$(.FEATURES)))
-$(error Requires make version that supports .ONESHELL feature.)
+$(call writeerror,Requires make version that supports .ONESHELL feature.)
 endif
 
 ifneq (3.82,$(firstword $(sort $(MAKE_VERSION) 3.82)))
-$(error Requires make version 3.82 or higher (that supports .SHELLFLAGS).)
+$(call writeerror,Requires make version 3.82 or higher.)
 endif
+
+#endregion check make tool version and features
+
+#region calc ITG.MakeUtils relative path
+ROOT_PROJECT_DIR ?= ../
+ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
+#endregion calc ITG.MakeUtils relative path
+
+#region symbols
+
+SPACE              := $(empty) $(empty)
+COMMA              :=,
+LEFT_BRACKET       :=(
+RIGHT_BRACKET      :=)
+DOLLAR_SIGN        :=$$
+
+ifeq ($(OS),Windows_NT)
+PATHSEP            :=;
+else
+PATHSEP            :=:
+endif
+
+#endregion symbols
+
+#region deprecated functions wrappers
+
+# $(call _deprecated_function, function, replacement)
+_deprecated_function = $(call writewarning,Function $1 is deprecated.$(if $2, Please, see about $2.))
+
+# $(call _obsolete_function, function, replacement)
+_obsolete_function = $(call writeerror,Function $1 is not avaliable now. It is obsolete.$(if $2, Please, see about $2.))
+
+#endregion deprecated functions wrappers
+
+#region asserts
+
+_assert_not_null = $(if $1,,$(call writeerror,Illegal empty value.))
+
+#endregion asserts
+
+#region debug support
+
+ifdef DEBUG_TRACE
+
+_debug_enter = $(info Entering $0($(_args)))
+
+_debug_leave = $(info Leaving $0)
+
+_args = $(subst $(SPACE),$(COMMA) ,$(strip $(foreach a,1 2 3 4 5 6 7 8 9,$($a))))
+
+endif
+
+#endregion debug support
 
 .SECONDARY::;
 .SECONDEXPANSION::;
 .DELETE_ON_ERROR::;
 
-.DEFAULT_GOAL      := all
-.PHONY: all
+#region common dirs
 
 AUXDIR             ?= obj/
 OUTPUTDIR          ?= release/
@@ -27,56 +121,34 @@ CONFIGDIR          ?= config/
 # TODO: уйти от абсолютных путей
 # TODO: эти переменные вообще вынести в отдельный git.mk
 export REPOROOT    ?= $(abspath ./$(ROOT_PROJECT_DIR))/
-REPOVERSION        = $(REPOROOT).git/logs/HEAD
 
-SPACE              := $(empty) $(empty)
-COMMA              :=,
-LEFT_BRACKET       :=(
-RIGHT_BRACKET      :=)
-DOLLAR_SIGN        :=$$
+#endregion common dirs
+
+REPOVERSION        = $(REPOROOT).git/logs/HEAD
 
 # $(call dirname,dir)
 dirname = $(patsubst %/,%,$1)
 
-# TODO: корректно обернуть abspath и realpath
-abspath = $(warning Do not use absolute paths!)$1
-realpath = $(warning Do not use absolute paths!)$1
+#region obsolete cygpath related functions
+winPath = $(call _obsolete_function,winPath)$(shell cygpath -w $1)
+shellPath = $(call _obsolete_function,shellPath)$(shell cygpath -u $1)
+OSPath = $(call _deprecated_function,OSPath)$1
+OSabsPath = $(call _deprecated_function,OSabsPath)$(abspath $1)
+#endregion obsolete cygpath related functions
 
-# TODO: уйти cygpath полностью
-# TODO: удалить winPath
-# $(call winPath,sourcePathOrFileName)
-winPath = $(shell cygpath -w $1)
-
-# TODO: удалить shellPath
-# $(call shellPath,sourcePathOrFileName)
-shellPath = $(shell cygpath -u $1)
+#region setup shell
 
 ifeq ($(OS),Windows_NT)
 
-PATHSEP            :=;
 PowerShell         := powershell
-# TODO: удалить OSPath
-OSPath             = $(call winPath,$1)
+# под cygwin $(MAKE) == '/usr/bin/make'. Поэтому приходится явно переназначать.
+MAKETOOL := make
 
 else
 
-PATHSEP            :=:
 PowerShell         := /usr/bin/pwsh
-# TODO: удалить OSPath
-OSPath             = $1
 
 endif
-
-# TODO: уйти от OSPath
-OSPath = $(warning Do not use OSPath!)$1
-
-# TODO: удалить OSabsPath
-OSabsPath = $(call OSPath,$(abspath $1))
-
-# TODO: удалить OSPath
-# под cygwin $(MAKE) == '/usr/bin/make'. Поэтому приходится явно переназначать. Лучше перенести в Windows
-#MAKETOOL := $(call OSPath,$(MAKE))
-MAKETOOL := make
 
 VERBOSE            ?= true
 
@@ -119,44 +191,7 @@ ZIP                ?= zip -o -9
 # TODO: переписать TAR на PowerShell
 TAR                ?= tar
 
-# $(call writeinformation, msg, details)
-writeinformationaux ?=
-
-writeinformationauxII ?= \
-  $(info $(1)) \
-  $(info $(2))
-#writeinformationauxII ?= \
-#  Write-Information '$(1)';
-
-writeinformation = \
-  $(call writeinformationaux,$(1),$(2)) \
-  $(call writeinformationauxII,$(1),$(2))
-
-# $(call writewarning, msg, details)
-writewarningaux ?=
-
-writewarningauxII ?= \
-  $(warning $(1)) \
-  $(info $(2))
-#writewarningauxII ?= \
-#  Write-Warning '$(1)';
-
-writewarning = \
-  $(call writewarningaux,$(1),$(2)) \
-  $(call writewarningauxII,$(1),$(2))
-
-# $(call writeerror, msg, details)
-writeerroraux ?=
-
-writeerrorauxII ?= \
-  $(error $(1)) \
-  $(info $(2))
-#writeerrorauxII ?= \
-#  Write-Error '$(1)';
-
-writeerror = \
-  $(call writeerroraux,$(1),$(2)) \
-  $(call writeerrorauxII,$(1),$(2))
+#endregion setup shell
 
 # $(call setvariable, var, value)
 define setvariable
@@ -166,6 +201,8 @@ endef
 
 # $(call copyfile, to, from)
 define copyfile
+$(call _assert_not_null,$1)
+$(call _assert_not_null,$2)
 $1: $2
 	$$(MAKETARGETDIR)
 	$(COPY) $$< $$@
@@ -181,6 +218,9 @@ copyfilefrom = $(call copyfile,$1,$2/$(notdir $1))
 # TODO: и выполнить в одну строку
 # $(call copyFilesToZIP, targetZIP, sourceFiles, sourceFilesRootDir)
 define copyFilesToZIP
+$(call _assert_not_null,$1)
+$(call _assert_not_null,$2)
+$(call _assert_not_null,$3)
 $1:$2
 	$$(MAKETARGETDIR)
 	cd $3 && $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $3/%, %, $$^)
@@ -190,9 +230,8 @@ endef
 $(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 	$(MAKETARGETASDIR)
 
-#
-# subprojects
-#
+
+#region subprojects support
 
 SUBPROJECTS_EXPORTS_DIR := $(CONFIGDIR)subprojectExports/
 $(SUBPROJECTS_EXPORTS_DIR): | $(CONFIGDIR)
@@ -227,10 +266,12 @@ calcRootProjectAux = $(subst $(SPACE),/,$(patsubst %,..,$(subst /,$(SPACE),$(cal
 calcRootProjectDir = $(if $(call calcRootProjectAux,$1),$(call calcRootProjectAux,$1)/,./)
 
 # $(call getSubProjectDir, Project)
-getSubProjectDir = $($(1)_DIR)
+getSubProjectDir = $(call _assert_not_null,$1)$($(1)_DIR)
 
 # $(call setSubProjectDir, Project, ProjectDir)
 define setSubProjectDir
+$(call _assert_not_null,$1)
+$(call _assert_not_null,$2)
 export $(1)_DIR := $2/
 endef
 
@@ -252,12 +293,15 @@ MAKE_SUBPROJECT_TARGET = \
 
 # $(call declareProjectTargets, Project)
 define declareProjectTargets
+$(call _assert_not_null,$1)
 $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 endef
 
 # $(call useSubProject, SubProject, SubProjectDir [, Targets ])
 define useSubProject
+$(call _assert_not_null,$1)
+$(call _assert_not_null,$2)
 $(eval $(call setSubProjectDir,$1,$2))
 $(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $(SUBPROJECTS_EXPORTS_DIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
@@ -301,6 +345,14 @@ $(ROOT_PROJECT_DIR)%:
 
 endif
 
+#endregion subprojects support
+
+#region standard targets support
+
+.DEFAULT_GOAL := all
+.PHONY: all
+
+# not standard target. Use 'check'
 .PHONY: test
 test:
 
@@ -321,5 +373,7 @@ distclean:: clean
 
 .PHONY: maintainer-clean
 maintainer-clean:: distclean
+
+#endregion standard targets support
 
 endif
