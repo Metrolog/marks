@@ -28,7 +28,7 @@ param (
     $Scope = ( [System.EnvironmentVariableTarget]::Machine )
 )
 
-Function Execute-ExternalInstaller {
+Function Invoke-ExternalInstaller {
     [CmdletBinding(
         SupportsShouldProcess = $true
         , ConfirmImpact = 'Medium'
@@ -82,7 +82,7 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
         -and $PSCmdLet.ShouldProcess('chocolatey', 'Установить')
     ) {
-        iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'));
+        Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'));
     };
 };
 $chocoExe = Join-Path `
@@ -134,7 +134,7 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
         -and $PSCmdLet.ShouldProcess('Пакеты CygWin make, mkdir, touch', 'Установить')
     ) {
-        Execute-ExternalInstaller `
+        Invoke-ExternalInstaller `
             -LiteralPath $cygwinsetup `
             -ArgumentList '--packages make,mkdir,touch --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
         ;
@@ -188,7 +188,7 @@ $Path = `
     ) `
 ;
 Write-Verbose 'Path variable:';
-$Path | % { Write-Verbose "    $_" };
+$Path | ForEach-Object { Write-Verbose "    $_" };
 
 if ($PSCmdLet.ShouldProcess('PATH', 'Установить переменную окружения')) {
     $env:Path = $Path -join ';';
