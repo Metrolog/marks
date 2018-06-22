@@ -124,13 +124,15 @@ OSabsPath = $(call _deprecated_function,OSabsPath)$(abspath $1)
 ifeq ($(OS),Windows_NT)
 
 PowerShell         := powershell
+
 # под cygwin $(MAKE) == '/usr/bin/make'. Поэтому приходится явно переназначать.
-MAKETOOL := make
+ifeq ($(MAKE),/usr/bin/make)
+MAKE := make
+endif
 
 else
 
 PowerShell         := /usr/bin/pwsh
-MAKETOOL := $(MAKE)
 
 endif
 
@@ -256,7 +258,7 @@ endef
 
 # $(call MAKE_SUBPROJECT, Project)
 MAKE_SUBPROJECT = \
-  $(MAKETOOL) \
+  $(MAKE) \
     -C $(call getSubProjectDir,$1) \
     SUBPROJECT=$1 \
     SUBPROJECT_DIR=$(call getSubProjectDir,$1) \
@@ -265,7 +267,7 @@ MAKE_SUBPROJECT = \
 
 # $(call MAKE_SUBPROJECT_TARGET, Target)
 MAKE_SUBPROJECT_TARGET = \
-  $(MAKETOOL) \
+  $(MAKE) \
     -C $(ROOT_PROJECT_DIR) \
     ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
     $1
