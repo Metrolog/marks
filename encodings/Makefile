@@ -1,8 +1,4 @@
-###
-### GNU make Makefile
-###
-
-all: CP1251 CP1253
+#!/usr/bin/make
 
 # ITG.MakeUtils
 
@@ -11,10 +7,9 @@ ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
 include $(ITG_MAKEUTILS_DIR)common.mk
 include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
-# tools
+all: CP1251 CP1253
 
-#TODO: избавиться от abspath
-AGLFNFILE ?= $(call OSabsPath,agl-aglfn/aglfn.txt)
+AGLFNFILE ?= agl-aglfn/aglfn.txt
 
 # download unicode mappings
 

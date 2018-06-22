@@ -1,15 +1,15 @@
-﻿<# 
-.Synopsis 
+﻿<#
+.Synopsis
     Создание файла с таблицей указанной кодировки для PostScript
-.Description 
+.Description
     Данный сценарий создаёт файл с таблицей указанной кодировки
     для PostScript с использованием правил именования глифов
     AGLFN (Adobe Glyphs List For New fonts).
-#> 
+#>
 [CmdletBinding(
     SupportsShouldProcess = $false
 )]
- 
+
 param (
     # Путь к файлу aglfn.txt
     [parameter(
@@ -54,7 +54,7 @@ $GlyphNames = New-Object String[] 0x10000;
 Get-Content `
     -LiteralPath $AGLFNFilePath `
     -Encoding UTF8 `
-| ? { -not $_.StartsWith('#') } `
+| Where-Object { -not $_.StartsWith('#') } `
 | ConvertFrom-Csv `
     -Delimiter ';' `
     -Header ( 'Code', 'GlyphName', 'GlyphDescription' ) `
@@ -70,7 +70,7 @@ $EncodingTable = New-Object String[] 0x100;
 Get-Content `
     -LiteralPath $EncodingSourceFilePath  `
     -Encoding UTF8 `
-| ? { -not $_.StartsWith('#') } `
+| Where-Object { -not $_.StartsWith('#') } `
 | ConvertFrom-Csv `
     -Delimiter "`t" `
     -Header ( 'EncodingCode', 'UnicodeCode', 'GlyphDescription' ) `
