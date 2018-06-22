@@ -19,7 +19,7 @@
 
 Под Windows:
 
-- [make][] версии 3.82 или старше (под [CygWin][], [MinGW][] (для последнего необходимо тестирование))
+- [make][] версии 3.82 или старше (под [CygWin][], [MSYS2][])
 - [GhostScript][]
 - текстовый редактор, настоятельно рекомендую [VSCode][]
 
@@ -222,10 +222,10 @@ stamps/sources (папку sources необходимо создать) и на�
 
 [PostScript]: https://ru.wikipedia.org/wiki/PostScript
 [PostScript Language reference manual]: http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/postscript/pdfs/psrefman.pdf
-[CygWin]: http://cygwin.com/install.html "Cygwin"
-[MinGW]: http://mingw-w64.org "MinGW"
+[CygWin]: http://cygwin.com/install.html
+[MinGW]: http://mingw-w64.org
+[MSYS2]: http://www.msys2.org
 [make]: https://ru.wikipedia.org/wiki/Make
-"make"
-[GhostScript]: https://www.ghostscript.com/ "GhostScript"
+[GhostScript]: https://www.ghostscript.com/
 [VSCode]: https://code.visualstudio.com/ "Visual Studio Code"
 [PowerShellCore]: https://github.com/PowerShell/PowerShell "PowerShell Core"
