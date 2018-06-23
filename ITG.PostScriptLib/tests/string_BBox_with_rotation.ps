@@ -1,7 +1,9 @@
 %!PS-Adobe-2.0
 %%Creator: Sergei S. Betke
 %%Title: Test: string_BBox должен возвращать близкие результаты при повороте холста на любые углы
+%%LanguageLevel: 3
 %%EndComments
+%!
 
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
 (assert.ps) require_once
@@ -21,4 +23,6 @@
   (string_BBox must return the same string size and for rotated canvas)
 assert
 
+%%EndDocument
+%%Trailer
 %%EOF
