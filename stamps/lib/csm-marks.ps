@@ -1,5 +1,6 @@
 %!PS-Adobe-2.0
 %%Creator: Sergei S. Betke
+%%DocumentNeededResources: encoding (${Encoding}Encoding) 1.0
 %%EndComments
 
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
@@ -39,7 +40,9 @@ dup length dict begin
     {pop pop}
     ifelse
   } forall
-  /Encoding CP1251Encoding def
+    /Encoding
+    /CP1251Encoding /Encoding findresource
+  def
   currentdict
 end
 (stamp_sign_cyr) exch definefont pop
@@ -51,7 +54,9 @@ dup length dict begin
     {pop pop}
     ifelse
   } forall
-  /Encoding CP1253Encoding def
+    /Encoding
+    /CP1253Encoding /Encoding findresource
+  def
   currentdict
 end
 (stamp_sign_greek) exch definefont pop
@@ -63,7 +68,9 @@ dup length dict begin
     {pop pop}
     ifelse
   } forall
-  /Encoding CP1251Encoding def
+    /Encoding
+    /CP1251Encoding /Encoding findresource
+  def
   currentdict
 end
 (stamp_id) exch definefont pop
@@ -75,7 +82,9 @@ dup length dict begin
     {pop pop}
     ifelse
   } forall
-  /Encoding CP1251Encoding def
+    /Encoding
+    /CP1251Encoding /Encoding findresource
+  def
   currentdict
 end
 (stamp_gmc) exch definefont pop

@@ -75,11 +75,15 @@ Get-Content `
     -Delimiter "`t" `
     -Header ( 'EncodingCode', 'UnicodeCode', 'GlyphDescription' ) `
 | ForEach-Object {
-    if ( $GlyphNames[ [int32] $_.UnicodeCode ] ) {
-        $EncodingTable[ [int32] ( $_.EncodingCode ) ] = $GlyphNames[ [int32] $_.UnicodeCode ];
+	$UnicodeCode = [int32] $_.UnicodeCode;
+	$EncodingCode = [int32] $_.EncodingCode;
+	if ( $EncodingCode -lt 0x20 ) {
+        $EncodingTable[ $EncodingCode ] = '.notdef';
+    } elseif ( $GlyphNames[ $UnicodeCode ] ) {
+        $EncodingTable[ $EncodingCode ] = $GlyphNames[ $UnicodeCode ];
     } else {
-        $EncodingTable[ [int32] ( $_.EncodingCode ) ] = 'uni' + ( '{0:X4}' -f ( [int32] $_.UnicodeCode ) );
-    };
+        $EncodingTable[ $EncodingCode ] = "uni$( '{0:X4}' -f $UnicodeCode )";
+	};
 } `
 ;
 
@@ -104,17 +108,63 @@ function ConvertTo-PostScriptEncodingTable {
 	)
 
 	begin {
-        return "/${Encoding}Encoding [";
+		$CharIndex = 0;
+		$OutputLine = '';
+		$CharIndexInLine = 0;
+		$LineIndexInBlock = 0;
+		@"
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%Title: ${Encoding} - PostScript Resource Encoding file
+%%DocumentSuppliedResources: encoding (${Encoding}Encoding)
+%%Version: 1.0 0
+%%EndComments
+%%BeginProlog
+
+/${Encoding}Encoding /Encoding resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Encoding
+%%BeginResource: Encoding (${Encoding}Encoding)
+%%EndComments
+/${Encoding}Encoding [
+"@;
 	}
 	process {
         if ( $GlyphName ) {
-            return "/$GlyphName";
+            $OutputGlyphName = "/${GlyphName}";
         } else {
-            return '/null';
-        };
+            $OutputGlyphName = '/.notdef';
+		};
+		if ( ( $LineIndexInBlock -eq 0 ) -and ( $CharIndexInLine -eq 0 ) ) {
+			@"
+% 0x$( '{0:X2}' -f $CharIndex )
+"@;
+		};
+		$OutputLine += $OutputGlyphName;
+		$CharIndex ++;
+		$CharIndexInLine = ( $CharIndexInLine + 1 ) % 8;
+		if ( $CharIndexInLine -eq 0 ) {
+			@"
+${OutputLine}
+"@;
+			$OutputLine = '';
+			$LineIndexInBlock = ( $LineIndexInBlock + 1 ) % 4;
+		};
 	}
 	end {
-        return '] def';
+		if ( $OutputLine ) {
+			@"
+${OutputLine}
+"@;
+		};
+@"
+] /Encoding defineresource pop
+%%EndResource
+} ifelse
+%%EndProlog
+"@;
 	}
 
 }
