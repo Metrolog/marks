@@ -15,6 +15,7 @@
 (graphics.ps) require_once
 (graphics-alignments.ps) require_once
 (image-st.ps) require_once
+(fonts.ps) require_once
 
 /months % [ 1 2 3 ] --> (1) (2) (3)
 {
@@ -33,70 +34,13 @@
   ()
 } bind def
 
-(GOST2930-62forMarks) findfont
-dup length dict begin
-  { 1 index /FID ne
-    {def}
-    {pop pop}
-    ifelse
-  } forall
-    /Encoding
-    /CP1251Encoding /Encoding findresource
-  def
-  currentdict
-end
-(stamp_sign_cyr) exch definefont pop
-
-(GOST2930-62forMarks) findfont
-dup length dict begin
-  { 1 index /FID ne
-    {def}
-    {pop pop}
-    ifelse
-  } forall
-    /Encoding
-    /CP1253Encoding /Encoding findresource
-  def
-  currentdict
-end
-(stamp_sign_greek) exch definefont pop
-
-(GOST2930-62forMarks) findfont
-dup length dict begin
-  { 1 index /FID ne
-    {def}
-    {pop pop}
-    ifelse
-  } forall
-    /Encoding
-    /CP1251Encoding /Encoding findresource
-  def
-  currentdict
-end
-(stamp_id) exch definefont pop
-
-(GOST2930-62forMarks) findfont
-dup length dict begin
-  { 1 index /FID ne
-    {def}
-    {pop pop}
-    ifelse
-  } forall
-    /Encoding
-    /CP1251Encoding /Encoding findresource
-  def
-  currentdict
-end
-(stamp_gmc) exch definefont pop
-
-(GOST2930-62forMarks) findfont
-(stamp_period) exch definefont pop
-
-(GOST2930-62forMarks) findfont
-(stamp_year) exch definefont pop
-
-(GOST2930-62forMarks) findfont
-(stamp_K) exch definefont pop
+/stamp_sign_cyr (GOST2930-62forMarks) /CP1251Encoding	reencodefont
+/stamp_sign_greek (GOST2930-62forMarks) /CP1253Encoding	reencodefont
+/stamp_id  /stamp_sign_cyr findfont  definefont
+/stamp_gmc  /stamp_sign_cyr findfont  definefont
+/stamp_period  /stamp_sign_cyr findfont  definefont
+/stamp_year  /stamp_period findfont  definefont
+/stamp_K  /stamp_id findfont  definefont
 
 /stamp_sign_path_helper % (sign) angle --> - (добавляем к текущему пути путь знака поверителя)
 {
