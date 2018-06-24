@@ -79,6 +79,8 @@ Get-Content `
 	$EncodingCode = [int32] $_.EncodingCode;
 	if ( $EncodingCode -lt 0x20 ) {
         $EncodingTable[ $EncodingCode ] = '.notdef';
+    } elseif ( $UnicodeCode -eq 0 ) {
+        $EncodingTable[ $EncodingCode ] = '.notdef';
     } elseif ( $GlyphNames[ $UnicodeCode ] ) {
         $EncodingTable[ $EncodingCode ] = $GlyphNames[ $UnicodeCode ];
     } else {
