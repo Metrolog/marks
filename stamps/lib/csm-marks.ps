@@ -5,6 +5,7 @@
 %%+: procset (csm-marks-cyr-signs.ps)
 %%+: procset (csm-marks-greek-signs.ps)
 %%EndComments
+%%BeginProlog
 
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
@@ -18,8 +19,12 @@
 (image-st.ps) require_once
 (fonts.ps) require_once
 
+%%IncludeResource: procset csm-marks-cyr-signs.ps 2.2 0
 /csm-marks-cyr-signs.ps /ProcSet findresource currentdict copy pop
+%%IncludeResource: procset csm-marks-greek-signs.ps 2.2 0
 /csm-marks-greek-signs.ps /ProcSet findresource currentdict copy pop
+
+%%EndProlog
 
 /months % [ 1 2 3 ] --> (1) (2) (3)
 {
