@@ -16,7 +16,6 @@ param (
 		Mandatory = $true
 		, ValueFromPipeline = $true
 	)]
-	[ValidateNotNull()]
 	[Alias('GNUMakeOutput')]
     [String]
     $InputObject
