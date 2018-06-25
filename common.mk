@@ -207,10 +207,10 @@ $1: $2
 endef
 
 # $(call copyfileto, todir, fromfile)
-copyfileto = $(call copyfile,$1/$(notdir $2),$2)
+copyfileto = $(call copyfile,$1$(notdir $2),$2)
 
 # $(call copyfilefrom, tofile, fromdir)
-copyfilefrom = $(call copyfile,$1,$2/$(notdir $1))
+copyfilefrom = $(call copyfile,$1,$2$(notdir $1))
 
 #region subprojects support
 
