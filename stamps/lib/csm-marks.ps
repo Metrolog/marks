@@ -19,12 +19,16 @@
 %%EndComments
 %%BeginProlog
 
+%%IncludeResource: procset arrays.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet arrays.ps
+%/arrays.ps /ProcSet findresource begin
+/arrays.ps /ProcSet findresource currentdict copy pop
+
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
 (boxes.ps) require_once
 (si.ps) require_once
 (math.ps) require_once
-(arrays.ps) require_once
 (roman.ps) require_once
 (graphics.ps) require_once
 (graphics-alignments.ps) require_once
@@ -123,7 +127,7 @@
   true charpath
   savedCTM setmatrix
   end
-} def
+} bind def
 
 /stamp_sign_upath_helper % (sign) angle --> upath
 {
@@ -855,5 +859,8 @@ grestore
 %currentdict end /ProcSet defineresource pop
 %%%EndResource
 %} ifelse
+
+% # TODO: вернуть временное использование ProcSet arrays.ps
+%end % /arrays.ps /ProcSet findresource begin
 
 %%EndProlog

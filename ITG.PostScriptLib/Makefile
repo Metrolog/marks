@@ -14,6 +14,6 @@ include $(ITG_MAKEUTILS_DIR)appveyor.mk
 PSLIBDIR := ./
 GSINCDIR := $(GSINCDIR) $(PSLIBDIR)
 
-PSLIBFILES := $(wildcard $(PSLIBDIR)*.ps)
+PSLIBFILES := $(call getPostScriptResourceFiles,$(PSLIBDIR))
 
 $(eval $(call definePostScriptTests,$(PSLIBFILES)))

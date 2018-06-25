@@ -4,7 +4,10 @@
 
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
 
-(arrays.ps) require_once
+%%IncludeResource: procset arrays.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet arrays.ps
+%/arrays.ps /ProcSet findresource begin
+/arrays.ps /ProcSet findresource currentdict copy pop
 
 /int_to_roman % 4 --> (IV)
 {
@@ -38,5 +41,8 @@
 
   end
 } bind def
+
+% # TODO: вернуть временное использование ProcSet arrays.ps
+%end % /arrays.ps /ProcSet findresource begin
 
 %%EOF
