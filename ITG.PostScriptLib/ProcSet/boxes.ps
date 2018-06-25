@@ -1,8 +1,20 @@
-%!PS-Adobe-2.0
-%%Creator: Sergei S. Betke
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: procset (boxes.ps)
+%%Version: 2.2 0
 %%EndComments
+%%BeginProlog
 
-/GetPageBBox {
+%(boxes.ps) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (boxes.ps)
+/boxes.ps <<
+
+/GetPageBBox
+{
   currentpagedevice /ImagingBBox get
   dup type /nulltype eq
     {
@@ -13,17 +25,16 @@
       astore
     }
   if
-}
-def
+} bind
 
 /rotate_to_zero
 {
   matrix currentmatrix
   aload pop pop pop pop pop % --> a b
   exch % --> b a
-  atan % ÑƒÐ³Ð¾Ð» Ð¿Ð¾Ð²Ð¾Ñ€Ð¾Ñ‚Ð° Ð¸ÑÑ…Ð¾Ð´Ð½Ð¾Ð¹ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñ‹
-  neg rotate % Ñ€Ð°Ð·Ð²ÐµÑ€Ð½ÑƒÐ»Ð¸ Ð¸ÑÑ…Ð¾Ð´Ð½ÑƒÑŽ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñƒ, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¸ÑÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ Ð¿Ð¾Ð²Ð¾Ñ€Ð¾Ñ‚
-} def
+  atan % óãîë ïîâîðîòà èñõîäíîé ìàòðèöû
+  neg rotate % ðàçâåðíóëè èñõîäíóþ ìàòðèöó, ÷òîáû èñêëþ÷èòü ïîâîðîò
+} bind
 
 /size_of_BBox % [ x1 y1 x2 y2 ] --> x2-x1  y2-y1
 {
@@ -33,14 +44,14 @@ def
   3 1 roll
   sub neg
   exch
-} bind def
+} bind
 
 /size_of_BBox_def % /sizeX /sizeY [ x1 y1 x2 y2 ] --> - ; /sizeX = x2-x1; /sizeY = y2-y1;
 {
   size_of_BBox
   3 -1 roll exch def
   def
-} def
+} bind
 
 /upath_BBox % upath --> x1 y1 x2 y2
 {
@@ -54,7 +65,7 @@ def
     grestore
     5 -1 roll
   setmatrix
-} bind def
+} bind
 
 /string_BBox % string --> x1 y1 x2 y2
 {
@@ -68,6 +79,10 @@ def
     grestore
     5 -1 roll
   setmatrix
-} bind def
+} bind
 
-%%EOF
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog

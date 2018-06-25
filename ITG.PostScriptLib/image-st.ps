@@ -2,9 +2,13 @@
 %%Creator: Sergei S. Betke
 %%EndComments
 
+%%IncludeResource: procset boxes.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet boxes.ps
+%/boxes.ps /ProcSet findresource begin
+/boxes.ps /ProcSet findresource currentdict copy pop
+
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
 
-(boxes.ps) require_once
 (math.ps) require_once
 (graphics.ps) require_once
 
@@ -71,5 +75,8 @@
 } bind def
 
 /ust  1 /ST true path_as_upath  cvlit def
+
+% # TODO: вернуть временное использование ProcSet boxes.ps
+%end % /boxes.ps /ProcSet findresource begin
 
 %%EOF

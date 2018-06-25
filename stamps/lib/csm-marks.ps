@@ -7,6 +7,8 @@
 %%+: encoding (CP1253Encoding.ps)
 %%+: procset (csm-marks-cyr-signs.ps) 2.2 0
 %%+: procset (csm-marks-greek-signs.ps) 2.2 0
+%%+: procset (arrays.ps) 2.2 0
+%%+: procset (boxes.ps) 2.2 0
 %%DocumentSuppliedResources: font stamp_sign_cyr
 %%+: font stamp_sign_greek
 %%+: font stamp_id
@@ -24,9 +26,13 @@
 %/arrays.ps /ProcSet findresource begin
 /arrays.ps /ProcSet findresource currentdict copy pop
 
+%%IncludeResource: procset boxes.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet boxes.ps
+%/boxes.ps /ProcSet findresource begin
+/boxes.ps /ProcSet findresource currentdict copy pop
+
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
-(boxes.ps) require_once
 (si.ps) require_once
 (math.ps) require_once
 (roman.ps) require_once
@@ -859,6 +865,9 @@ grestore
 %currentdict end /ProcSet defineresource pop
 %%%EndResource
 %} ifelse
+
+% # TODO: вернуть временное использование ProcSet boxes.ps
+%end % /boxes.ps /ProcSet findresource begin
 
 % # TODO: вернуть временное использование ProcSet arrays.ps
 %end % /arrays.ps /ProcSet findresource begin

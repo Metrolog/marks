@@ -12,9 +12,8 @@
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
 
 /assert.ps /ProcSet findresource begin
+/boxes.ps /ProcSet findresource begin
 userdict begin
-
-(boxes.ps) require_once
 
 %%EndProlog
 
@@ -32,6 +31,7 @@ userdict begin
 assert
 
 end % userdict
+end % /boxes.ps /ProcSet findresource begin
 end % /assert.ps /ProcSet findresource begin
 
 %%EOF

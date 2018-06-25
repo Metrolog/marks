@@ -2,9 +2,12 @@
 %%Creator: Sergei S. Betke
 %%EndComments
 
-(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
+%%IncludeResource: procset boxes.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet boxes.ps
+%/boxes.ps /ProcSet findresource begin
+/boxes.ps /ProcSet findresource currentdict copy pop
 
-(boxes.ps) require_once
+(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
 
 /stringheight
 {
@@ -172,5 +175,8 @@
 
   end
 } bind def
+
+% # TODO: вернуть временное использование ProcSet boxes.ps
+%end % /boxes.ps /ProcSet findresource begin
 
 %%EOF
