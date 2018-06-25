@@ -7,7 +7,14 @@
 %%+: encoding (CP1253Encoding.ps)
 %%+: procset (csm-marks-cyr-signs.ps) 2.2 0
 %%+: procset (csm-marks-greek-signs.ps) 2.2 0
-%%%DocumentSuppliedResources: procset (csm-marks.ps)
+%%DocumentSuppliedResources: font stamp_sign_cyr
+%%+: font stamp_sign_greek
+%%+: font stamp_id
+%%+: font stamp_gmc
+%%+: font stamp_period
+%%+: font stamp_year
+%%+: Font stamp_K
+%%%+: procset (csm-marks.ps)
 %%Version: 2.2 0
 %%EndComments
 %%BeginProlog
@@ -23,6 +30,55 @@
 (graphics-alignments.ps) require_once
 (image-st.ps) require_once
 (fonts.ps) require_once
+
+/stamp_sign_cyr /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_sign_cyr
+/stamp_sign_cyr (GOST2930-62forMarks) /CP1251Encoding.ps reencodefont pop
+%%EndResource:
+} ifelse
+
+/stamp_sign_greek /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_sign_greek
+/stamp_sign_greek (GOST2930-62forMarks) /CP1253Encoding.ps reencodefont pop
+%%EndResource:
+} ifelse
+
+/stamp_id /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_id
+/stamp_id  /stamp_sign_cyr findfont  definefont pop
+%%EndResource:
+} ifelse
+
+/stamp_gmc /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_gmc
+/stamp_gmc  /stamp_sign_cyr findfont  definefont pop
+%%EndResource:
+} ifelse
+
+/stamp_period /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_period
+/stamp_period  /stamp_sign_cyr findfont  definefont pop
+%%EndResource:
+} ifelse
+
+/stamp_year /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_year
+/stamp_year  /stamp_period findfont  definefont pop
+%%EndResource:
+} ifelse
+
+/stamp_K /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_K
+/stamp_K  /stamp_id findfont  definefont pop
+%%EndResource:
+} ifelse
 
 %%IncludeResource: procset csm-marks-cyr-signs.ps 2.2 0
 /csm-marks-cyr-signs.ps /ProcSet findresource currentdict copy pop
@@ -50,14 +106,6 @@
 {
   ()
 } bind def
-
-/stamp_sign_cyr (GOST2930-62forMarks) /CP1251Encoding.ps reencodefont
-/stamp_sign_greek (GOST2930-62forMarks) /CP1253Encoding.ps reencodefont
-/stamp_id  /stamp_sign_cyr findfont  definefont
-/stamp_gmc  /stamp_sign_cyr findfont  definefont
-/stamp_period  /stamp_sign_cyr findfont  definefont
-/stamp_year  /stamp_period findfont  definefont
-/stamp_K  /stamp_id findfont  definefont
 
 /stamp_sign_path_helper % (sign) angle --> - (добавляем к текущему пути путь знака поверителя)
 {
@@ -805,7 +853,7 @@ grestore
 } def
 
 %currentdict end /ProcSet defineresource pop
-%%EndResource
+%%%EndResource
 %} ifelse
 
 %%EndProlog

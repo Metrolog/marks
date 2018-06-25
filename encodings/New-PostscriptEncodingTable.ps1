@@ -162,7 +162,7 @@ ${OutputLine}
 		};
 @"
 ] aload length packedarray /Encoding defineresource pop
-%%EndResource
+%%EndResource:
 %} ifelse
 %%EndProlog
 "@;
