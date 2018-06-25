@@ -31,10 +31,10 @@ $(OUTPUTDIR)%.ps:
 # $(call mapPSEncodingFileToSource, uri, encoding)
 define mapPSEncodingFileToSource
 
-export $(2)TARGET := $(OUTPUTDIR)$(2).ps
+export $(2)TARGET := $(OUTPUTDIR)$(2)Encoding.ps
 $(call pushArtifactTargets,$(2)TARGET)
 
-$(OUTPUTDIR)$(2).ps: $(MAPPINGSDIR)MAPPINGS/$(1)/$(2).TXT
+$(OUTPUTDIR)$(2)Encoding.ps: $(MAPPINGSDIR)MAPPINGS/$(1)/$(2).TXT
 
 .PHONY: $2
 $2: $$($(2)TARGET)

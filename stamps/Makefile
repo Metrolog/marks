@@ -19,15 +19,15 @@ STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 PSLIBDIR := $(ROOT_PROJECT_DIR)ITG.PostScriptLib/
 STAMPLIBDIR := lib/
 GSINCDIR := $(GSINCDIR) $(PSLIBDIR) $(STAMPLIBDIR)
+ENCODINGSDIR := $(STAMPLIBDIR)Encoding/
 
-$(eval $(call copyfile, $(STAMPLIBDIR)cp1251.ps, $(CP1251TARGET)))
-$(eval $(call copyfile, $(STAMPLIBDIR)cp1253.ps, $(CP1253TARGET)))
+$(eval $(call copyfileto, $(ENCODINGSDIR), $(CP1251TARGET)))
+$(eval $(call copyfileto, $(ENCODINGSDIR), $(CP1253TARGET)))
 
 maintainer-clean::
-	$(RM) $(STAMPLIBDIR)cp1251.ps
-	$(RM) $(STAMPLIBDIR)cp1253.ps
+	$(RMDIR) $(ENCODINGSDIR)
 
-STAMPINCFILES := $(wildcard $(PSLIBDIR)*.ps) $(wildcard $(STAMPLIBDIR)*.ps) $(STAMPLIBDIR)cp1251.ps $(STAMPLIBDIR)cp1253.ps
+STAMPINCFILES := $(wildcard $(PSLIBDIR)*.ps) $(wildcard $(STAMPLIBDIR)*.ps) $(ENCODINGSDIR)CP1251Encoding.ps $(ENCODINGSDIR)CP1253Encoding.ps
 
 STAMPFONTDIR := $(ROOT_PROJECT_DIR)fonts/
 GSFONTDIR := $(GSFONTDIR) $(STAMPFONTDIR)

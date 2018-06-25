@@ -1,13 +1,12 @@
 %!PS-Adobe-2.0
 %%Creator: Sergei S. Betke
-%%DocumentNeededResources: encoding (${Encoding}Encoding) 1.0
+%%DocumentNeededResources: encoding (CP1251Encoding.ps)
+%%+: encoding (CP1253Encoding.ps)
 %%EndComments
 
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
 (boxes.ps) require_once
-(cp1251.ps) require_once
-(cp1253.ps) require_once
 (si.ps) require_once
 (math.ps) require_once
 (arrays.ps) require_once
@@ -34,8 +33,8 @@
   ()
 } bind def
 
-/stamp_sign_cyr (GOST2930-62forMarks) /CP1251Encoding	reencodefont
-/stamp_sign_greek (GOST2930-62forMarks) /CP1253Encoding	reencodefont
+/stamp_sign_cyr (GOST2930-62forMarks) /CP1251Encoding.ps reencodefont
+/stamp_sign_greek (GOST2930-62forMarks) /CP1253Encoding.ps reencodefont
 /stamp_id  /stamp_sign_cyr findfont  definefont
 /stamp_gmc  /stamp_sign_cyr findfont  definefont
 /stamp_period  /stamp_sign_cyr findfont  definefont
@@ -66,6 +65,7 @@
   true path_as_upath
 } def
 
+%(Metrolog:Stamps:Cyrillic signs) /ProcSet findresource
 (csm-marks-cyr-signs.ps) require_once
 (csm-marks-greek-signs.ps) require_once
 
