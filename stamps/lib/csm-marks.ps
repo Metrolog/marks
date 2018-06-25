@@ -2,6 +2,8 @@
 %%Creator: Sergei S. Betke
 %%DocumentNeededResources: encoding (CP1251Encoding.ps)
 %%+: encoding (CP1253Encoding.ps)
+%%+: procset (csm-marks-cyr-signs.ps)
+%%+: procset (csm-marks-greek-signs.ps)
 %%EndComments
 
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
@@ -15,6 +17,9 @@
 (graphics-alignments.ps) require_once
 (image-st.ps) require_once
 (fonts.ps) require_once
+
+/csm-marks-cyr-signs.ps /ProcSet findresource currentdict copy pop
+/csm-marks-greek-signs.ps /ProcSet findresource currentdict copy pop
 
 /months % [ 1 2 3 ] --> (1) (2) (3)
 {
@@ -64,10 +69,6 @@
   /stamp_sign_path_helper
   true path_as_upath
 } def
-
-%(Metrolog:Stamps:Cyrillic signs) /ProcSet findresource
-(csm-marks-cyr-signs.ps) require_once
-(csm-marks-greek-signs.ps) require_once
 
 gsave
 
