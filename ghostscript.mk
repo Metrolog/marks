@@ -27,6 +27,7 @@ GSINCDIR ?=
 GSFONTDIR ?=
 
 GSCMDLINE = $(GS) \
+  -sCOMPILE_INITS=0 \
   $(foreach incdir,$(GSINCDIR), -I'$(incdir)') \
   $(if $(GSFONTDIR),-sFONTPATH='$(foreach fontdir,$(GSFONTDIR),$(fontdir)$(PATHSEP))')
 
