@@ -1,6 +1,17 @@
-%!PS-Adobe-2.0
-%%Creator: Sergei S. Betke
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: procset (assert.ps)
+%%Version: 2.2 0
 %%EndComments
+%%BeginProlog
+
+%(assert.ps) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (assert.ps)
+/assert.ps <<
 
 /assert % bool string --> -
 {
@@ -20,7 +31,7 @@
       (' passed.\n) writestring
     }
   ifelse
-} def
+} bind
 
 /almost_equal % a b --> bool
 {
@@ -29,7 +40,7 @@
   100 mul % a  |b-a|*100
   exch abs % |b-a|*100  |a|
   le
-} def
+} bind
 
 /sizes_almost_equal % sx1 sy1 sx2 sy2 --> bool
 {
@@ -37,6 +48,10 @@
     almost_equal
     3 1 roll  almost_equal
   and
-} def
+} bind
 
-%%EOF
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog

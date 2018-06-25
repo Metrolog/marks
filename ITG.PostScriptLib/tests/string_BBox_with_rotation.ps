@@ -1,14 +1,22 @@
-%!PS-Adobe-2.0
-%%Creator: Sergei S. Betke
+%!PS-Adobe-3.0
 %%Title: Test: string_BBox должен возвращать близкие результаты при повороте холста на любые углы
-%%LanguageLevel: 2
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%LanguageLevel: 3
 %%EndComments
 %!
 
+%%BeginProlog
+
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
-(assert.ps) require_once
+
+/assert.ps /ProcSet findresource begin
+userdict begin
 
 (boxes.ps) require_once
+
+%%EndProlog
 
 /Helvetica findfont
 12 scalefont setfont
@@ -23,6 +31,7 @@
   (string_BBox must return the same string size and for rotated canvas)
 assert
 
-%%EndDocument
-%%Trailer
+end % userdict
+end % /assert.ps /ProcSet findresource begin
+
 %%EOF
