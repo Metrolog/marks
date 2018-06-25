@@ -1,9 +1,14 @@
-%!PS-Adobe-2.0
-%%Creator: Sergei S. Betke
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
 %%DocumentNeededResources: encoding (CP1251Encoding.ps)
 %%+: encoding (CP1253Encoding.ps)
-%%+: procset (csm-marks-cyr-signs.ps)
-%%+: procset (csm-marks-greek-signs.ps)
+%%+: procset (csm-marks-cyr-signs.ps) 2.2 0
+%%+: procset (csm-marks-greek-signs.ps) 2.2 0
+%%%DocumentSuppliedResources: procset (csm-marks.ps)
+%%Version: 2.2 0
 %%EndComments
 %%BeginProlog
 
@@ -24,7 +29,10 @@
 %%IncludeResource: procset csm-marks-greek-signs.ps 2.2 0
 /csm-marks-greek-signs.ps /ProcSet findresource currentdict copy pop
 
-%%EndProlog
+%(csm-marks.ps) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%%BeginResource: ProcSet (csm-marks.ps)
+%/csm-marks.ps 100 dict begin
 
 /months % [ 1 2 3 ] --> (1) (2) (3)
 {
@@ -796,4 +804,8 @@ grestore
   end
 } def
 
-%%EOF
+%currentdict end /ProcSet defineresource pop
+%%EndResource
+%} ifelse
+
+%%EndProlog
