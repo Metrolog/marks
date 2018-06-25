@@ -129,7 +129,6 @@ function ConvertTo-PostScriptEncodingTable {
 %/${Encoding}Encoding.ps /Encoding resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-Encoding
 %%BeginResource: Encoding (${Encoding}Encoding.ps)
-%%EndComments
 /${Encoding}Encoding.ps [
 "@;
 	}
