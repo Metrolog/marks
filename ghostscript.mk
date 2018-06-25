@@ -26,6 +26,10 @@ GS = $(GSTOOL) \
 GSINCDIR ?=
 GSFONTDIR ?=
 
+ENCODINGRESOURCEDIR := Encoding/
+PROCSETRESOURCEDIR := ProcSet/
+RESOURCEDIRSUBDIRS = $(ENCODINGRESOURCEDIR) $(PROCSETRESOURCEDIR)
+
 GSCMDLINE = $(GS) \
   -sCOMPILE_INITS=0 \
   $(foreach incdir,$(GSINCDIR), -I'$(incdir)') \
@@ -37,6 +41,10 @@ $(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
 	$(GSCMDLINE) -sOutputFile='$@' '$<'
 	$(call writeinformation,File "$@" is ready.)
 
+
+# $(call getPostScriptResourceFiles,dirs)
+getPostScriptResourceFiles = \
+  $(foreach d,$1,$(wildcard $d*.ps) $(foreach s,$(RESOURCEDIRSUBDIRS), $(wildcard $d$s*.ps)))
 
 ifdef MAKE_TESTS_DIR
 
