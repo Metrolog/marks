@@ -1,21 +1,26 @@
-%!PS-Adobe-2.0
-%%Creator: Sergei S. Betke
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: procset (graphics-alignments.ps)
+%%Version: 2.2 0
 %%EndComments
+%%BeginProlog
 
 %%IncludeResource: procset boxes.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet boxes.ps
-%/boxes.ps /ProcSet findresource begin
-/boxes.ps /ProcSet findresource currentdict copy pop
+/boxes.ps /ProcSet findresource begin
 
 %%IncludeResource: procset graphics.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet graphics.ps
-%/graphics.ps /ProcSet findresource begin
-/graphics.ps /ProcSet findresource currentdict copy pop
+/graphics.ps /ProcSet findresource begin
 
 %%IncludeResource: procset graphics.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet math.ps
-%/math.ps /ProcSet findresource begin
-/math.ps /ProcSet findresource currentdict copy pop
+/math.ps /ProcSet findresource begin
+
+%(graphics-alignments.ps) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (graphics-alignments.ps)
+/graphics-alignments.ps <<
 
 /align_upaths_in_BBox % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
 {
@@ -241,15 +246,14 @@
   setmatrix
 
   end
-} bind def
+} bind
 
-% # TODO: вернуть временное использование ProcSet math.ps
-%end % /math.ps /ProcSet findresource begin
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
 
-% # TODO: вернуть временное использование ProcSet graphics.ps
-%end % /graphics.ps /ProcSet findresource begin
+end % /math.ps /ProcSet findresource begin
+end % /graphics.ps /ProcSet findresource begin
+end % /boxes.ps /ProcSet findresource begin
 
-% # TODO: вернуть временное использование ProcSet boxes.ps
-% end % /boxes.ps /ProcSet findresource begin
-
-%%EOF
+%%EndProlog
