@@ -11,6 +11,9 @@
 %%+: procset (boxes.ps) 2.2 0
 %%+: procset (fonts.ps) 2.2 0
 %%+: procset (graphics.ps) 2.2 0
+%%+: procset (math.ps) 2.2 0
+%%+: procset (roman.ps) 2.2 0
+%%+: procset (si.ps) 2.2 0
 %%DocumentSuppliedResources: font stamp_sign_cyr
 %%+: font stamp_sign_greek
 %%+: font stamp_id
@@ -53,9 +56,13 @@
 %/roman.ps /ProcSet findresource begin
 /roman.ps /ProcSet findresource currentdict copy pop
 
+%%IncludeResource: procset si.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet si.ps
+%/si.ps /ProcSet findresource begin
+/si.ps /ProcSet findresource currentdict copy pop
+
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
-(si.ps) require_once
 (graphics-alignments.ps) require_once
 (image-st.ps) require_once
 
@@ -883,6 +890,9 @@ grestore
 %currentdict end /ProcSet defineresource pop
 %%%EndResource
 %} ifelse
+
+% # TODO: вернуть временное использование ProcSet si.ps
+%end % /si.ps /ProcSet findresource begin
 
 % # TODO: вернуть временное использование ProcSet roman.ps
 %end % /roman.ps /ProcSet findresource begin

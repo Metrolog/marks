@@ -1,0 +1,24 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: procset (si.ps)
+%%Version: 2.2 0
+%%EndComments
+%%BeginProlog
+
+%(si.ps) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (si.ps)
+/si.ps <<
+
+/mm { % int, float (in mm) --> float (in pt)
+  72.0 mul 25.4 div
+} bind
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog

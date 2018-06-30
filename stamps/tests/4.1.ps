@@ -1,28 +1,24 @@
 %!PS-Adobe-3.0
+%%Title: CSM makrs
 %%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%LanguageLevel: 3
 %%DocumentData: Clean7Bit
-%%DocumentNeededResources: encoding (CP1251Encoding.ps)
-%%+: encoding (CP1253Encoding.ps)
-%%+: procset (csm-marks-cyr-signs.ps) 2.2 0
-%%+: procset (csm-marks-greek-signs.ps) 2.2 0
-%%+: font GOST2930-62forMarks
+%%DocumentNeededResources: procset (si.ps)
 %%Pages: 1
 %%PageOrder: Ascend
 %%EndComments
-%!
-
 %%BeginProlog
 
-(lib.ps) findlibfile { exch pop cvx exec } { (Error: file lib.ps not found!) =  pop stop } ifelse
-(distiller.ps) require_once
-(si.ps) require_once
-(csm-marks.ps) require_once
+%%IncludeResource: procset si.ps 2.2 0
+/si.ps /ProcSet findresource begin
+userdict begin
 
-%%%IncludeResource: procset csm-marks.ps 2.2 0
-%/csm-marks.ps /ProcSet findresource currentdict copy pop
+(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
+
+(distiller.ps) require_once
+(csm-marks.ps) require_once
 
 %%EndProlog
 
@@ -41,8 +37,9 @@
   /MirrorPrint false
   /NegativePrint true
 >> setpagedevice
-%%EndFeature
+%%EndFeature:
 %%EndSetup
+%!
 
 gsave
 
@@ -81,5 +78,9 @@ grestore
 
 showpage
 
+end % userdict begin
+end % /si.ps /ProcSet findresource begin
+
+%%EndDocument:
 %%Trailer
 %%EOF
