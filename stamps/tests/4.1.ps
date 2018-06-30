@@ -5,24 +5,58 @@
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%LanguageLevel: 3
 %%DocumentData: Clean7Bit
-%%DocumentNeededResources: procset (si.ps)
+%%DocumentNeededResources: procset (csm-marks.ps)
+%%+: procset (csm-marks-cyr-signs.ps) 2.2 0
+%%+: procset (csm-marks-greek-signs.ps) 2.2 0
+%%+: procset (arrays.ps) 2.2 0
+%%+: procset (boxes.ps) 2.2 0
+%%+: procset (fonts.ps) 2.2 0
+%%+: procset (graphics.ps) 2.2 0
+%%+: procset (math.ps) 2.2 0
+%%+: procset (roman.ps) 2.2 0
+%%+: procset (si.ps) 2.2 0
+%%+: procset (graphics-alignments.ps) 2.2 0
+%%+: procset (image-st.ps) 2.2 0
 %%+: procset (distiller.ps)
 %%Pages: 1
 %%PageOrder: Ascend
 %%EndComments
 %%BeginProlog
 
+%%IncludeResource: procset arrays.ps 2.2 0
+/arrays.ps /ProcSet findresource begin
+
+%%IncludeResource: procset boxes.ps 2.2 0
+/boxes.ps /ProcSet findresource begin
+
+%%IncludeResource: procset fonts.ps 2.2 0
+/fonts.ps /ProcSet findresource begin
+
+%%IncludeResource: procset graphics.ps 2.2 0
+/graphics.ps /ProcSet findresource begin
+
+%%IncludeResource: procset math.ps 2.2 0
+/math.ps /ProcSet findresource begin
+
+%%IncludeResource: procset roman.ps 2.2 0
+/roman.ps /ProcSet findresource begin
+
 %%IncludeResource: procset si.ps 2.2 0
 /si.ps /ProcSet findresource begin
-userdict begin
+
+%%IncludeResource: procset graphics-alignments.ps 2.2 0
+/graphics-alignments.ps /ProcSet findresource begin
+
+%%IncludeResource: procset image-st.ps 2.2 0
+/image-st.ps /ProcSet findresource begin
+
+%%IncludeResource: procset csm-marks.ps 2.2 0
+/csm-marks.ps /ProcSet findresource begin
 
 %%IncludeResource: procset distiller.ps 2.2 0
 /distiller.ps /ProcSet findresource begin
+
 userdict begin
-
-(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
-
-(csm-marks.ps) require_once
 
 %%EndProlog
 
@@ -87,7 +121,16 @@ showpage
 
 end % userdict begin
 end % /distiller.ps /ProcSet findresource begin
+end % /image-st.ps /ProcSet findresource begin
+end % /graphics-alignments.ps /ProcSet findresource begin
 end % /si.ps /ProcSet findresource begin
+end % /roman.ps /ProcSet findresource begin
+end % /math.ps /ProcSet findresource begin
+end % /graphics.ps /ProcSet findresource begin
+end % /fonts.ps /ProcSet findresource begin
+end % /boxes.ps /ProcSet findresource begin
+end % /arrays.ps /ProcSet findresource begin
+end % /csm-marks.ps /ProcSet findresource begin
 
 %%EndDocument:
 %%Trailer

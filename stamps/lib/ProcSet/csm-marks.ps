@@ -29,49 +29,31 @@
 %%BeginProlog
 
 %%IncludeResource: procset arrays.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet arrays.ps
-%/arrays.ps /ProcSet findresource begin
-/arrays.ps /ProcSet findresource currentdict copy pop
+/arrays.ps /ProcSet findresource begin
 
 %%IncludeResource: procset boxes.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet boxes.ps
-%/boxes.ps /ProcSet findresource begin
-/boxes.ps /ProcSet findresource currentdict copy pop
+/boxes.ps /ProcSet findresource begin
 
 %%IncludeResource: procset fonts.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet fonts.ps
-%/fonts.ps /ProcSet findresource begin
-/fonts.ps /ProcSet findresource currentdict copy pop
+/fonts.ps /ProcSet findresource begin
 
 %%IncludeResource: procset graphics.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet graphics.ps
-%/graphics.ps /ProcSet findresource begin
-/graphics.ps /ProcSet findresource currentdict copy pop
+/graphics.ps /ProcSet findresource begin
 
 %%IncludeResource: procset math.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet math.ps
-%/math.ps /ProcSet findresource begin
-/math.ps /ProcSet findresource currentdict copy pop
+/math.ps /ProcSet findresource begin
 
 %%IncludeResource: procset roman.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet roman.ps
-%/roman.ps /ProcSet findresource begin
-/roman.ps /ProcSet findresource currentdict copy pop
+/roman.ps /ProcSet findresource begin
 
 %%IncludeResource: procset si.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet si.ps
-%/si.ps /ProcSet findresource begin
-/si.ps /ProcSet findresource currentdict copy pop
+/si.ps /ProcSet findresource begin
 
 %%IncludeResource: procset graphics-alignments.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet graphics-alignments.ps
-%/graphics-alignments.ps /ProcSet findresource begin
-/graphics-alignments.ps /ProcSet findresource currentdict copy pop
+/graphics-alignments.ps /ProcSet findresource begin
 
 %%IncludeResource: procset image-st.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet image-st.ps
-%/image-st.ps /ProcSet findresource begin
-/image-st.ps /ProcSet findresource currentdict copy pop
+/image-st.ps /ProcSet findresource begin
 
 /stamp_sign_cyr /Font resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-Font
@@ -123,14 +105,15 @@
 } ifelse
 
 %%IncludeResource: procset csm-marks-cyr-signs.ps 2.2 0
-/csm-marks-cyr-signs.ps /ProcSet findresource currentdict copy pop
+/csm-marks-cyr-signs.ps /ProcSet findresource begin
+
 %%IncludeResource: procset csm-marks-greek-signs.ps 2.2 0
-/csm-marks-greek-signs.ps /ProcSet findresource currentdict copy pop
+/csm-marks-greek-signs.ps /ProcSet findresource begin
 
 %(csm-marks.ps) /ProcSet resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-ProcSet
-%%%BeginResource: ProcSet (csm-marks.ps)
-%/csm-marks.ps 100 dict begin
+%%BeginResource: ProcSet (csm-marks.ps)
+/csm-marks.ps  100 dict begin
 
 /months % [ 1 2 3 ] --> (1) (2) (3)
 {
@@ -422,7 +405,6 @@ grestore
   /gmc_verification_stamp_path
   false path_as_upath
 } def
-
 
 
 % генерация рисунка поверительного клейма для юридических лиц и индивидуальных предпринимателей
@@ -739,7 +721,7 @@ grestore
       ifelse
     }
   ifelse
-} bind def
+} def
 
 /verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
@@ -894,35 +876,20 @@ grestore
   end
 } def
 
-%currentdict end /ProcSet defineresource pop
-%%%EndResource
+currentdict end  dup length dict copy  /ProcSet defineresource pop
+%%EndResource:
 %} ifelse
 
-% # TODO: вернуть временное использование ProcSet image-st.ps
-%end % /image-st.ps /ProcSet findresource begin
-
-% # TODO: вернуть временное использование ProcSet graphics-alignments.ps
-%end % /graphics-alignments.ps /ProcSet findresource begin
-
-% # TODO: вернуть временное использование ProcSet si.ps
-%end % /si.ps /ProcSet findresource begin
-
-% # TODO: вернуть временное использование ProcSet roman.ps
-%end % /roman.ps /ProcSet findresource begin
-
-% # TODO: вернуть временное использование ProcSet math.ps
-%end % /math.ps /ProcSet findresource begin
-
-% # TODO: вернуть временное использование ProcSet graphics.ps
-%end % /graphics.ps /ProcSet findresource begin
-
-% # TODO: вернуть временное использование ProcSet fonts.ps
-%end % /fonts.ps /ProcSet findresource begin
-
-% # TODO: вернуть временное использование ProcSet boxes.ps
-%end % /boxes.ps /ProcSet findresource begin
-
-% # TODO: вернуть временное использование ProcSet arrays.ps
-%end % /arrays.ps /ProcSet findresource begin
+end % /csm-marks-greek-signs.ps /ProcSet findresource begin
+end % /csm-marks-cyr-signs.ps /ProcSet findresource begin
+end % /image-st.ps /ProcSet findresource begin
+end % /graphics-alignments.ps /ProcSet findresource begin
+end % /si.ps /ProcSet findresource begin
+end % /roman.ps /ProcSet findresource begin
+end % /math.ps /ProcSet findresource begin
+end % /graphics.ps /ProcSet findresource begin
+end % /fonts.ps /ProcSet findresource begin
+end % /boxes.ps /ProcSet findresource begin
+end % /arrays.ps /ProcSet findresource begin
 
 %%EndProlog
