@@ -9,6 +9,7 @@
 %%+: procset (csm-marks-greek-signs.ps) 2.2 0
 %%+: procset (arrays.ps) 2.2 0
 %%+: procset (boxes.ps) 2.2 0
+%%+: procset (fonts.ps) 2.2 0
 %%DocumentSuppliedResources: font stamp_sign_cyr
 %%+: font stamp_sign_greek
 %%+: font stamp_id
@@ -31,6 +32,11 @@
 %/boxes.ps /ProcSet findresource begin
 /boxes.ps /ProcSet findresource currentdict copy pop
 
+%%IncludeResource: procset fonts.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet fonts.ps
+%/fonts.ps /ProcSet findresource begin
+/fonts.ps /ProcSet findresource currentdict copy pop
+
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
 (si.ps) require_once
@@ -39,7 +45,6 @@
 (graphics.ps) require_once
 (graphics-alignments.ps) require_once
 (image-st.ps) require_once
-(fonts.ps) require_once
 
 /stamp_sign_cyr /Font resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-Font
@@ -865,6 +870,9 @@ grestore
 %currentdict end /ProcSet defineresource pop
 %%%EndResource
 %} ifelse
+
+% # TODO: вернуть временное использование ProcSet fonts.ps
+%end % /fonts.ps /ProcSet findresource begin
 
 % # TODO: вернуть временное использование ProcSet boxes.ps
 %end % /boxes.ps /ProcSet findresource begin
