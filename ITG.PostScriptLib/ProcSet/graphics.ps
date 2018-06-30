@@ -1,20 +1,27 @@
-%!PS-Adobe-2.0
-%%Creator: Sergei S. Betke
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: procset (graphics.ps)
+%%Version: 2.2 0
 %%EndComments
+%%BeginProlog
 
 %%IncludeResource: procset boxes.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet boxes.ps
-%/boxes.ps /ProcSet findresource begin
-/boxes.ps /ProcSet findresource currentdict copy pop
+/boxes.ps /ProcSet findresource begin
 
-(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
+%(graphics.ps) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (graphics.ps)
+/graphics.ps <<
 
 /stringheight
 {
   string_BBox
   size_of_BBox
   exch pop
-} bind def
+} bind
 
 /string_center_bottom
 {
@@ -22,7 +29,7 @@
     exch  4 -1 roll  sub  2 div  neg
     3 1 roll  pop  neg
   rmoveto
-} bind def
+} bind
 
 /string_center_middle
 {
@@ -30,7 +37,7 @@
     exch  4 -1 roll  sub  2 div  neg
     3 1 roll  add  2 div  neg
   rmoveto
-} bind def
+} bind
 
 /string_left_middle
 {
@@ -38,7 +45,7 @@
     exch  4 -1 roll  exch pop  neg
     3 1 roll  add  2 div  neg
   rmoveto
-} bind def
+} bind
 
 /string_right_middle
 {
@@ -46,7 +53,7 @@
     exch  4 -1 roll  pop  neg
     3 1 roll  add  2 div  neg
   rmoveto
-} bind def
+} bind
 
 /arc_angle_from
 {
@@ -59,7 +66,7 @@
     xc yc r
     y1 yc sub  x1 xc sub  atan
   end
-} bind def
+} bind
 
 /arc_angle_to
 {
@@ -73,7 +80,7 @@
     xc yc r a1
     y2 yc sub  x2 xc sub  atan
   end
-} bind def
+} bind
 
 /path_as_upath % path_generator bool --> userpath
 {
@@ -86,16 +93,15 @@
   cache_upath upath
   grestore
   end
-} def
+} bind
 
-% СЂРёСЃРѕРІР°РЅРёРµ СЂР°РјРєРё
-/centered_frame % С€РёСЂРёРЅР° РІС‹СЃРѕС‚Р° С‚РѕР»С‰РёРЅР° СЂР°РґРёСѓСЃ_СѓРіР»РѕРІ --> -
+/centered_frame
 {
   9 dict begin
-  /radius exch def % СЂР°РґРёСѓСЃ СЃРєСЂСѓРіР»РµРЅРёСЏ СѓРіР»РѕРІ
-  /thickness exch def % С‚РѕР»С‰РёРЅР° СЂР°РјРєРё
-  /size_v exch def % РІС‹СЃРѕС‚Р° СЂР°РјРєРё
-  /size_h exch def % С€РёСЂРёРЅР° СЂР°РјРєРё
+  /radius exch def
+  /thickness exch def
+  /size_v exch def
+  /size_h exch def
 
   /size_h_2_ext  size_h 2 div  def
   /size_v_2_ext  size_v 2 div  def
@@ -174,9 +180,12 @@
   ifelse
 
   end
-} bind def
+} bind
 
-% # TODO: вернуть временное использование ProcSet boxes.ps
-%end % /boxes.ps /ProcSet findresource begin
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
 
-%%EOF
+end % /boxes.ps /ProcSet findresource begin
+
+%%EndProlog

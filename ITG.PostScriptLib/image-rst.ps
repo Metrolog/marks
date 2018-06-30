@@ -7,10 +7,14 @@
 %/boxes.ps /ProcSet findresource begin
 /boxes.ps /ProcSet findresource currentdict copy pop
 
+%%IncludeResource: procset graphics.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet graphics.ps
+%/graphics.ps /ProcSet findresource begin
+/graphics.ps /ProcSet findresource currentdict copy pop
+
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
 
 (math.ps) require_once
-(graphics.ps) require_once
 
 % знак –—“
 /RST % H_size --> -
@@ -99,6 +103,9 @@
 } bind def
 
 /urst  1 /RST true path_as_upath  cvlit def
+
+% # TODO: вернуть временное использование ProcSet graphics.ps
+%end % /graphics.ps /ProcSet findresource begin
 
 % # TODO: вернуть временное использование ProcSet boxes.ps
 %end % /boxes.ps /ProcSet findresource begin
