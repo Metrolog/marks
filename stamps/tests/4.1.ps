@@ -6,6 +6,7 @@
 %%LanguageLevel: 3
 %%DocumentData: Clean7Bit
 %%DocumentNeededResources: procset (si.ps)
+%%+: procset (distiller.ps)
 %%Pages: 1
 %%PageOrder: Ascend
 %%EndComments
@@ -15,14 +16,20 @@
 /si.ps /ProcSet findresource begin
 userdict begin
 
+%%IncludeResource: procset distiller.ps 2.2 0
+/distiller.ps /ProcSet findresource begin
+userdict begin
+
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
-(distiller.ps) require_once
 (csm-marks.ps) require_once
 
 %%EndProlog
 
 %%BeginSetup
+
+setdistillerparamsforcsmmarks
+
 %%EndSetup
 
 %%Page: A 1
@@ -79,6 +86,7 @@ grestore
 showpage
 
 end % userdict begin
+end % /distiller.ps /ProcSet findresource begin
 end % /si.ps /ProcSet findresource begin
 
 %%EndDocument:
