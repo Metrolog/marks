@@ -1,0 +1,28 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: procset (math.ps)
+%%Version: 2.2 0
+%%EndComments
+%%BeginProlog
+
+%(math.ps) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (math.ps)
+/math.ps <<
+
+/tan
+{
+  dup
+  sin
+  exch cos
+  div
+} bind
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog

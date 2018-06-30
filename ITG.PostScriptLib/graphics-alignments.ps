@@ -12,9 +12,10 @@
 %/graphics.ps /ProcSet findresource begin
 /graphics.ps /ProcSet findresource currentdict copy pop
 
-(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
-
-(math.ps) require_once
+%%IncludeResource: procset graphics.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet math.ps
+%/math.ps /ProcSet findresource begin
+/math.ps /ProcSet findresource currentdict copy pop
 
 /align_upaths_in_BBox % [ upath ... upath ] [ bounding box ] gap --> - (отрисованные штампы)
 {
@@ -241,6 +242,9 @@
 
   end
 } bind def
+
+% # TODO: вернуть временное использование ProcSet math.ps
+%end % /math.ps /ProcSet findresource begin
 
 % # TODO: вернуть временное использование ProcSet graphics.ps
 %end % /graphics.ps /ProcSet findresource begin
