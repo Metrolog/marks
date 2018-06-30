@@ -89,7 +89,10 @@
   gsave
   newpath
   0 0 moveto
-  load exec
+    dup type  /nametype  eq
+    { load }
+  if
+  exec
   cache_upath upath
   grestore
   end

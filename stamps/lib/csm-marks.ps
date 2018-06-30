@@ -15,6 +15,7 @@
 %%+: procset (roman.ps) 2.2 0
 %%+: procset (si.ps) 2.2 0
 %%+: procset (graphics-alignments.ps) 2.2 0
+%%+: procset (image-st.ps) 2.2 0
 %%DocumentSuppliedResources: font stamp_sign_cyr
 %%+: font stamp_sign_greek
 %%+: font stamp_id
@@ -67,9 +68,10 @@
 %/graphics-alignments.ps /ProcSet findresource begin
 /graphics-alignments.ps /ProcSet findresource currentdict copy pop
 
-(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
-
-(image-st.ps) require_once
+%%IncludeResource: procset image-st.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet image-st.ps
+%/image-st.ps /ProcSet findresource begin
+/image-st.ps /ProcSet findresource currentdict copy pop
 
 /stamp_sign_cyr /Font resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-Font
@@ -895,6 +897,9 @@ grestore
 %currentdict end /ProcSet defineresource pop
 %%%EndResource
 %} ifelse
+
+% # TODO: вернуть временное использование ProcSet image-st.ps
+%end % /image-st.ps /ProcSet findresource begin
 
 % # TODO: вернуть временное использование ProcSet graphics-alignments.ps
 %end % /graphics-alignments.ps /ProcSet findresource begin
