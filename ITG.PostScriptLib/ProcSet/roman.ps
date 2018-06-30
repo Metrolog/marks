@@ -1,13 +1,20 @@
-%!PS-Adobe-2.0
-%%Creator: Sergei S. Betke
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: procset (roman.ps)
+%%Version: 2.2 0
 %%EndComments
-
-(lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file  dup (Error: file ) writestring  dup  3 -1 roll  writestring  ( not found!\n) writestring  stop }  ifelse
+%%BeginProlog
 
 %%IncludeResource: procset arrays.ps 2.2 0
-% # TODO: вернуть временное использование ProcSet arrays.ps
-%/arrays.ps /ProcSet findresource begin
-/arrays.ps /ProcSet findresource currentdict copy pop
+/arrays.ps /ProcSet findresource begin
+
+%(roman.ps) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (roman.ps)
+/roman.ps <<
 
 /int_to_roman % 4 --> (IV)
 {
@@ -40,9 +47,12 @@
   aconcatenate
 
   end
-} bind def
+} bind
 
-% # TODO: вернуть временное использование ProcSet arrays.ps
-%end % /arrays.ps /ProcSet findresource begin
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
 
-%%EOF
+end % /arrays.ps /ProcSet findresource begin
+
+%%EndProlog

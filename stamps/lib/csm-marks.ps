@@ -48,10 +48,14 @@
 %/math.ps /ProcSet findresource begin
 /math.ps /ProcSet findresource currentdict copy pop
 
+%%IncludeResource: procset roman.ps 2.2 0
+% # TODO: вернуть временное использование ProcSet roman.ps
+%/roman.ps /ProcSet findresource begin
+/roman.ps /ProcSet findresource currentdict copy pop
+
 (lib.ps) findlibfile { exch pop cvx exec } { (%stderr) (w) file (Error: file lib.ps not found!)  writestring  pop  stop }  ifelse
 
 (si.ps) require_once
-(roman.ps) require_once
 (graphics-alignments.ps) require_once
 (image-st.ps) require_once
 
@@ -879,6 +883,9 @@ grestore
 %currentdict end /ProcSet defineresource pop
 %%%EndResource
 %} ifelse
+
+% # TODO: вернуть временное использование ProcSet roman.ps
+%end % /roman.ps /ProcSet findresource begin
 
 % # TODO: вернуть временное использование ProcSet math.ps
 %end % /math.ps /ProcSet findresource begin
