@@ -17,7 +17,8 @@ param (
 		, ValueFromPipeline = $true
 	)]
 	[Alias('GNUMakeOutput')]
-    [String]
+	[AllowEmptyString()]
+	[String]
     $InputObject
 )
 
