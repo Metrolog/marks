@@ -19,9 +19,8 @@ endif
 GS = $(GSTOOL) \
   -dSAFER \
   -dNOPAUSE \
-  -dBATCH \
-  -sDEVICE=pdfwrite \
-  -dNOPLATFONTS
+  -dNOPLATFONTS \
+  -dBATCH
 
 GSINCDIR ?=
 GSFONTDIR ?=
@@ -31,14 +30,17 @@ PROCSETRESOURCEDIR := ProcSet/
 RESOURCEDIRSUBDIRS = $(ENCODINGRESOURCEDIR) $(PROCSETRESOURCEDIR)
 
 GSCMDLINE = $(GS) \
-  -sCOMPILE_INITS=0 \
+  -P \
   $(foreach incdir,$(GSINCDIR), -I'$(incdir)') \
   $(if $(GSFONTDIR),-sFONTPATH='$(foreach fontdir,$(GSFONTDIR),$(fontdir)$(PATHSEP))')
+
+GSPSTOPDFCMDLINE = $(GSCMDLINE) \
+  -sDEVICE=pdfwrite
 
 $(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
 	$(call writeinformation,Build file "$@" from "$<"...)
 	$(MAKETARGETDIR)
-	$(GSCMDLINE) -sOutputFile='$@' '$<'
+	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
 	$(call writeinformation,File "$@" is ready.)
 
 
@@ -55,7 +57,7 @@ TESTSPDFFILES = $(patsubst $(TESTSDIR)%.ps,$(AUXDIR)%.pdf,$(TESTSPSFILES))
 define definePostScriptTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
-  $(GSCMDLINE) -q -sOutputFile='$1' '$2';,\
+  $(GSCMDLINE) -q '$2';,\
   $2 $3 \
 )
 
@@ -68,7 +70,7 @@ definePostScriptTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptTe
 define definePostScriptBuildTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
-  $(GSCMDLINE) -q -sOutputFile='$1' '$2';\
+  $(GSPSTOPDFCMDLINE) -q -sOutputFile='$1' '$2';\
   $$(call pushDeploymentArtifactFile,$$(notdir $1),$1);,\
   $2 $3 \
 )
