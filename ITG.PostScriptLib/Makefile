@@ -11,9 +11,15 @@ include $(ITG_MAKEUTILS_DIR)tests.mk
 include $(ITG_MAKEUTILS_DIR)ghostscript.mk
 include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
-PSLIBDIR := ./
-GSINCDIR := $(GSINCDIR) $(PSLIBDIR)
+$(eval $(call copyPostScriptResource))
 
-PSLIBFILES := $(call getPostScriptResourceFiles,$(PSLIBDIR))
+GSINCDIR := $(GSINCDIR) $(PSRESOURCESOURCEDIR)
+
+PSLIBFILES := $(call getPostScriptResourceSourceFiles)
+
+.PHONY: ITG_PostScriptLib
+all: ITG_PostScriptLib
+
+ITG_PostScriptLib: $(call getPostScriptResourceOutputFiles)
 
 $(eval $(call definePostScriptTests,$(PSLIBFILES)))

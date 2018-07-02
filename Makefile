@@ -8,5 +8,5 @@ include $(ITG_MAKEUTILS_DIR)appveyor.mk
 # sub projects
 
 $(eval $(call useSubProject,encodings,encodings, CP1251 CP1253))
-$(eval $(call useSubProject,PostScriptLib,ITG.PostScriptLib))
+$(eval $(call useSubProject,ITG_PostScriptLib,ITG.PostScriptLib))
 $(eval $(call useSubProject,stamps,stamps))
