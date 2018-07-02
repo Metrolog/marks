@@ -24,10 +24,39 @@ GS = $(GSTOOL) \
 
 GSINCDIR ?=
 GSFONTDIR ?=
-
+PSRESOURCEOUTPUTDIR ?= $(OUTPUTDIR)Resource/
+PSRESOURCESOURCEDIR ?= ./
 ENCODINGRESOURCEDIR := Encoding/
 PROCSETRESOURCEDIR := ProcSet/
 RESOURCEDIRSUBDIRS = $(ENCODINGRESOURCEDIR) $(PROCSETRESOURCEDIR)
+
+$(PSRESOURCEOUTPUTDIR) $(PSRESOURCEOUTPUTDIR)$(ENCODINGRESOURCEDIR) $(PSRESOURCEOUTPUTDIR)$(PROCSETRESOURCEDIR):
+	$(MAKETARGETASDIR)
+
+
+# $(call getPostScriptResourceSourceFiles[, resSourceDir])
+getPostScriptResourceSourceFiles = \
+  $(foreach d,$(if $1,$1,$(PSRESOURCESOURCEDIR)),$(wildcard $d*.ps) $(foreach s,$(RESOURCEDIRSUBDIRS), $(wildcard $d$s*.ps)))
+
+# $(call getPostScriptResourceOutputFiles[, resSourceDir[, resOutputDir[, files]])
+getPostScriptResourceOutputFiles = \
+  $(patsubst $(if $1,$1,$(PSRESOURCESOURCEDIR))%.ps,$(if $2,$2,$(PSRESOURCEOUTPUTDIR))%,$(if $3,$3,$(call getPostScriptResourceSourceFiles,$1)))
+
+# $(call copyPostScriptResource[, files[, fromDir[, toDir]]] )
+define copyPostScriptResource
+
+$(if $1, $1:) $(if $3,$3,$$(PSRESOURCEOUTPUTDIR))$$(ENCODINGRESOURCEDIR)%: $(if $2,$2,$$(PSRESOURCESOURCEDIR))$$(ENCODINGRESOURCEDIR)%.ps
+	$$(MAKETARGETDIR)
+	$$(COPY) $$< $$@
+	$$(TOUCH) $$@
+
+$(if $1, $1:) $(if $3,$3,$$(PSRESOURCEOUTPUTDIR))$$(PROCSETRESOURCEDIR)%: $(if $2,$2,$$(PSRESOURCESOURCEDIR))$$(PROCSETRESOURCEDIR)%.ps
+	$$(MAKETARGETDIR)
+	$$(COPY) $$< $$@
+	$$(TOUCH) $$@
+
+endef
+
 
 GSCMDLINE = $(GS) \
   -P \
@@ -43,10 +72,6 @@ $(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
 	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
 	$(call writeinformation,File "$@" is ready.)
 
-
-# $(call getPostScriptResourceFiles,dirs)
-getPostScriptResourceFiles = \
-  $(foreach d,$1,$(wildcard $d*.ps) $(foreach s,$(RESOURCEDIRSUBDIRS), $(wildcard $d$s*.ps)))
 
 ifdef MAKE_TESTS_DIR
 
