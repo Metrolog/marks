@@ -3,17 +3,17 @@
 %%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%DocumentData: Clean7Bit
-%%DocumentSuppliedResources: procset (fonts.ps)
+%%DocumentSuppliedResources: ProcSet (fonts)
 %%Version: 2.2 0
 %%EndComments
 %%BeginProlog
 
-%(fonts.ps) /ProcSet resourcestatus { pop pop } {
+%(fonts) /ProcSet resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-ProcSet
-%%BeginResource: ProcSet (fonts.ps)
-/fonts.ps <<
+%%BeginResource: ProcSet (fonts)
+/fonts <<
 
-/reencodefont % newfontname font encoding reen`codefont --> font
+/reencodefont % newfontname font Encoding reen`codefont --> font
 {
   exch dup type dup /nametype eq exch /stringtype eq or { findfont } if
   dup length dict begin

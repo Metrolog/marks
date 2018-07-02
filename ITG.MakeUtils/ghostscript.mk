@@ -20,11 +20,13 @@ GS = $(GSTOOL) \
   -dSAFER \
   -dNOPAUSE \
   -dNOPLATFONTS \
+  -dLOCALFONTS \
   -dBATCH
 
-GSINCDIR ?=
+GSINCDIR ?= %rom%Resource/Init/
 GSFONTDIR ?=
 PSRESOURCEOUTPUTDIR ?= $(OUTPUTDIR)Resource/
+PSGENERICRESOURCEDIR = $(PSRESOURCEOUTPUTDIR)
 PSRESOURCESOURCEDIR ?= ./
 ENCODINGRESOURCEDIR := Encoding/
 PROCSETRESOURCEDIR := ProcSet/
@@ -59,7 +61,8 @@ endef
 
 
 GSCMDLINE = $(GS) \
-  -P \
+  -sCOMPILE_INITS=1 \
+  $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
   $(foreach incdir,$(GSINCDIR), -I'$(incdir)') \
   $(if $(GSFONTDIR),-sFONTPATH='$(foreach fontdir,$(GSFONTDIR),$(fontdir)$(PATHSEP))')
 
@@ -82,7 +85,7 @@ TESTSPDFFILES = $(patsubst $(TESTSDIR)%.ps,$(AUXDIR)%.pdf,$(TESTSPSFILES))
 define definePostScriptTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
-  $(GSCMDLINE) -q '$2';,\
+  $(GSCMDLINE) '$2';,\
   $2 $3 \
 )
 

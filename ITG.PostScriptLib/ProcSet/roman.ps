@@ -3,18 +3,18 @@
 %%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%DocumentData: Clean7Bit
-%%DocumentSuppliedResources: procset (roman.ps)
+%%DocumentSuppliedResources: ProcSet (roman)
 %%Version: 2.2 0
 %%EndComments
 %%BeginProlog
 
-%%IncludeResource: procset arrays.ps 2.2 0
-/arrays.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet arrays.ps 2.2 0
+/arrays /ProcSet findresource begin
 
-%(roman.ps) /ProcSet resourcestatus { pop pop } {
+%(roman) /ProcSet resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-ProcSet
-%%BeginResource: ProcSet (roman.ps)
-/roman.ps <<
+%%BeginResource: ProcSet (roman)
+/roman <<
 
 /int_to_roman % 4 --> (IV)
 {
@@ -53,6 +53,6 @@
 %%EndResource:
 %} ifelse
 
-end % /arrays.ps /ProcSet findresource begin
+end % /arrays /ProcSet findresource begin
 
 %%EndProlog

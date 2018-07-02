@@ -3,18 +3,18 @@
 %%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%DocumentData: Clean7Bit
-%%DocumentSuppliedResources: procset (graphics.ps)
+%%DocumentSuppliedResources: ProcSet (graphics)
 %%Version: 2.2 0
 %%EndComments
 %%BeginProlog
 
-%%IncludeResource: procset boxes.ps 2.2 0
-/boxes.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet boxes.ps 2.2 0
+/boxes /ProcSet findresource begin
 
-%(graphics.ps) /ProcSet resourcestatus { pop pop } {
+%(graphics) /ProcSet resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-ProcSet
-%%BeginResource: ProcSet (graphics.ps)
-/graphics.ps <<
+%%BeginResource: ProcSet (graphics)
+/graphics <<
 
 /stringheight
 {
@@ -189,6 +189,6 @@
 %%EndResource:
 %} ifelse
 
-end % /boxes.ps /ProcSet findresource begin
+end % /boxes /ProcSet findresource begin
 
 %%EndProlog

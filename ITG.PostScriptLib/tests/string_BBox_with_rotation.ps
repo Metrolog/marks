@@ -9,13 +9,13 @@
 
 %%BeginProlog
 
-/assert.ps /ProcSet findresource begin
-/boxes.ps /ProcSet findresource begin
+/assert /ProcSet findresource begin
+/boxes /ProcSet findresource begin
 userdict begin
 
 %%EndProlog
 
-/Helvetica findfont
+/NimbusSans-Regular findfont
 12 scalefont setfont
 
 /teststring (Test string) def
@@ -29,7 +29,7 @@ userdict begin
 assert
 
 end % userdict
-end % /boxes.ps /ProcSet findresource begin
-end % /assert.ps /ProcSet findresource begin
+end % /boxes /ProcSet findresource begin
+end % /assert /ProcSet findresource begin
 
 %%EOF

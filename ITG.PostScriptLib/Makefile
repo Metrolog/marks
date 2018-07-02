@@ -13,9 +13,10 @@ include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
 $(eval $(call copyPostScriptResource))
 
-GSINCDIR := $(GSINCDIR) $(PSRESOURCESOURCEDIR)
+GSINCDIR := $(GSINCDIR) $(PSRESOURCEOUTPUTDIR)
 
-PSLIBFILES := $(call getPostScriptResourceSourceFiles)
+PSLIBSRCFILES := $(call getPostScriptResourceSourceFiles)
+PSLIBFILES := $(call getPostScriptResourceOutputFiles)
 
 .PHONY: ITG_PostScriptLib
 all: ITG_PostScriptLib

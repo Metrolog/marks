@@ -121,15 +121,15 @@ function ConvertTo-PostScriptEncodingTable {
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%DocumentData: Clean7Bit
 %%Title: ${Encoding} - PostScript Resource Encoding file
-%%DocumentSuppliedResources: encoding (${Encoding}Encoding.ps)
+%%DocumentSuppliedResources: Encoding (${Encoding}Encoding)
 %%Version: 1.0 0
 %%EndComments
 %%BeginProlog
 
 %/${Encoding}Encoding.ps /Encoding resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-Encoding
-%%BeginResource: Encoding (${Encoding}Encoding.ps)
-/${Encoding}Encoding.ps [
+%%BeginResource: Encoding (${Encoding}Encoding)
+/${Encoding}Encoding [
 "@;
 	}
 	process {
