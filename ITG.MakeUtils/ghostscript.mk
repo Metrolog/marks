@@ -16,8 +16,11 @@ GSTOOL ?= gs
 
 endif
 
-GS = $(GSTOOL) \
-  -dSAFER \
+GSFLAGS = \
+  -P \
+  -dNOPLATFONTS \
+
+GS = $(GSTOOL) $(GSFLAGS) \
   -dNOPAUSE \
   -dBATCH
 
@@ -69,11 +72,15 @@ endef
 
 
 GSCMDLINE = $(GS) \
-  $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
-  $(foreach incdir,$(GSINCDIR),-I'$(strip $(incdir))') \
+  $(foreach incdir,$(GSINCDIR),-I'$(incdir)') \
   $(if $(GSFONTDIR),-sFONTPATH='$(subst $(SPACE),$(PATHSEP),$(strip $(GSFONTDIR)))')
 
-GSPSTOPDFCMDLINE = $(GSCMDLINE) \
+#  $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
+
+
+GSPSTOPDFFLAGS =
+
+GSPSTOPDFCMDLINE = $(GSCMDLINE) $(GSPSTOPDFFLAGS) \
   -sDEVICE=pdfwrite
 
 $(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
