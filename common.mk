@@ -115,7 +115,7 @@ endif
 #region obsolete cygpath related functions
 winPath = $(call _obsolete_function,winPath)$(shell cygpath -w $1)
 shellPath = $(call _obsolete_function,shellPath)$(shell cygpath -u $1)
-OSPath = $(call _deprecated_function,OSPath)$1
+OSPath = $(call _obsolete_function,OSPath)$1
 OSabsPath = $(call _deprecated_function,OSabsPath)$(abspath $1)
 #endregion obsolete cygpath related functions
 
@@ -128,6 +128,7 @@ PowerShell         := powershell
 # под cygwin $(MAKE) == '/usr/bin/make'. Поэтому приходится явно переназначать.
 ifeq ($(MAKE),/usr/bin/make)
 MAKE := make
+OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -w $(abspath $1))
 endif
 
 else
