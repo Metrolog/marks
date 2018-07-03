@@ -41,20 +41,29 @@ getPostScriptResourceSourceFiles = \
 
 # $(call getPostScriptResourceOutputFiles[, resSourceDir[, resOutputDir[, files]])
 getPostScriptResourceOutputFiles = \
-  $(patsubst $(if $1,$1,$(PSRESOURCESOURCEDIR))%.ps,$(if $2,$2,$(PSRESOURCEOUTPUTDIR))%,$(if $3,$3,$(call getPostScriptResourceSourceFiles,$1)))
+  $(patsubst %.ps,%,$(patsubst $(if $1,$1,$(PSRESOURCESOURCEDIR))%,$(if $2,$2,$(PSRESOURCEOUTPUTDIR))%,$(if $3,$3,$(call getPostScriptResourceSourceFiles,$1))))
 
-# $(call copyPostScriptResource[, files[, fromDir[, toDir]]] )
+# $(call preparePostScriptResource[, fromDir[, toDir[, files]]] )
+define preparePostScriptResource
+
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps
+	$$(MAKETARGETDIR)
+	$$(COPY) $$< $$@
+	$$(TOUCH) $$@
+
+$(if $2,$2,$$(PSRESOURCEOUTPUTDIR)): $(call getPostScriptResourceOutputFiles,$1,$2,$3)
+
+endef
+
+# $(call copyPostScriptResource[, fromDir[, toDir[, files]]] )
 define copyPostScriptResource
 
-$(if $1, $1:) $(if $3,$3,$$(PSRESOURCEOUTPUTDIR))$$(ENCODINGRESOURCEDIR)%: $(if $2,$2,$$(PSRESOURCESOURCEDIR))$$(ENCODINGRESOURCEDIR)%.ps
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%
 	$$(MAKETARGETDIR)
 	$$(COPY) $$< $$@
 	$$(TOUCH) $$@
 
-$(if $1, $1:) $(if $3,$3,$$(PSRESOURCEOUTPUTDIR))$$(PROCSETRESOURCEDIR)%: $(if $2,$2,$$(PSRESOURCESOURCEDIR))$$(PROCSETRESOURCEDIR)%.ps
-	$$(MAKETARGETDIR)
-	$$(COPY) $$< $$@
-	$$(TOUCH) $$@
+$(if $2,$2,$$(PSRESOURCEOUTPUTDIR)): $(call getPostScriptResourceOutputFiles,$1,$2,$3)
 
 endef
 
