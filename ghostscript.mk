@@ -29,7 +29,7 @@ GSFLAGS = \
 ifneq ($(OS),Windows_NT)
   ifeq (9.18,$(lastword $(sort $(shell $(GSTOOL) --version) 9.18)))
     $(call writewarning,Requires ghostscript version 9.19 or higher.)
-    GSFLAGS += -sICCProfilesDir=/usr/share/color/icc/ghostscript/
+    GSFLAGS += -sCOMPILE_INITS=0
   endif
 endif
 
