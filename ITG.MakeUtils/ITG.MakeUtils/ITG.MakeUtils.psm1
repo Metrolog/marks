@@ -174,7 +174,14 @@ Function Set-UnitTestStatusInformation {
 		$StdErr = ''
 	)
 
-	Write-Information "Test '$TestId' is $Status$( & { if ( $TimeElapsed -ne 0 ) { "" in $($TimeElapsed)"" } } ).";
+	switch ($Status) {
+		'Failed' {
+			Write-Error "Test '$TestId' is $Status$( & { if ( $TimeElapsed -ne 0 ) { "" in $($TimeElapsed)"" } } ).";
+		}
+		default {
+			Write-Information "Test '$TestId' is $Status$( & { if ( $TimeElapsed -ne 0 ) { "" in $($TimeElapsed)"" } } ).";
+		}
+	}
 
 }
 
@@ -251,12 +258,12 @@ Function Test-UnitTest {
 				Write-Information $_;
 			};
 		};
+		$ErrorActionPreference = $CurrentErrorActionPreference;
 		if ( $Passed ) {
 			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Passed', ($sw.Elapsed), $testScriptStdOutput;
 		} else {
 			Invoke-Command -ScriptBlock $StatusWriter -ArgumentList $TestId, $FileName, 'Failed', ($sw.Elapsed), $testScriptStdOutput, $testScriptStdError;
 		};
-		$ErrorActionPreference = $CurrentErrorActionPreference;
 	};
 }
 
