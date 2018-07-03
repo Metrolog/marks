@@ -69,6 +69,7 @@ endef
 
 
 GSCMDLINE = $(GS) \
+  -sCOMPILE_INITS=0 \
   $(foreach incdir,$(GSINCDIR), -I'$(strip $(incdir))') \
   $(if $(GSFONTDIR),-sFONTPATH='$(subst $(SPACE),$(PATHSEP),$(strip $(GSFONTDIR)))')
 
