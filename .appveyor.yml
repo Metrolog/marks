@@ -6,6 +6,7 @@ version: 2.1.0.{build}
 
 install:
   - sh: |
+      sudo apt-get update
       sudo apt-get install -y make ghostscript
   - ps: |
       if ( -not $isLinux ) {
