@@ -22,7 +22,7 @@ GS = $(GSTOOL) \
   -dBATCH
 
 PSRESOURCEOUTPUTDIR ?= $(OUTPUTDIR)Resource/
-PSGENERICRESOURCEDIR = $(PSRESOURCEOUTPUTDIR)
+PSGENERICRESOURCEDIR = %rom%Resource/
 GSINCDIR ?= %rom%Resource/ $(PSRESOURCEOUTPUTDIR)
 GSFONTDIR ?=
 PSRESOURCESOURCEDIR ?= ./
@@ -69,7 +69,7 @@ endef
 
 
 GSCMDLINE = $(GS) \
-  -sCOMPILE_INITS=0 \
+  $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
   $(foreach incdir,$(GSINCDIR), -I'$(strip $(incdir))') \
   $(if $(GSFONTDIR),-sFONTPATH='$(subst $(SPACE),$(PATHSEP),$(strip $(GSFONTDIR)))')
 
