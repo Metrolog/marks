@@ -22,8 +22,8 @@ GS = $(GSTOOL) \
   -dBATCH
 
 PSRESOURCEOUTPUTDIR ?= $(OUTPUTDIR)Resource/
-PSGENERICRESOURCEDIR = %rom%Resource/
-GSINCDIR ?= %rom%Resource/Init/ $(PSRESOURCEOUTPUTDIR)
+PSGENERICRESOURCEDIR =
+GSINCDIR ?= %rom%Resource/ $(PSRESOURCEOUTPUTDIR)
 GSFONTDIR ?=
 PSRESOURCESOURCEDIR ?= ./
 ENCODINGRESOURCEDIR := Encoding/
@@ -70,7 +70,7 @@ endef
 
 GSCMDLINE = $(GS) \
   $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
-  $(foreach incdir,$(GSINCDIR), -I'$(strip $(incdir))') \
+  $(foreach incdir,$(GSINCDIR),-I'$(strip $(incdir))') \
   $(if $(GSFONTDIR),-sFONTPATH='$(subst $(SPACE),$(PATHSEP),$(strip $(GSFONTDIR)))')
 
 GSPSTOPDFCMDLINE = $(GSCMDLINE) \
