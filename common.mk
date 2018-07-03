@@ -336,7 +336,7 @@ endif
 
 # not standard target. Use 'check'
 .PHONY: test
-test:
+test: MAKEFLAGS += --keep-going
 
 .PHONY: check
 check: test

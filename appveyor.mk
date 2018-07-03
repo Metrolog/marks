@@ -38,13 +38,13 @@ testPlatformAddTest = \
 # $(call testPlatformSetStatus,testId,status,duration)
 testPlatformSetStatus = \
   { param ( $$$$Name, $$$$FileName, $$$$Outcome, [System.TimeSpan] $$$$Duration = 0, $$$$StdOut = '', $$$$StdErr = '' ) \
-    Set-UnitTestStatusInformation \
-      -Name $$$$Name -FileName $$$$FileName -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
     $$$$Params = $$$$PSBoundParameters; \
     if ( -not $$$$StdOut ) { $$$$Null = $$$$Params.Remove('StdOut'); }; \
     if ( -not $$$$StdErr ) { $$$$Null = $$$$Params.Remove('StdErr'); }; \
     $$$$Params.Duration = $$$$Duration.TotalMilliseconds; \
     Update-AppveyorTest -Framework 'MSTest' @Params; \
+    Set-UnitTestStatusInformation \
+      -Name $$$$Name -FileName $$$$FileName -Duration $$$$Duration -Outcome $$$$Outcome -StdOut $$$$StdOut -StdErr $$$$StdErr; \
   }
 
 # TODO: удалить это определение. В этом файле не используется.
