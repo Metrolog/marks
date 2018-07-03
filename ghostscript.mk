@@ -7,18 +7,31 @@ ifndef MAKE_GHOSTSCRIPT_DIR
 MAKE_GHOSTSCRIPT_DIR = $(ITG_MAKEUTILS_DIR)
 
 ifeq ($(OS),Windows_NT)
-
-GSTOOL ?= gswin64c
-
+  ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
+    GSTOOL ?= gswin64c
+  else
+    ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+      GSTOOL ?= gswin64c
+    endif
+    ifeq ($(PROCESSOR_ARCHITECTURE),x86)
+      GSTOOL ?= gswin32c
+    endif
+  endif
 else
-
-GSTOOL ?= gs
-
+  GSTOOL ?= gs
 endif
 
 GSFLAGS = \
   -P \
   -dNOPLATFONTS \
+
+# обходное решение для https://github.com/Metrolog/marks/issues/60
+ifneq ($(OS),Windows_NT)
+  ifeq (9.18,$(lastword $(sort $(shell $(GSTOOL) --version) 9.18)))
+    $(call writewarning,Requires ghostscript version 9.19 or higher.)
+    GSFLAGS += -sICCProfilesDir=/usr/share/color/icc/ghostscript/
+  endif
+endif
 
 GS = $(GSTOOL) $(GSFLAGS) \
   -dNOPAUSE \
