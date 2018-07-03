@@ -16,11 +16,14 @@ $(eval $(call copyPostScriptResource))
 GSINCDIR := $(GSINCDIR) $(PSRESOURCEOUTPUTDIR)
 
 PSLIBSRCFILES := $(call getPostScriptResourceSourceFiles)
-PSLIBFILES := $(call getPostScriptResourceOutputFiles)
+ITG_POSTSCRIPTLIBFILES := $(call getPostScriptResourceOutputFiles)
+ITG_POSTSCRIPTLIBDIR := $(PSRESOURCEOUTPUTDIR)
 
 .PHONY: ITG_PostScriptLib
 all: ITG_PostScriptLib
 
-ITG_PostScriptLib: $(call getPostScriptResourceOutputFiles)
+ITG_PostScriptLib: $(ITG_POSTSCRIPTLIBFILES)
+$(eval $(call pushArtifactTargets,ITG_POSTSCRIPTLIBFILES))
+$(eval $(call pushArtifactTargets,ITG_POSTSCRIPTLIBDIR))
 
-$(eval $(call definePostScriptTests,$(PSLIBFILES)))
+$(eval $(call definePostScriptTests,$(ITG_POSTSCRIPTLIBFILES)))

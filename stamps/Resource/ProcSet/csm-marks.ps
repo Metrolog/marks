@@ -3,69 +3,69 @@
 %%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%DocumentData: Clean7Bit
-%%DocumentNeededResources: encoding (CP1251Encoding.ps)
-%%+: encoding (CP1253Encoding.ps)
-%%+: procset (csm-marks-cyr-signs.ps) 2.2 0
-%%+: procset (csm-marks-greek-signs.ps) 2.2 0
-%%+: procset (arrays.ps) 2.2 0
-%%+: procset (boxes.ps) 2.2 0
-%%+: procset (fonts.ps) 2.2 0
-%%+: procset (graphics.ps) 2.2 0
-%%+: procset (math.ps) 2.2 0
-%%+: procset (roman.ps) 2.2 0
-%%+: procset (si.ps) 2.2 0
-%%+: procset (graphics-alignments.ps) 2.2 0
-%%+: procset (image-st.ps) 2.2 0
-%%DocumentSuppliedResources: font stamp_sign_cyr
-%%+: font stamp_sign_greek
-%%+: font stamp_id
-%%+: font stamp_gmc
-%%+: font stamp_period
-%%+: font stamp_year
+%%DocumentNeededResources: Encoding (CP1251Encoding)
+%%+: Encoding (CP1253Encoding)
+%%+: ProcSet (csm-marks-cyr-signs) 2.2 0
+%%+: ProcSet (csm-marks-greek-signs) 2.2 0
+%%+: ProcSet (arrays) 2.2 0
+%%+: ProcSet (boxes) 2.2 0
+%%+: ProcSet (fonts) 2.2 0
+%%+: ProcSet (graphics) 2.2 0
+%%+: ProcSet (math) 2.2 0
+%%+: ProcSet (roman) 2.2 0
+%%+: ProcSet (si) 2.2 0
+%%+: ProcSet (graphics-alignments) 2.2 0
+%%+: ProcSet (image-st) 2.2 0
+%%DocumentSuppliedResources: Font stamp_sign_cyr
+%%+: Font stamp_sign_greek
+%%+: Font stamp_id
+%%+: Font stamp_gmc
+%%+: Font stamp_period
+%%+: Font stamp_year
 %%+: Font stamp_K
-%%%+: procset (csm-marks.ps)
+%%+: ProcSet (csm-marks)
 %%Version: 2.2 0
 %%EndComments
 %%BeginProlog
 
-%%IncludeResource: procset arrays.ps 2.2 0
-/arrays.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet arrays 2.2 0
+/arrays /ProcSet findresource begin
 
-%%IncludeResource: procset boxes.ps 2.2 0
-/boxes.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet boxes 2.2 0
+/boxes /ProcSet findresource begin
 
-%%IncludeResource: procset fonts.ps 2.2 0
-/fonts.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet fonts 2.2 0
+/fonts /ProcSet findresource begin
 
-%%IncludeResource: procset graphics.ps 2.2 0
-/graphics.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet graphics 2.2 0
+/graphics /ProcSet findresource begin
 
-%%IncludeResource: procset math.ps 2.2 0
-/math.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet math 2.2 0
+/math /ProcSet findresource begin
 
-%%IncludeResource: procset roman.ps 2.2 0
-/roman.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet roman 2.2 0
+/roman /ProcSet findresource begin
 
-%%IncludeResource: procset si.ps 2.2 0
-/si.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet si 2.2 0
+/si /ProcSet findresource begin
 
-%%IncludeResource: procset graphics-alignments.ps 2.2 0
-/graphics-alignments.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet graphics-alignments 2.2 0
+/graphics-alignments /ProcSet findresource begin
 
-%%IncludeResource: procset image-st.ps 2.2 0
-/image-st.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet image-st 2.2 0
+/image-st /ProcSet findresource begin
 
 /stamp_sign_cyr /Font resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-Font
 %%BeginResource: Font stamp_sign_cyr
-/stamp_sign_cyr (GOST2930-62forMarks) /CP1251Encoding.ps reencodefont pop
+/stamp_sign_cyr (GOST2930-62forMarks) /CP1251Encoding reencodefont pop
 %%EndResource:
 } ifelse
 
 /stamp_sign_greek /Font resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-Font
 %%BeginResource: Font stamp_sign_greek
-/stamp_sign_greek (GOST2930-62forMarks) /CP1253Encoding.ps reencodefont pop
+/stamp_sign_greek (GOST2930-62forMarks) /CP1253Encoding reencodefont pop
 %%EndResource:
 } ifelse
 
@@ -104,16 +104,16 @@
 %%EndResource:
 } ifelse
 
-%%IncludeResource: procset csm-marks-cyr-signs.ps 2.2 0
-/csm-marks-cyr-signs.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet csm-marks-cyr-signs 2.2 0
+/csm-marks-cyr-signs /ProcSet findresource begin
 
-%%IncludeResource: procset csm-marks-greek-signs.ps 2.2 0
-/csm-marks-greek-signs.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet csm-marks-greek-signs 2.2 0
+/csm-marks-greek-signs /ProcSet findresource begin
 
-%(csm-marks.ps) /ProcSet resourcestatus { pop pop } {
+%(csm-marks) /ProcSet resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-ProcSet
-%%BeginResource: ProcSet (csm-marks.ps)
-/csm-marks.ps  100 dict begin
+%%BeginResource: ProcSet (csm-marks)
+/csm-marks  100 dict begin
 
 /months % [ 1 2 3 ] --> (1) (2) (3)
 {
@@ -880,16 +880,16 @@ currentdict end  dup length dict copy  /ProcSet defineresource pop
 %%EndResource:
 %} ifelse
 
-end % /csm-marks-greek-signs.ps /ProcSet findresource begin
-end % /csm-marks-cyr-signs.ps /ProcSet findresource begin
-end % /image-st.ps /ProcSet findresource begin
-end % /graphics-alignments.ps /ProcSet findresource begin
-end % /si.ps /ProcSet findresource begin
-end % /roman.ps /ProcSet findresource begin
-end % /math.ps /ProcSet findresource begin
-end % /graphics.ps /ProcSet findresource begin
-end % /fonts.ps /ProcSet findresource begin
-end % /boxes.ps /ProcSet findresource begin
-end % /arrays.ps /ProcSet findresource begin
+end % /csm-marks-greek-signs /ProcSet findresource begin
+end % /csm-marks-cyr-signs /ProcSet findresource begin
+end % /image-st /ProcSet findresource begin
+end % /graphics-alignments /ProcSet findresource begin
+end % /si /ProcSet findresource begin
+end % /roman /ProcSet findresource begin
+end % /math /ProcSet findresource begin
+end % /graphics /ProcSet findresource begin
+end % /fonts /ProcSet findresource begin
+end % /boxes /ProcSet findresource begin
+end % /arrays /ProcSet findresource begin
 
 %%EndProlog

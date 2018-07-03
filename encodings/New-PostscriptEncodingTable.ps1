@@ -126,7 +126,7 @@ function ConvertTo-PostScriptEncodingTable {
 %%EndComments
 %%BeginProlog
 
-%/${Encoding}Encoding.ps /Encoding resourcestatus { pop pop } {
+%/${Encoding}Encoding /Encoding resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-Encoding
 %%BeginResource: Encoding (${Encoding}Encoding)
 /${Encoding}Encoding [

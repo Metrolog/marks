@@ -11,14 +11,13 @@ include $(ITG_MAKEUTILS_DIR)tests.mk
 include $(ITG_MAKEUTILS_DIR)ghostscript.mk
 include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
-# postscript to PDF build system
 
+PSRESOURCEOUTPUTDIR = $(AUXDIR)Resource/
+PSRESOURCESOURCEDIR = Resource/
 STAMPSRCDIR := $(SOURCESDIR)
 STAMPSSOURCEFILES := $(wildcard $(STAMPSRCDIR)*.ps)
 
-PSLIBDIR := $(ROOT_PROJECT_DIR)ITG.PostScriptLib/
-STAMPLIBDIR := Resource/
-GSINCDIR := $(GSINCDIR) $(PSLIBDIR) $(STAMPLIBDIR)
+STAMPLIBDIR := $(PSRESOURCESOURCEDIR)
 ENCODINGSDIR := $(STAMPLIBDIR)$(ENCODINGRESOURCEDIR)
 
 ifeq ($(filter %clean,$(MAKECMDGOALS)),)
@@ -29,21 +28,49 @@ endif
 maintainer-clean::
 	$(RMDIR) $(ENCODINGSDIR)
 
+# TODO: заменить на файлы в $(PSRESOURCEOUTPUTDIR)
 STAMPINCFILES := \
-  $(call getPostScriptResourceFiles,$(PSLIBDIR)) \
+  $(ITG_POSTSCRIPTLIBFILES) \
   $(call getPostScriptResourceFiles,$(STAMPLIBDIR)) \
   $(ENCODINGSDIR)CP1251Encoding.ps \
   $(ENCODINGSDIR)CP1253Encoding.ps
 
-STAMPFONTDIR := $(ROOT_PROJECT_DIR)fonts/
-GSFONTDIR := $(GSFONTDIR) $(STAMPFONTDIR)
-STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)*.pt3)
+#STAMPFONTDIR := $(ROOT_PROJECT_DIR)fonts/
+# TODO: убрать вообще после отладки
+GSFONTDIR := $(GSFONTDIR) $(shell cygpath -w $(abspath $(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)))
+# TODO: заменить на файлы в $(PSRESOURCEOUTPUTDIR)
+#STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)*.pt3)
+
+# TODO: скопировать шрифты нужно
+$(PSRESOURCEOUTPUTDIR): $(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)
+
+$(eval $(foreach f,$(STAMPFONTFILES),$(call copyfileto,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR),$f)))
+$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR): $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f))
+
+# TODO: скопировать локальную библиотеку нужно
+$(eval $(call copyPostScriptResource))
+$(PSRESOURCEOUTPUTDIR): $(call getPostScriptResourceOutputFiles)
+
+# TODO: скопировать основную библиотеку нужно
+#$(eval $(call copyPostScriptResource,$(ITG_POSTSCRIPTLIBFILES),$(ITG_POSTSCRIPTLIBDIR)))
+$(eval $(foreach f,$(ITG_POSTSCRIPTLIBFILES),$(call copyfile,$(patsubst $(ITG_POSTSCRIPTLIBDIR)%,$(PSRESOURCEOUTPUTDIR)%,$f),$f)))
+$(PSRESOURCEOUTPUTDIR): $(patsubst $(ITG_POSTSCRIPTLIBDIR)%,$(PSRESOURCEOUTPUTDIR)%,$(ITG_POSTSCRIPTLIBFILES))
+
+#$(PSRESOURCEOUTPUTDIR): $(PSRESOURCEOUTPUTDIR)$(ENCODINGRESOURCEDIR)
+#$(eval $(foreach f,$(STAMPFONTFILES),$(call copyfileto,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR),$f)))
+#$(PSRESOURCEOUTPUTDIR)$(ENCODINGRESOURCEDIR): $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f))
+
+
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCEFILES))
 
-$(STAMPSPDFFILES): $(STAMPINCFILES) $(STAMPFONTFILES)
+# TODO: проверить зависимости
+$(STAMPSPDFFILES): $(PSRESOURCEOUTPUTDIR)
+#$(STAMPSPDFFILES): $(STAMPINCFILES) $(STAMPFONTFILES)
 
-$(eval $(call definePostScriptBuildTests,$(STAMPINCFILES) $(STAMPFONTFILES)))
+# TODO: проверить зависимости
+#$(eval $(call definePostScriptBuildTests,$(STAMPINCFILES) $(STAMPFONTFILES)))
+$(eval $(call definePostScriptBuildTests,$(PSRESOURCEOUTPUTDIR)))
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)

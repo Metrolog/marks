@@ -4,27 +4,27 @@
 %%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%DocumentData: Clean7Bit
-%%DocumentNeededResources: procset (boxes.ps) 2.2 0
-%%+: procset (graphics.ps) 2.2 0
-%%+: procset (math.ps) 2.2 0
-%%DocumentSuppliedResources: procset (image-st.ps)
+%%DocumentNeededResources: ProcSet (boxes) 2.2 0
+%%+: ProcSet (graphics) 2.2 0
+%%+: ProcSet (math) 2.2 0
+%%DocumentSuppliedResources: ProcSet (image-st)
 %%Version: 2.2 0
 %%EndComments
 %%BeginProlog
 
-%%IncludeResource: procset boxes.ps 2.2 0
-/boxes.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet boxes 2.2 0
+/boxes /ProcSet findresource begin
 
-%%IncludeResource: procset graphics.ps 2.2 0
-/graphics.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet graphics 2.2 0
+/graphics /ProcSet findresource begin
 
-%%IncludeResource: procset math.ps 2.2 0
-/math.ps /ProcSet findresource begin
+%%IncludeResource: ProcSet math 2.2 0
+/math /ProcSet findresource begin
 
-%(image-st.ps) /ProcSet resourcestatus { pop pop } {
+%(image-st) /ProcSet resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-ProcSet
-%%BeginResource: ProcSet (image-st.ps)
-/image-st.ps <<
+%%BeginResource: ProcSet (image-st)
+/image-st <<
 
 % знак Росстандарта
 /ST % H_size --> -
@@ -95,8 +95,8 @@ dup  1 exch  true path_as_upath  cvlit  /ust exch
 %%EndResource:
 %} ifelse
 
-end % /math.ps /ProcSet findresource begin
-end % /graphics.ps /ProcSet findresource begin
-end % /boxes.ps /ProcSet findresource begin
+end % /math /ProcSet findresource begin
+end % /graphics /ProcSet findresource begin
+end % /boxes /ProcSet findresource begin
 
 %%EndProlog
