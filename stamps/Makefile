@@ -37,7 +37,7 @@ STAMPINCFILES := \
 
 #STAMPFONTDIR := $(ROOT_PROJECT_DIR)fonts/
 # TODO: убрать вообще после отладки
-GSFONTDIR := $(GSFONTDIR) $(shell cygpath -w $(abspath $(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)))
+GSFONTDIR := $(GSFONTDIR) $(call OSabsPath,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR))
 # TODO: заменить на файлы в $(PSRESOURCEOUTPUTDIR)
 #STAMPFONTFILES := $(wildcard $(STAMPFONTDIR)*.pt3)
 
