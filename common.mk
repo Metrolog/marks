@@ -322,9 +322,11 @@ maintainer-clean::
 endef
 
 ifdef ROOT_PROJECT_DIR
+ifneq ($(ROOT_PROJECT_DIR),./)
 $(ROOT_PROJECT_DIR)%:
 	$(call MAKE_SUBPROJECT_TARGET, $*)
 
+endif
 endif
 
 #endregion subprojects support
