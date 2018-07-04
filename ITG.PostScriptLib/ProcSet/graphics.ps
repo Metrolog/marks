@@ -8,9 +8,6 @@
 %%EndComments
 %%BeginProlog
 
-%%IncludeResource: ProcSet boxes 2.2 0
-/boxes /ProcSet findresource begin
-
 %(graphics) /ProcSet resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-ProcSet
 %%BeginResource: ProcSet (graphics)
@@ -18,14 +15,14 @@
 
 /stringheight
 {
-  string_BBox
-  size_of_BBox
+  /boxes /ProcSet findresource /string_BBox get exec
+  /boxes /ProcSet findresource /size_of_BBox get exec
   exch pop
 } bind
 
 /string_center_bottom
 {
-  dup string_BBox
+  dup  /boxes /ProcSet findresource /string_BBox get exec
     exch  4 -1 roll  sub  2 div  neg
     3 1 roll  pop  neg
   rmoveto
@@ -33,7 +30,7 @@
 
 /string_center_middle
 {
-  dup string_BBox
+  dup  /boxes /ProcSet findresource /string_BBox get exec
     exch  4 -1 roll  sub  2 div  neg
     3 1 roll  add  2 div  neg
   rmoveto
@@ -41,7 +38,7 @@
 
 /string_left_middle
 {
-  dup string_BBox
+  dup  /boxes /ProcSet findresource /string_BBox get exec
     exch  4 -1 roll  exch pop  neg
     3 1 roll  add  2 div  neg
   rmoveto
@@ -49,7 +46,7 @@
 
 /string_right_middle
 {
-  dup string_BBox
+  dup  /boxes /ProcSet findresource /string_BBox get exec
     exch  4 -1 roll  pop  neg
     3 1 roll  add  2 div  neg
   rmoveto
@@ -188,7 +185,5 @@
 >> /ProcSet defineresource pop
 %%EndResource:
 %} ifelse
-
-end % /boxes /ProcSet findresource begin
 
 %%EndProlog
