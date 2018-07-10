@@ -1,0 +1,57 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: ProcSet (csm-marks-params)
+%%Version: 2.3 0
+%%EndComments
+%%BeginProlog
+
+%(csm-marks-params) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (csm-marks-params)
+/csm-marks-params <<
+
+/setmarksparams % dict --> -
+{
+    userdict /marksparams known not
+    {
+      userdict /marksparams << % default csm marks params
+      >> put
+    }
+  if
+  userdict /marksparams get  begin
+      {
+          1 index  currentdict exch  known not
+          {
+            (%stderr) (w) file
+            dup (Unknown csm marks parameter: ') writestring
+            dup  3 index  80 string cvs  writestring
+            dup ('!\n) writestring
+            flushfile
+            pop pop end
+            stop
+          }
+        if
+        def
+      }
+    forall
+  end
+} bind
+
+/getmarksparams % - --> dict
+{
+    userdict /marksparams known not
+    {
+      << >> setmarksparams
+    }
+  if
+  userdict /marksparams get
+} bind
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog
