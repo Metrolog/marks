@@ -44,7 +44,7 @@ STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCE
 
 $(STAMPSPDFFILES): $(PSRESOURCEOUTPUTDIR)
 
-$(eval $(call definePostScriptBuildTests,$(PSRESOURCEOUTPUTDIR)))
+$(eval $(call definePostScriptTests,$(PSRESOURCEOUTPUTDIR)))
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)

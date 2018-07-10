@@ -29,12 +29,13 @@
       {
           1 index  currentdict exch  known not
           {
-            (%stderr) (w) file
-            dup (Unknown csm marks parameter: ') writestring
-            dup  3 index  80 string cvs  writestring
-            dup ('!\n) writestring
-            flushfile
-            pop pop end
+            $error begin
+              2 array  astore  /errorinfo exch def
+              /errorname /configurationerror def
+              /command /setmarksparams def
+              /recordstacks false def
+            end
+            end % userdict /marksparams get  begin
             stop
           }
         if

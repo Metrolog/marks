@@ -19,6 +19,7 @@
 %%+: ProcSet (graphics-alignments) 2.2 0
 %%+: ProcSet (image-st) 2.2 0
 %%+: ProcSet (distiller)
+%%+: ProcSet (assert)
 %%Pages: 1
 %%PageOrder: Ascend
 %%EndComments
@@ -59,59 +60,39 @@
 %%IncludeResource: ProcSet distiller 2.2 0
 /distiller /ProcSet findresource begin
 
+%%IncludeResource: ProcSet assert 2.2 0
+
 userdict begin
 
 %%EndProlog
 
 %%BeginSetup
 
-setdistillerparamsforcsmmarks
+  {
+    <<
+      /UnknownMarksParam false
+    >> /csm-marks-params /ProcSet findresource /setmarksparams get exec
+  } stopped
+  (setmarksparams must throw exception for unknown parameter name)
+/assert /ProcSet findresource /assert get exec
 
-<<
-  /UnknownMarksParam false
->> /csm-marks-params /ProcSet findresource /setmarksparams get exec
+  {
+    <<
+      /ExtraContour true
+    >> /csm-marks-params /ProcSet findresource /setmarksparams get exec
+  } stopped not
+  (setmarksparams must don't throw exception for known parameter name)
+/assert /ProcSet findresource /assert get exec
+
+      /csm-marks-params /ProcSet findresource /getmarksparams get exec
+      /ExtraContour
+    get
+    true
+  eq
+  (/ExtraCountour must be true in getmarksparams after setmarksparams)
+/assert /ProcSet findresource /assert get exec
 
 %%EndSetup
-
-%%Page: A 1
-%%BeginSetup
-%%BeginFeature: *PageSize A5
-<<
-  % /HWResolution [2400 2400]
-  /PageSize [ 297 2 div mm  210 mm ]
-  /ImagingBBox [ 5 mm  8 mm  297 2 div 5 sub mm  210 5 sub mm ]
->> setpagedevice
-%%EndFeature:
-%%EndSetup
-%!
-
-gsave
-
-%------------------------------------------------------------------------------
-% для подготовки оттисков править код ниже !!!
-%------------------------------------------------------------------------------
-  [
-      2017
-      % [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
-      [ [ 3 ] quarters ]     % периоды
-      (СП)                   % шифр поверительного клейма
-      [ 1 256 range ]        % диапазон знаков поверителей
-      18.0 mm                % размер клейма
-      false                  % поверка в эксплуатации или после ремонта
-      /verification_stamp_upath
-    create_stamps
-  ]
-  GetPageBBox
-  2 mm
-align_upaths_in_BBox
-
-%------------------------------------------------------------------------------
-% конец области для кода генерации оттисков
-%------------------------------------------------------------------------------
-
-grestore
-
-showpage
 
 end % userdict begin
 end % /distiller /ProcSet findresource begin
