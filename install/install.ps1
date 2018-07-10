@@ -172,12 +172,6 @@ if ( $GUI ) {
     ) {
         & $chocoExe install vscode --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     };
-    if (
-        ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
-        -and $PSCmdLet.ShouldProcess('SourceTree', 'Установить')
-    ) {
-        & $chocoExe install SourceTree --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-    };
 };
 
 $Path = `
