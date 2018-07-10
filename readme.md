@@ -1,7 +1,8 @@
 Генератор оттисков поверительных и калибровочных клейм
 ======================================================
 
-[![Build status](https://ci.appveyor.com/api/projects/status/github/Metrolog/marks?branch=master&svg=true)](https://ci.appveyor.com/project/sergey-s-betke/marks/branch/master)
+[![Build status master](https://ci.appveyor.com/api/projects/status/github/Metrolog/marks?branch=master&svg=true)](https://ci.appveyor.com/project/sergey-s-betke/marks/branch/master)
+[![Build status develop](https://ci.appveyor.com/api/projects/status/github/Metrolog/marks?branch=develop&svg=true)](https://ci.appveyor.com/project/sergey-s-betke/marks/branch/develop)
 [![Build status](https://circleci.com/gh/Metrolog/marks/tree/master.svg?&style=shield&circle-token=7e53954cd6f7704d6897c3f8b21502e6d0e920d7)](https://circleci.com/gh/Metrolog/marks)
 
 [![GitHub release](https://img.shields.io/github/release/Metrolog/marks.svg)](https://github.com/Metrolog/marks/releases)
@@ -84,12 +85,10 @@
 ------------------
 
 Репозиторий проекта размещён по адресу [github.com/Metrolog/marks](https://github.com/Metrolog/marks).
-Стратегия ветвления - [GitHub Flow](http://githubflow.github.io/).
+Стратегия ветвления - Git Flow.
 
-Для внесения изменений в проект подготовьте собственный fork проекта, в соответствии
-с GitHub Flow добавляйте свои файлы в ветку master.
 При необходимости внесения изменений в сам проект предложите Pull Request в основной
-репозиторий.
+репозиторий в ветку `develop`.
 
 Файл заказа с оттисками клейм
 -----------------------------
