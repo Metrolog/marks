@@ -192,6 +192,9 @@ $(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 #endregion common dirs
 
 
+# $(call rwildcard,dir,filesfilter)
+rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
+
 # $(call setvariable, var, value)
 define setvariable
 $1:=$2
