@@ -130,6 +130,8 @@ CharProcs begin
 	 21 21 lineto
 	closepath
   } bind def
+  /space { 802 0 0 0 682 853 setcachedevice
+  } bind def
   /quotedbl { 324 0 -21 720 183 880 setcachedevice
 	-21 720 moveto
 	 21 880 lineto
@@ -427,7 +429,7 @@ CharProcs begin
   } bind def
   /nine { 600 0 0 0 480 800 setcachedevice
     pop -1
-    [ -1 0 0 -1 480 800 ] concat 1 index /CharProcs get /six get exec [ -1 -0 -0 -1 480 800 ] concat 
+    [ -1 0 0 -1 480 800 ] concat 1 index /CharProcs get /six get exec [ -1 -0 -0 -1 480 800 ] concat
   } bind def
   /colon { 120 0 -52 0 52 800 setcachedevice
 	-52 52 moveto
@@ -484,7 +486,7 @@ CharProcs begin
   } bind def
   /greater { 600 0 0 160 480 640 setcachedevice
     pop -1
-    [ -1 0 0 1 480 0 ] concat 1 index /CharProcs get /less get exec [ -1 0 0 1 480 0 ] concat 
+    [ -1 0 0 1 480 0 ] concat 1 index /CharProcs get /less get exec [ -1 0 0 1 480 0 ] concat
   } bind def
   /A { dup -1 ne { 600 0 0 0 480 800 setcachedevice } if
 	0 0 moveto
@@ -962,7 +964,7 @@ CharProcs begin
   } bind def
   /d { dup -1 ne { 432 0 0 0 329 800 setcachedevice } if
     pop -1
-    [ -1 0 0 1 329 0 ] concat 1 index /CharProcs get /b get exec [ -1 0 0 1 329 0 ] concat 
+    [ -1 0 0 1 329 0 ] concat 1 index /CharProcs get /b get exec [ -1 0 0 1 329 0 ] concat
   } bind def
   /e { dup -1 ne { 432 0 0 0 329 532 setcachedevice } if
 	0 165 moveto
@@ -1169,11 +1171,11 @@ CharProcs begin
   } bind def
   /p { dup -1 ne { 432 0 0 -268 329 532 setcachedevice } if
     pop -1
-    [ 1 0 0 -1 0 532 ] concat 1 index /CharProcs get /b get exec [ 1 0 -0 -1 0 532 ] concat 
+    [ 1 0 0 -1 0 532 ] concat 1 index /CharProcs get /b get exec [ 1 0 -0 -1 0 532 ] concat
   } bind def
   /q { 432 0 0 -268 329 532 setcachedevice
     pop -1
-    [ 1 0 0 -1 0 532 ] concat 1 index /CharProcs get /d get exec [ 1 0 -0 -1 0 532 ] concat 
+    [ 1 0 0 -1 0 532 ] concat 1 index /CharProcs get /d get exec [ 1 0 -0 -1 0 532 ] concat
   } bind def
   /r { 432 0 0 0 329 532 setcachedevice
 	329 453 moveto
@@ -1396,7 +1398,7 @@ CharProcs begin
   } bind def
   /greaterequal { 600 0 0 79 480 721 setcachedevice
     pop -1
-    [ -1 0 0 1 480 0 ] concat 1 index /CharProcs get /lessequal get exec [ -1 0 0 1 480 0 ] concat 
+    [ -1 0 0 1 480 0 ] concat 1 index /CharProcs get /lessequal get exec [ -1 0 0 1 480 0 ] concat
   } bind def
   /summation { 600 0 0 0 480 800 setcachedevice
     pop -1
@@ -1821,7 +1823,7 @@ CharProcs begin
   } bind def
   /uni0418 { dup -1 ne { 600 0 0 0 480 800 setcachedevice } if
     pop -1
-    [ 1 0 0 -1 0 800 ] concat 1 index /CharProcs get /N get exec [ 1 0 -0 -1 0 800 ] concat 
+    [ 1 0 0 -1 0 800 ] concat 1 index /CharProcs get /N get exec [ 1 0 -0 -1 0 800 ] concat
   } bind def
   /uni0419 { 600 0 0 0 480 1000 setcachedevice
 	150 900 moveto
@@ -2012,7 +2014,7 @@ CharProcs begin
   } bind def
   /uni042C { dup -1 ne { 600 0 0 0 480 800 setcachedevice } if
     pop -1
-    [ 1 0 0 -1 0 800 ] concat 1 index /CharProcs get /P get exec [ 1 0 -0 -1 0 800 ] concat 
+    [ 1 0 0 -1 0 800 ] concat 1 index /CharProcs get /P get exec [ 1 0 -0 -1 0 800 ] concat
   } bind def
   /uni042D { 600 0 0 0 480 800 setcachedevice
 	480 240 moveto
@@ -2062,7 +2064,7 @@ CharProcs begin
   } bind def
   /uni042F { 600 0 0 0 480 800 setcachedevice
     pop -1
-    [ -1 0 0 1 480 0 ] concat 1 index /CharProcs get /R get exec [ -1 0 0 1 480 0 ] concat 
+    [ -1 0 0 1 480 0 ] concat 1 index /CharProcs get /R get exec [ -1 0 0 1 480 0 ] concat
   } bind def
   /uni0430 { 450 0 0 0 347 533 setcachedevice
     pop -1
