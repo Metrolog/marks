@@ -1,4 +1,4 @@
 *.md   text  merge=text diff=text eol=crlf
-*.ps   text  merge=text diff=text eol=crlf encoding=cp1251
+*.ps   text  merge=text diff=text eol=crlf encoding=cp1251 linguist-documentation=false linguist-detectable=true
 *.pdf  binary
 *.jpg  binary
