@@ -4,6 +4,8 @@ endif
 
 ifndef MAKE_GHOSTSCRIPT_DIR
 
+include $(ITG_MAKEUTILS_DIR)pdf.mk
+
 MAKE_GHOSTSCRIPT_DIR = $(ITG_MAKEUTILS_DIR)
 
 ifeq ($(OS),Windows_NT)
@@ -101,7 +103,7 @@ $(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
 	$(MAKETARGETDIR)
 	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
 	$(call writeinformation,File "$@" is ready.)
-
+	$(OPENTARGETPDF)
 
 ifdef MAKE_TESTS_DIR
 
