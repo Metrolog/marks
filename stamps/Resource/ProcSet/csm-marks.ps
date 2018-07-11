@@ -184,6 +184,70 @@ grestore
 } def
 
 
+/expand_contour_if_expected % - --> -
+{
+    /csm-marks-params /ProcSet findresource /getmarksparams get exec  /ExpandContour get
+    {
+      2 setlinecap
+      0 setlinejoin
+      0.05 setlinewidth
+      2 setmiterlimit
+      0.2 setflat
+      strokepath
+
+      1 dict begin
+        /is_odd_path false def
+
+          {
+              is_odd_path
+              { (22222m) = pop pop }
+              { (11111m) = moveto }
+            ifelse
+          }
+          {
+              is_odd_path
+              { (22222l) = pop pop }
+              { (11111l) = lineto }
+            ifelse
+          }
+          {
+              is_odd_path
+              { (22222c) = pop pop pop pop pop pop }
+              { (11111c) = curveto }
+            ifelse
+          }
+          {
+              is_odd_path
+              {}
+              { closepath }
+            ifelse
+            /is_odd_path  is_odd_path not  def
+          }
+        pathforall
+
+      end
+
+    }
+  if
+} def
+
+/uexpand_contour_if_expected % userpath --> userpath
+{
+    /csm-marks-params /ProcSet findresource /getmarksparams get exec  /ExpandContour get
+    {
+      gsave
+
+      newpath
+      uappend
+      expand_contour_if_expected
+      false upath
+
+      grestore
+    }
+  if
+} def
+
+
 /verification_stamp_id_h_size  3.8 mm  800 1000 div  div  1 mm div  def
 /verification_stamp_sing_h_size  4.0 mm  800 1000 div  div  1 mm div  def
 /verification_stamp_year_h_size  6.0 mm  800 1000 div  div  1 mm div  def
@@ -276,6 +340,8 @@ grestore
       /image-st /ProcSet findresource /ust get  uappend
     }
   ifelse
+
+  expand_contour_if_expected
 
   % восстановливаем систему координат
   setmatrix
@@ -384,6 +450,8 @@ grestore
       /image-st /ProcSet findresource /ust get  uappend
     }
   ifelse
+
+  expand_contour_if_expected
 
   % восстановливаем систему координат
   setmatrix
@@ -578,6 +646,8 @@ grestore
     }
   ifelse
 
+  expand_contour_if_expected
+
   % восстановливаем систему координат
   setmatrix
 
@@ -675,6 +745,8 @@ grestore
   currentpoint translate
   verification_stamp_rhombus_rst_size dup scale
   /image-st /ProcSet findresource /ust get  uappend
+
+  expand_contour_if_expected
 
   % восстановливаем систему координат
   setmatrix
@@ -815,6 +887,8 @@ grestore
   currentpoint translate
   calibration_stamp_K_h_size dup scale
   uK uappend
+
+  expand_contour_if_expected
 
   % восстановливаем систему координат
   setmatrix
