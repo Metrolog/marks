@@ -1,0 +1,94 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: ProcSet (csm-marks-params)
+%%Version: 2.3 0
+%%EndComments
+%%BeginProlog
+
+%(csm-marks-params) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (csm-marks-params)
+/csm-marks-params <<
+
+/setmarksparams % dict --> -
+{
+    userdict /marksparams known not
+    {
+      userdict /marksparams << % default csm marks params
+        /Type (полимерное) % (ударное) (плашка) (резиновое)
+        /ExtraContour false % требуется ли расширять контур #67
+        /MirrorPrint false
+        /NegativePrint false
+      >> put
+    }
+  if
+  userdict /marksparams get  begin
+      {
+          1 index  currentdict exch  known not
+          {
+            $error begin
+              2 array  astore  /errorinfo exch def
+              /errorname /configurationerror def
+              /command /setmarksparams def
+              /recordstacks false def
+            end
+            end % userdict /marksparams get  begin
+            stop
+          }
+        if
+        def
+      }
+    forall
+  end
+  <<
+
+    /Install {
+        /csm-marks-params /ProcSet findresource /getmarksparams get exec  /MirrorPrint get
+        {
+              [ -1 0 0 1 0 0 ]
+                currentpagedevice /PageSize get  0 get
+                0
+              matrix translate
+            matrix concatmatrix
+          concat
+        }
+        {}
+      ifelse
+    } bind
+
+    /BeginPage {
+        /csm-marks-params /ProcSet findresource /getmarksparams get exec  /NegativePrint get
+        {
+          0 setgray
+            0 0
+            currentpagedevice /PageSize get  aload pop
+          rectfill
+          1 setgray
+        }
+        {
+          0 setgray
+        }
+      ifelse
+    } bind
+
+  >> setpagedevice
+} bind
+
+/getmarksparams % - --> dict
+{
+    userdict /marksparams known not
+    {
+      << >> /csm-marks-params /ProcSet findresource /setmarksparams get exec
+    }
+  if
+  userdict /marksparams get
+} bind
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog

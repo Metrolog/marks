@@ -62,6 +62,7 @@ userdict begin
 
 %%BeginSetup
 
+/.setpdfwrite where { pop .setpdfwrite } if
 setdistillerparamsforcsmmarks
 
 %%EndSetup
@@ -85,19 +86,26 @@ setdistillerparamsforcsmmarks
 gsave
 
 %------------------------------------------------------------------------------
-% тестируем генерацию знака поверки для государственных научных метрологических
-% институтов
-%
 % для подготовки оттисков править код ниже !!!
 %------------------------------------------------------------------------------
   [
-      2018                                                      % год
-      [ [ 1 12 range ] months  [ 1 4 range ] quarters  year ]   % периоды
-      (А)                                                       % шифр поверительного клейма
-      [ 1 ]                                                     % диапазон знаков поверителей
-      18.0 mm                                                   % размер клейма
-      false                                                     % поверка в эксплуатации или после ремонта
+      2017
+      % [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
+      [ [ 3 ] quarters ]     % периоды
+      (СП)                   % шифр поверительного клейма
+      [ 1 256 range ]        % диапазон знаков поверителей
+      18.0 mm                % размер клейма
+      false                  % поверка в эксплуатации или после ремонта
       /verification_stamp_upath
+    create_stamps
+      2017
+      [ [ 1 12  range ] months  [ 1 4 range ] quarters year ]
+      % [ [ 3 ] quarters ]
+      (СП)
+      [ 1 ]
+      18.0 mm
+      true                   % при выпуске из производства
+      /calibration_stamp_upath
     create_stamps
   ]
   GetPageBBox

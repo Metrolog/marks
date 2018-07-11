@@ -7,13 +7,13 @@ all: pdf
 ROOT_PROJECT_DIR ?= ../
 ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
 include $(ITG_MAKEUTILS_DIR)common.mk
+
 include $(ITG_MAKEUTILS_DIR)tests.mk
 include $(ITG_MAKEUTILS_DIR)ghostscript.mk
 include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
 
 PSRESOURCEOUTPUTDIR = $(AUXDIR)Resource/
-.INTERMEDIATE: $(PSRESOURCEOUTPUTDIR)
 PSRESOURCESOURCEDIR = Resource/
 STAMPSRCDIR := $(SOURCESDIR)
 STAMPSSOURCEFILES := $(call rwildcard,$(STAMPSRCDIR),*.ps)
@@ -44,7 +44,7 @@ STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCE
 
 $(STAMPSPDFFILES): $(PSRESOURCEOUTPUTDIR)
 
-$(eval $(call definePostScriptBuildTests,$(PSRESOURCEOUTPUTDIR)))
+$(eval $(call definePostScriptTests,$(PSRESOURCEOUTPUTDIR)))
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)

@@ -4,6 +4,8 @@ endif
 
 ifndef MAKE_GHOSTSCRIPT_DIR
 
+include $(ITG_MAKEUTILS_DIR)pdf.mk
+
 MAKE_GHOSTSCRIPT_DIR = $(ITG_MAKEUTILS_DIR)
 
 ifeq ($(OS),Windows_NT)
@@ -101,15 +103,17 @@ $(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
 	$(MAKETARGETDIR)
 	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
 	$(call writeinformation,File "$@" is ready.)
-
+	$(OPENTARGETPDF)
 
 ifdef MAKE_TESTS_DIR
 
-TESTSPSFILES = $(wildcard $(TESTSDIR)*.ps)
-TESTSPDFFILES = $(patsubst $(TESTSDIR)%.ps,$(AUXDIR)%.pdf,$(TESTSPSFILES))
+# just postscript tests files, without output files
 
-# $(call definePostScriptTest,target,source,dependencies)
-define definePostScriptTest
+TESTSPSSOURCEDIR ?= $(TESTSDIR)ps/
+TESTSPSSOURCEFILES = $(call rwildcard,$(TESTSPSSOURCEDIR),*.ps)
+
+# $(call definePostScriptClearTest,target,source,dependencies)
+define definePostScriptClearTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
   $(GSCMDLINE) '$2';,\
@@ -118,13 +122,22 @@ $(call defineTest,$(basename $(notdir $1)),ps_build,\
 
 endef
 
-# $(call definePostScriptTests,dependencies)
-definePostScriptTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptTest,$(patsubst $(TESTSDIR)%.ps,$(AUXDIR)%.pdf,$(test)),$(test),$1))
+# $(call definePostScriptClearTests,dependencies)
+definePostScriptClearTests = $(foreach f,$(TESTSPSSOURCEFILES),$(call definePostScriptClearTest,$f,$f,$1))
 
-# $(call definePostScriptBuildTest,target,source,dependencies)
-define definePostScriptBuildTest
+
+#  postscript tests files with pdf output
+
+TESTSPS2PDFSOURCEDIR ?= $(TESTSDIR)pdf/
+TESTSPS2PDFOUTPUTDIR ?= $(AUXDIR)tests/pdf/
+TESTSPS2PDFSOURCEFILES = $(call rwildcard,$(TESTSPS2PDFSOURCEDIR),*.ps)
+TESTSPS2PDFOUTPUTFILES = $(patsubst $(TESTSPS2PDFSOURCEDIR)%.ps,$(TESTSPS2PDFOUTPUTDIR)%.pdf,$(TESTSPS2PDFSOURCEFILES))
+
+# $(call definePostScript2PDFTest,target,source,dependencies)
+define definePostScript2PDFTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
+  $(MKDIR) $(dir $1);\
   $(GSPSTOPDFCMDLINE) -sOutputFile='$1' '$2';\
   $$(call pushDeploymentArtifactFile,$$(notdir $1),$1);,\
   $2 $3 \
@@ -132,8 +145,15 @@ $(call defineTest,$(basename $(notdir $1)),ps_build,\
 
 endef
 
-# $(call definePostScriptBuildTests,dependencies)
-definePostScriptBuildTests = $(foreach test,$(TESTSPSFILES),$(call definePostScriptBuildTest,$(patsubst $(TESTSDIR)%.ps,$(AUXDIR)%.pdf,$(test)),$(test),$1))
+# $(call definePostScript2PDFTests,dependencies)
+definePostScript2PDFTests = $(foreach f,$(TESTSPS2PDFSOURCEFILES),$(call definePostScript2PDFTest,$(patsubst $(TESTSPS2PDFSOURCEDIR)%.ps,$(TESTSPS2PDFOUTPUTDIR)%.pdf,$f),$f,$1))
+
+
+# $(call definePostScriptTests,dependencies)
+define definePostScriptTests
+$(call definePostScriptClearTests,$1)
+$(call definePostScript2PDFTests,$1)
+endef
 
 endif
 

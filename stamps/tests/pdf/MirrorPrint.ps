@@ -6,6 +6,7 @@
 %%LanguageLevel: 3
 %%DocumentData: Clean7Bit
 %%DocumentNeededResources: ProcSet (csm-marks)
+%%+: ProcSet (csm-marks-params) 2.3 0
 %%+: ProcSet (csm-marks-cyr-signs) 2.2 0
 %%+: ProcSet (csm-marks-greek-signs) 2.2 0
 %%+: ProcSet (arrays) 2.2 0
@@ -54,7 +55,7 @@
 /csm-marks /ProcSet findresource begin
 
 %%IncludeResource: ProcSet distiller 2.2 0
-/distiller /ProcSet findresource begin
+%%IncludeResource: ProcSet csm-marks-params 2.3 0
 
 userdict begin
 
@@ -62,22 +63,23 @@ userdict begin
 
 %%BeginSetup
 
-setdistillerparamsforcsmmarks
+/distiller /ProcSet findresource /setdistillerparamsforcsmmarks get exec
+
+<<
+  /MirrorPrint true
+>> /csm-marks-params /ProcSet findresource /setmarksparams get exec
 
 %%EndSetup
 
 %%Page: A 1
 %%BeginSetup
 %%BeginFeature: *PageSize A5
+
 <<
-  % /HWResolution [2400 2400]
-  % /PageSize [ 210 mm  297 2 div mm ]
-  % /ImagingBBox [ 5 mm  5 mm  210 5 sub mm  297 2 div 5 sub mm ]
   /PageSize [ 297 2 div mm  210 mm ]
   /ImagingBBox [ 5 mm  8 mm  297 2 div 5 sub mm  210 5 sub mm ]
-  /MirrorPrint false
-  /NegativePrint true
 >> setpagedevice
+
 %%EndFeature:
 %%EndSetup
 %!
@@ -85,27 +87,26 @@ setdistillerparamsforcsmmarks
 gsave
 
 %------------------------------------------------------------------------------
-% тестируем генерацию знака поверки для государственных научных метрологических
-% институтов
-%
 % для подготовки оттисков править код ниже !!!
 %------------------------------------------------------------------------------
   [
-      2018                                                      % год
-      [ [ 1 12 range ] months  [ 1 4 range ] quarters  year ]   % периоды
-      (ААВ)                                                     % шифр поверительного клейма
-      [ 1 256 range ]                                           % диапазон знаков поверителей
-      18.0 mm                                                   % размер клейма
-      true                                                      % поверка при выпуске из производства
+      2017
+      % [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
+      [ [ 3 ] quarters ]     % периоды
+      (СП)                   % шифр поверительного клейма
+      [ 1 256 range ]        % диапазон знаков поверителей
+      18.0 mm                % размер клейма
+      false                  % поверка в эксплуатации или после ремонта
       /verification_stamp_upath
     create_stamps
-      2018                                                      % год
-      [ [ 1 12 range ] months  [ 1 4 range ] quarters  year ]   % периоды
-      (ААВ)                                                     % шифр поверительного клейма
-      [ 1 256 range ]                                           % диапазон знаков поверителей
-      18.0 mm                                                   % размер клейма
-      false                                                     % поверка в эксплуатации или после ремонта
-      /verification_stamp_upath
+      2017
+      [ [ 1 12  range ] months  [ 1 4 range ] quarters year ]
+      % [ [ 3 ] quarters ]
+      (СП)
+      [ 1 ]
+      18.0 mm
+      true                   % при выпуске из производства
+      /calibration_stamp_upath
     create_stamps
   ]
   GetPageBBox
@@ -121,7 +122,6 @@ grestore
 showpage
 
 end % userdict begin
-end % /distiller /ProcSet findresource begin
 end % /image-st /ProcSet findresource begin
 end % /graphics-alignments /ProcSet findresource begin
 end % /si /ProcSet findresource begin

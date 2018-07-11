@@ -7,6 +7,12 @@
 	"settings": {
 		"[postscript]": {
 			"files.encoding": "windows1251"
-		}
+		},
+		"gitflow4code.features": [
+			{
+				"name": "feature/marksparams",
+				"base": "develop"
+			}
+		]
 	},
 }
