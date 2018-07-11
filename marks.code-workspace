@@ -10,7 +10,7 @@
 		},
 		"gitflow4code.features": [
 			{
-				"name": "feature/marksparams",
+				"name": "feature/ExpandContour",
 				"base": "develop"
 			}
 		]
