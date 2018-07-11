@@ -44,6 +44,7 @@
     forall
   end
   <<
+
     /Install {
         /csm-marks-params /ProcSet findresource /getmarksparams get exec  /MirrorPrint get
         {
@@ -57,6 +58,22 @@
         {}
       ifelse
     } bind
+
+    /BeginPage {
+        /csm-marks-params /ProcSet findresource /getmarksparams get exec  /NegativePrint get
+        {
+          0 setgray
+            0 0
+            currentpagedevice /PageSize get  aload pop
+          rectfill
+          1 setgray
+        }
+        {
+          0 setgray
+        }
+      ifelse
+    } bind
+
   >> setpagedevice
 } bind
 
