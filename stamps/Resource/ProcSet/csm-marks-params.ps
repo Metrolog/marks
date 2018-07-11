@@ -43,13 +43,28 @@
       }
     forall
   end
+  <<
+    /Install {
+        /csm-marks-params /ProcSet findresource /getmarksparams get exec  /MirrorPrint get
+        {
+              [ -1 0 0 1 0 0 ]
+                currentpagedevice /PageSize get  0 get
+                0
+              matrix translate
+            matrix concatmatrix
+          concat
+        }
+        {}
+      ifelse
+    } bind
+  >> setpagedevice
 } bind
 
 /getmarksparams % - --> dict
 {
     userdict /marksparams known not
     {
-      << >> setmarksparams
+      << >> /csm-marks-params /ProcSet findresource /setmarksparams get exec
     }
   if
   userdict /marksparams get
