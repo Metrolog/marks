@@ -12,6 +12,14 @@
 			{
 				"name": "feature/marksparams",
 				"base": "develop"
+			},
+			{
+				"name": "feature/multiFilesOutput",
+				"base": "develop"
+			},
+			{
+				"name": "feature/pdfDependencies",
+				"base": "develop"
 			}
 		]
 	},
