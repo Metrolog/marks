@@ -10,10 +10,6 @@
 		},
 		"gitflow4code.features": [
 			{
-				"name": "feature/marksparams",
-				"base": "develop"
-			},
-			{
 				"name": "feature/multiFilesOutput",
 				"base": "develop"
 			}

@@ -69,7 +69,7 @@ $(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESO
 	$$(COPY) $$< $$@
 	$$(TOUCH) $$@
 
-$(if $2,$2,$$(PSRESOURCEOUTPUTDIR)): $(call getPostScriptResourceOutputFiles,$1,$2,$3)
+POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
 
 endef
 
@@ -81,7 +81,7 @@ $(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESO
 	$$(COPY) $$< $$@
 	$$(TOUCH) $$@
 
-$(if $2,$2,$$(PSRESOURCEOUTPUTDIR)): $(call getPostScriptResourceOutputFiles,$1,$2,$3)
+POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
 
 endef
 
@@ -98,7 +98,7 @@ GSPSTOPDFFLAGS =
 GSPSTOPDFCMDLINE = $(GSCMDLINE) $(GSPSTOPDFFLAGS) \
   -sDEVICE=pdfwrite
 
-$(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
+$(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES)
 	$(call writeinformation,Build file "$@" from "$<"...)
 	$(MAKETARGETDIR)
 	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
@@ -117,7 +117,7 @@ define definePostScriptClearTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
   $(GSCMDLINE) '$2';,\
-  $2 $3 \
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES) \
 )
 
 endef
@@ -140,7 +140,7 @@ $(call defineTest,$(basename $(notdir $1)),ps_build,\
   $(MKDIR) $(dir $1);\
   $(GSPSTOPDFCMDLINE) -sOutputFile='$1' '$2';\
   $$(call pushDeploymentArtifactFile,$$(notdir $1),$1);,\
-  $2 $3 \
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES) \
 )
 
 endef

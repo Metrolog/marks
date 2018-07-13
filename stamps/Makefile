@@ -33,18 +33,14 @@ GSFONTDIR := $(GSFONTDIR) $(call OSabsPath,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCED
 
 # TODO: перейти на prepare... макросы
 $(eval $(foreach f,$(STAMPFONTFILES),$(call copyfileto,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR),$f)))
-$(PSRESOURCEOUTPUTDIR): $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f))
-#$(info $(call preparePostScriptResource,$(STAMPFONTFILESDIR),,$(STAMPFONTFILES)))
-#$(eval $(call preparePostScriptResource,$(STAMPFONTFILESDIR),,$(STAMPFONTFILES)))
+POSTSCRIPTRESOURCEFILES += $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f))
 
 $(eval $(call preparePostScriptResource))
 $(eval $(call copyPostScriptResource,$(ITG_POSTSCRIPTLIBDIR),,$(ITG_POSTSCRIPTLIBFILES)))
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCEFILES))
 
-$(STAMPSPDFFILES): $(PSRESOURCEOUTPUTDIR)
-
-$(eval $(call definePostScriptTests,$(PSRESOURCEOUTPUTDIR)))
+$(eval $(call definePostScriptTests))
 
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)
