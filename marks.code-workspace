@@ -7,20 +7,6 @@
 	"settings": {
 		"[postscript]": {
 			"files.encoding": "windows1251"
-		},
-		"gitflow4code.features": [
-			{
-				"name": "feature/marksparams",
-				"base": "develop"
-			},
-			{
-				"name": "feature/multiFilesOutput",
-				"base": "develop"
-			},
-			{
-				"name": "feature/pdfDependencies",
-				"base": "develop"
-			}
-		]
+		}
 	},
 }
