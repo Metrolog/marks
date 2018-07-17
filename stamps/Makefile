@@ -1,6 +1,6 @@
 #!/usr/bin/make
 
-all: pdf
+all: marks-pdf marks-eps
 
 # ITG.MakeUtils
 
@@ -43,12 +43,16 @@ STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCE
 
 $(eval $(call definePostScriptTests))
 
-.PHONY: pdf
-pdf: $(STAMPSPDFFILES)
+.PHONY: marks-pdf
+marks-pdf: $(STAMPSPDFFILES)
 	$(pushDeploymentArtifact)
 
 
 # multiple output files orders support
+
+MULTIFILEORDEROUTPUTDIR = $(OUTPUTDIR)
+
+.PHONY: marks-eps
 
 ifeq (,$(filter guile,$(.FEATURES)))
 $(call writeerror,Requires make version that supports Guile feature.)
@@ -69,19 +73,31 @@ quarters = $(foreach q, $1, $(guile (quarter $q)) )
 # $(call year)
 year = year
 
-# $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production)
+# TODO: добавить признак "для первичной поверки / для поверки в эксплуатации" в имя файла или каталог
+# $(call get_stamp_eps_filename, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
+get_stamp_eps_filename = $(MULTIFILEORDEROUTPUTDIR)$(patsubst $(SOURCESDIR)%,%,$(basename $7))/$(strip $1)/$(strip $3)/$(strip $2)/$(strip $4).eps
+
+# $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
 define create_verification_stamp
-	$(info Y $1 P $2 I $3 S $4 Z $5 P $6)
+
+$(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7): $7 $$(POSTSCRIPTRESOURCEFILES)
+	$$(call writeinformation,Build file "$$@" from "$$<"...)
+	$$(MAKETARGETDIR)
+	$$(call writeinformation, $$(GSPSTOEPSCMDLINE) -sOutputFile='$$@' '$$<')
+	$$(TOUCH) $$@
+
+marks-eps: $(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7)
+
 endef
 
-# $(call create_verification_stamps, years, periods, stamp_ids, stamps_signs, stamp_size, is_for_production)
+# $(call create_verification_stamps, years, periods, stamp_ids, stamps_signs, stamp_size, is_for_production, srcfile)
 define create_verification_stamps
 	$(foreach year,$1, \
 		$(foreach period,$2, \
 			$(foreach id,$3, \
 				$(foreach sign,$4, \
 					$(foreach is_for_production,$6, \
-						$(call create_verification_stamp, $(year), $(period), $(id), $(sign), $5, $(is_for_production)) \
+						$(call create_verification_stamp, $(year), $(period), $(id), $(sign), $5, $(is_for_production), $7) \
 					) \
 				) \
 			) \
