@@ -12,6 +12,7 @@
 		"redhat.vscode-yaml",
 		"Gruntfuggly.todo-tree",
 		"ms-vscode.PowerShell",
+		"sjhuangx.vscode-scheme",
 		"mxschmitt.postscript"
 	]
 }
