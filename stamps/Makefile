@@ -60,27 +60,33 @@ $(guile (use-modules (stamps)))
 # $(call range, from, to)
 range = $(guile (range $1 $2))
 
-$(info $(call range, 2, 14))
+# $(call months, numbers)
+months = $(foreach m, $1, $(guile (month $m)) )
 
-# $(call range, numbers)
-months = [ $1 ] months
+# $(call quarters, numbers)
+quarters = $(foreach q, $1, $(guile (quarter $q)) )
 
-# $(call range, numbers)
-quarters = [ $1 ] quarters
-
-# $(call range)
+# $(call year)
 year = year
 
-# $(call create_verification_stamp, years, periods, stamp_ids, stamps_signs, stamp_size, is_for_production)
+# $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production)
 define create_verification_stamp
-      2017
-      % [ [ 1 2  3 6 range  10 ] months  [ 1 4 range ] quarters ]
-      [ [ 3 ] quarters ]     % периоды
-      (СП)                   % шифр поверительного клейма
-      [ 1 256 range ]        % диапазон знаков поверителей
-      18.0 mm                % размер клейма
-      false                  % поверка в эксплуатации или после ремонта
-      /verification_stamp_upath
+	$(info Y $1 P $2 I $3 S $4 Z $5 P $6)
+endef
+
+# $(call create_verification_stamps, years, periods, stamp_ids, stamps_signs, stamp_size, is_for_production)
+define create_verification_stamps
+	$(foreach year,$1, \
+		$(foreach period,$2, \
+			$(foreach id,$3, \
+				$(foreach sign,$4, \
+					$(foreach is_for_production,$6, \
+						$(call create_verification_stamp, $(year), $(period), $(id), $(sign), $5, $(is_for_production)) \
+					) \
+				) \
+			) \
+		) \
+	)
 endef
 
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
