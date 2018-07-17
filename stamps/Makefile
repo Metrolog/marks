@@ -50,19 +50,17 @@ pdf: $(STAMPSPDFFILES)
 
 # multiple output files orders support
 
-$(info ----$(foreach x, $(guile (do ((i 1 (1+ i))) ((> i 4)) (list i) )), aa$xbb )----)
+ifeq (,$(filter guile,$(.FEATURES)))
+$(call writeerror,Requires make version that supports Guile feature.)
+endif
 
-$(guile (for/and ([l '(1 2 3 "error?")]) (< l 3)))
-
-
-#$(guile (for ([a '(a b c)]) (display a)))
-
-#$(info ----$(foreach x, $(guile (for ([a (in-range 1 15)]) a) ), aa$xbb )----)
-
+$(guile (add-to-load-path "."))
+$(guile (use-modules (stamps)))
 
 # $(call range, from, to)
-define range
-endef
+range = $(guile (range $1 $2))
+
+$(info $(call range, 2, 14))
 
 # $(call range, numbers)
 months = [ $1 ] months
