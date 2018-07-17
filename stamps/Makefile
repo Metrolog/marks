@@ -45,3 +45,22 @@ $(eval $(call definePostScriptTests))
 .PHONY: pdf
 pdf: $(STAMPSPDFFILES)
 	$(pushDeploymentArtifact)
+
+
+
+$(info =========================)
+$(info Guile tests:)
+
+NAMES := liesl friedrich louisa kurt brigitta marta gretl
+$(info $(guile (reverse '($(NAMES)))))
+
+define setup
+(use-modules (srfi srfi-1))
+(define (range from to) (map (lambda (x) (+ from x)) (iota (- to from))))
+endef
+$(guile $(setup))
+
+#$(info $(guile (for/list ([i (in-range 10 20)]) i) ))
+
+$(info $(guile (range 10 20) ))
+
