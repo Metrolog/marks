@@ -77,14 +77,16 @@ year = year
 # $(call get_stamp_eps_filename, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
 get_stamp_eps_filename = $(MULTIFILEORDEROUTPUTDIR)$(patsubst $(SOURCESDIR)%,%,$(basename $7))/$(strip $1)/$(strip $3)/$(strip $2)/$(strip $4).eps
 
+$(MULTIFILEORDEROUTPUTDIR)%.eps: $(POSTSCRIPTRESOURCEFILES)
+	$(call writeinformation,Build file "$@"...)
+	$(MAKETARGETDIR)
+	$(call writeinformation, $(GSPSTOEPSCMDLINE) -sOutputFile='$@' '$<')
+	$(TOUCH) $@
+
 # $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
 define create_verification_stamp
 
-$(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7): $7 $$(POSTSCRIPTRESOURCEFILES)
-	$$(call writeinformation,Build file "$$@" from "$$<"...)
-	$$(MAKETARGETDIR)
-	$$(call writeinformation, $$(GSPSTOEPSCMDLINE) -sOutputFile='$$@' '$$<')
-	$$(TOUCH) $$@
+$(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7): $7
 
 marks-eps: $(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7)
 
