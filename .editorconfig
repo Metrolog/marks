@@ -41,6 +41,12 @@ indent_style = space
 indent_size = 2
 charset = latin1
 
+[*.eps]
+indent_style = space
+indent_size = 2
+charset = latin1
+end_of_line = lf
+
 [*.ps1]
 indent_style = tab
 indent_size = 4
