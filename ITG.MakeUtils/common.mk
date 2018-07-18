@@ -195,6 +195,10 @@ $(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 # $(call rwildcard,dir,filesfilter)
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
+define includemakefile
+include $1
+endef
+
 # $(call setvariable, var, value)
 define setvariable
 $1:=$2
