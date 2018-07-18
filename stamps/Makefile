@@ -48,25 +48,6 @@ marks-pdf: $(STAMPSPDFFILES)
 	$(pushDeploymentArtifact)
 
 
-<<<<<<< HEAD
-
-$(info =========================)
-$(info Guile tests:)
-
-NAMES := liesl friedrich louisa kurt brigitta marta gretl
-$(info $(guile (reverse '($(NAMES)))))
-
-define setup
-(use-modules (srfi srfi-1))
-(define (range from to) (map (lambda (x) (+ from x)) (iota (- to from))))
-endef
-$(guile $(setup))
-
-#$(info $(guile (for/list ([i (in-range 10 20)]) i) ))
-
-$(info $(guile (range 10 20) ))
-
-=======
 # multiple output files orders support
 
 MULTIFILEORDEROUTPUTDIR = $(OUTPUTDIR)
@@ -130,4 +111,3 @@ endef
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
 $(eval $(foreach f,$(MULTIFILEORDERFILES), $(call includemakefile, $f)))
->>>>>>> 0e847b7f2b8c0f26a11ac17ea0bbd7f4c5832242

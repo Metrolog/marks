@@ -9,7 +9,7 @@ $(eval $(call create_verification_stamps, \
 	$(call months,$(call range,1,12)) $(call quarters,$(call range,1,4)) $(call year), \
 	СП, \
 	$(call range,1,2), \
-	18 mm, \
+	18, \
 	false, \
 	$(lastword $(MAKEFILE_LIST)) \
 ))
