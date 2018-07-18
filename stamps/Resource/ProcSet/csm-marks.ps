@@ -702,10 +702,14 @@ grestore
             dup  3 eq
             { pop  ul_verification_stamp_path }
             {
-              pop
+              == %pop
+              3 index ==
               pop pop pop pop pop pop
-              (Error: stamp Id length must be less than or equal to 3.) =
-              stop
+
+              (%stderr) (w) file  (Error: stamp Id length must be less than or equal to 3.\n) writestring
+
+              /.error where {pop /signalerror /.error load def} if
+              /verification_stamp_path /rangecheck signalerror
             }
           ifelse
         }

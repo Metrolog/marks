@@ -81,15 +81,13 @@ PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
 MARK2IMAGEARGS ?= -dMirrorPrint
 
-$(MULTIFILEORDEROUTPUTDIR)%.eps: $(MARK2IMAGE) $(POSTSCRIPTRESOURCEFILES)
-	$(call writeinformation,Build file "$@"...)
-	$(MAKETARGETDIR)
-	$(GSPSTOEPSCMDLINE) $(MARK2IMAGEARGS) -sOutputFile='$@' '$<'
-
 # $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
 define create_verification_stamp
 
-$(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7): $7
+$(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7): $(MARK2IMAGE) $7 $(POSTSCRIPTRESOURCEFILES)
+	$$(call writeinformation,Build file "$$@"...)
+	$$(MAKETARGETDIR)
+	$$(GSPSTOEPSCMDLINE) $$(MARK2IMAGEARGS) -sStampYear=$(strip $1) -sStampPeriod=$(strip $2) -sStampId=$(strip $3) -sStampSign=$(strip $4) -sStampSize='$(strip $5)' -sStampForProduction=$(strip $6) -sOutputFile='$$@' '$$<'
 
 marks-eps: $(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7)
 
