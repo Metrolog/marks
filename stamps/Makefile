@@ -51,6 +51,7 @@ marks-pdf: $(STAMPSPDFFILES)
 # multiple output files orders support
 
 MULTIFILEORDEROUTPUTDIR = $(OUTPUTDIR)
+MULTIFILEORDERAUXDIR = $(AUXDIR)mf/
 
 .PHONY: marks-eps
 
@@ -74,8 +75,8 @@ quarters = $(foreach q, $1, $(guile (quarter $q)) )
 year = year
 
 # TODO: добавить признак "для первичной поверки / для поверки в эксплуатации" в имя файла или каталог
-# $(call get_stamp_eps_filename, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
-get_stamp_eps_filename = $(MULTIFILEORDEROUTPUTDIR)$(patsubst $(SOURCESDIR)%,%,$(basename $7))/$(strip $1)/$(strip $3)/$(strip $2)/$(strip $4).eps
+# $(call get_multifile_order_relative_filename, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
+get_multifile_order_relative_filename = $(MULTIFILEORDEROUTPUTDIR)$(patsubst $(SOURCESDIR)%,%,$(basename $7))/$(strip $1)/$(strip $3)/$(strip $2)/$(strip $4)
 
 PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
@@ -84,12 +85,16 @@ MARK2IMAGEARGS ?= -dMirrorPrint -dUseTrimBox
 # $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
 define create_verification_stamp
 
-$(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7): $(MARK2IMAGE) $7 $(POSTSCRIPTRESOURCEFILES) $(MAKEFILE_LIST)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps: $(MARK2IMAGE) $7 $(MAKEFILE_LIST)
+	$$(MAKETARGETDIR)
+	iconv -f CP1251 $$< | m4 -D StampId=$(strip $3) | iconv -t CP1251 > $$@
+
+$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $(POSTSCRIPTRESOURCEFILES) $(MAKEFILE_LIST)
 	$$(call writeinformation,Build file "$$@"...)
 	$$(MAKETARGETDIR)
 	$$(GSPSTOEPSCMDLINE) $$(MARK2IMAGEARGS) -sStampYear=$(strip $1) -sStampPeriod=$(strip $2) -sStampId=$(strip $3) -sStampSign=$(strip $4) -sStampSize='$(strip $5)' -sStampForProduction=$(strip $6) -sOutputFile='$$@' '$$<'
 
-marks-eps: $(call get_stamp_eps_filename,$1,$2,$3,$4,$5,$6,$7)
+marks-eps: $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps
 
 endef
 

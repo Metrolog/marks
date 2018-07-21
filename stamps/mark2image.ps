@@ -87,10 +87,12 @@ userdict begin
 
 gsave
 
+StampId ==
+
 0 0 moveto
-	StampYear
+  StampYear
   StampPeriod
-  (ÑÏ) % StampId
+  StampId % (ÑÏ) % StampId
   StampSign cvi
   StampSize cvr  mm
   StampForProduction exec

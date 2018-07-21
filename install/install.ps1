@@ -132,11 +132,11 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
 
     if (
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
-        -and $PSCmdLet.ShouldProcess('Пакеты CygWin make, mkdir, touch', 'Установить')
+        -and $PSCmdLet.ShouldProcess('Пакеты CygWin make, m4, iconv, mkdir, touch', 'Установить')
     ) {
         Invoke-ExternalInstaller `
             -LiteralPath $cygwinsetup `
-            -ArgumentList '--packages make,mkdir,touch --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
+            -ArgumentList '--packages make,m4,iconv,mkdir,touch --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
         ;
     };
 };
