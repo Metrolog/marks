@@ -3,9 +3,12 @@
 ROOT_PROJECT_DIR ?= ./
 ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
 include $(ITG_MAKEUTILS_DIR)common.mk
+include $(ITG_MAKEUTILS_DIR)git.mk
 include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
 # sub projects
+
+$(eval $(call useExternalSubProjectAsSubtree,aglfn,git@github.com:adobe-type-tools/agl-aglfn.git,encodings/agl-aglfn/))
 
 $(eval $(call useSubProject,encodings,encodings, CP1251 CP1253))
 $(eval $(call useSubProject,ITG_PostScriptLib,ITG.PostScriptLib))
