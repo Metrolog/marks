@@ -27,6 +27,10 @@ maintainer-add-$(strip $1):
 maintainer-update-$(strip $1):
 	$(GIT) subtree pull --prefix=$$($(strip $1)_DIR) --squash $$($(strip $1)_REPOSITORY_URL) master
 
+.PHONY: maintainer-push-$(strip $1)
+maintainer-push-$(strip $1):
+	$(GIT) subtree push --prefix=$$($(strip $1)_DIR) $$($(strip $1)_REPOSITORY_URL) master
+
 endef
 
 endif
