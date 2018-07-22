@@ -69,7 +69,7 @@ $$($(1)TARGETS): \
 	$$(call writeinformation,Generating chocolatey package file "$$@"...)
 	$$(MAKETARGETDIR)
 	cd $$(@D) && $$(CHOCO) \
-    pack $$(subst $$(SPACE),/,$$(patsubst %,..,$$(subst /,$$(SPACE),$$(@D))))/$$< \
+    pack $$(subst $$(__gmsl_space),/,$$(patsubst %,..,$$(subst /,$$(__gmsl_space),$$(@D))))/$$< \
     --force \
     --version $$($(1)VERSION) \
     --verbose
