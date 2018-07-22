@@ -66,11 +66,9 @@ endif
 
 #region symbols
 
-SPACE              := $(empty) $(empty)
 COMMA              :=,
 LEFT_BRACKET       :=(
 RIGHT_BRACKET      :=)
-DOLLAR_SIGN        :=$$
 
 ifeq ($(OS),Windows_NT)
 PATHSEP            :=;
@@ -98,7 +96,7 @@ _debug_enter = $(info Entering $0($(_args)))
 
 _debug_leave = $(info Leaving $0)
 
-_args = $(subst $(SPACE),$(COMMA) ,$(strip $(foreach a,1 2 3 4 5 6 7 8 9,$($a))))
+_args = $(subst $(__gmsl_space),$(COMMA) ,$(strip $(foreach a,1 2 3 4 5 6 7 8 9,$($a))))
 
 endif
 
@@ -243,7 +241,7 @@ pushArtifactTargets = $(call exportGlobalVariablesAux,$(1),TargetWriter)
 pushArtifactTarget = $(pushArtifactTargets)
 
 # $(call calcRootProjectDir, Project)
-calcRootProjectAux = $(subst $(SPACE),/,$(patsubst %,..,$(subst /,$(SPACE),$(call getSubProjectDir,$1))))
+calcRootProjectAux = $(subst $(__gmsl_space),/,$(patsubst %,..,$(subst /,$(__gmsl_space),$(call getSubProjectDir,$1))))
 calcRootProjectDir = $(if $(call calcRootProjectAux,$1),$(call calcRootProjectAux,$1)/,./)
 
 # $(call getSubProjectDir, Project)

@@ -10,9 +10,9 @@ NUGET_PACKAGES_DIR ?= packages/
 
 $(NUGET_PACKAGES_DIR)%: $(MAKEFILES)
 	$(NUGET) \
-    install $(firstword $(subst /,$(SPACE),$(patsubst $(NUGET_PACKAGES_DIR)%,%,$@))) \
+    install $(firstword $(subst /,$(__gmsl_space),$(patsubst $(NUGET_PACKAGES_DIR)%,%,$@))) \
     -OutputDirectory $(call winPath,$(NUGET_PACKAGES_DIR)) \
-    $(NUGET_PACKAGE_INSTALL_ARGS_$(firstword $(subst /,$(SPACE),$(patsubst $(NUGET_PACKAGES_DIR)%,%,$@)))) \
+    $(NUGET_PACKAGE_INSTALL_ARGS_$(firstword $(subst /,$(__gmsl_space),$(patsubst $(NUGET_PACKAGES_DIR)%,%,$@)))) \
     -ExcludeVersion
 
 clean::
