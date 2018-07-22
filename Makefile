@@ -8,6 +8,7 @@ include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
 # sub projects
 
+$(eval $(call useExternalSubProjectAsSubtree,makeutils,git@github.com:IT-Service/ITG.MakeUtils.git,$(ITG_MAKEUTILS_DIR)))
 $(eval $(call useExternalSubProjectAsSubtree,aglfn,git@github.com:adobe-type-tools/agl-aglfn.git,encodings/agl-aglfn/))
 
 $(eval $(call useSubProject,encodings,encodings, CP1251 CP1253))
