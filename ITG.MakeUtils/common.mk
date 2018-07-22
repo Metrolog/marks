@@ -54,7 +54,7 @@ include $(ITG_MAKEUTILS_DIR)GMSL/gmsl
 
 #region check make tool version and features
 
-ifeq (,$(filter oneshell,$(.FEATURES)))
+ifeq ($(call set_is_member,oneshell,$(call set_create,$(.FEATURES))),$(false))
 $(call writeerror,Requires make version that supports .ONESHELL feature.)
 endif
 
@@ -89,12 +89,6 @@ _deprecated_function = $(call writewarning,Function $1 is deprecated.$(if $2, Pl
 _obsolete_function = $(call writeerror,Function $1 is not avaliable now. It is obsolete.$(if $2, Please$(COMMA) see about $2.))
 
 #endregion deprecated functions wrappers
-
-#region asserts
-
-_assert_not_null = $(if $1,,$(call writeerror,Illegal empty value.))
-
-#endregion asserts
 
 #region debug support
 
@@ -205,8 +199,8 @@ endef
 
 # $(call copyfile, to, from)
 define copyfile
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
+$(call assert,$1,Expected file name (to))
+$(call assert,$2,Expected file name (from))
 $1: $2
 	$$(MAKETARGETDIR)
 	$(COPY) $$< $$@
@@ -253,12 +247,12 @@ calcRootProjectAux = $(subst $(SPACE),/,$(patsubst %,..,$(subst /,$(SPACE),$(cal
 calcRootProjectDir = $(if $(call calcRootProjectAux,$1),$(call calcRootProjectAux,$1)/,./)
 
 # $(call getSubProjectDir, Project)
-getSubProjectDir = $(call _assert_not_null,$1)$($(1)_DIR)
+getSubProjectDir = $(call assert,$1,Expected project slug)$($(1)_DIR)
 
 # $(call setSubProjectDir, Project, ProjectDir)
 define setSubProjectDir
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
+$(call assert,$1,Expected project slug)
+$(call assert,$2,Expected project directory path)
 export $(1)_DIR := $2/
 endef
 
@@ -280,15 +274,15 @@ MAKE_SUBPROJECT_TARGET = \
 
 # $(call declareProjectTargets, Project)
 define declareProjectTargets
-$(call _assert_not_null,$1)
+$(call assert,$1,Expected project slug)
 $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 endef
 
 # $(call useSubProject, SubProject, SubProjectDir [, Targets ])
 define useSubProject
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
+$(call assert,$1,Expected project slug)
+$(call assert,$2,Expected project directory path)
 $(eval $(call setSubProjectDir,$1,$2))
 $(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $(SUBPROJECTS_EXPORTS_DIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
