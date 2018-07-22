@@ -13,8 +13,8 @@ GIT ?= git
 # $(call useExternalSubProjectAsSubtree,projectSlug,projectRepoURL,projectDir)
 define useExternalSubProjectAsSubtree
 
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
+$(call assert,$1,Expected project slug)
+$(call assert,$2,Expected project repository URL)
 
 $(strip $1)_REPOSITORY_URL ?= $2
 $(strip $1)_DIR := $(if $3,$(patsubst ./%,%,$(strip $3)),$(strip $1))
