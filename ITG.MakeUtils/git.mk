@@ -17,7 +17,7 @@ $(call _assert_not_null,$1)
 $(call _assert_not_null,$2)
 
 $(strip $1)_REPOSITORY_URL ?= $2
-$(strip $1)_DIR := $(if $3,$(strip $3),$(strip $1))
+$(strip $1)_DIR := $(if $3,$(patsubst ./%,%,$(strip $3)),$(strip $1))
 
 .PHONY: maintainer-add-$(strip $1)
 maintainer-add-$(strip $1):
