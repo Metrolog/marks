@@ -12,12 +12,10 @@ GIT ?= git
 add-gmsl: $(GMSLDIR)gmsl
 
 $(GMSLDIR)gmsl:
-	-$(GIT) remote add gmsl $(GSMLREPO)
+	if   $(GIT) remote | grep gmsl  $(GIT) remote add gmsl -f --no-tags --mirror=fetch $(GSMLREPO)
 	$(GIT) subtree add --prefix=$(GMSLDIR) --squash gmsl master
 	-$(GIT) remote remove gmsl
 
 .PHONY: update-gmsl
 update-gmsl: $(GMSLDIR)gmsl
-	-$(GIT) remote add gmsl $(GSMLREPO)
-	$(GIT) subtree pull --prefix=$(GMSLDIR) --squash gmsl master
-	-$(GIT) remote remove gmsl
+	$(GIT) subtree pull --prefix=$(GMSLDIR) --squash $(GSMLREPO) master
