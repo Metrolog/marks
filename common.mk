@@ -45,6 +45,13 @@ writeerror = \
 
 #endregion info, warning and error wrappers
 
+#region calc ITG.MakeUtils relative path
+ROOT_PROJECT_DIR ?= ../
+ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
+#endregion calc ITG.MakeUtils relative path
+
+include $(ITG_MAKEUTILS_DIR)GMSL/gmsl
+
 #region check make tool version and features
 
 ifeq (,$(filter oneshell,$(.FEATURES)))
@@ -56,11 +63,6 @@ $(call writeerror,Requires make version 3.82 or higher.)
 endif
 
 #endregion check make tool version and features
-
-#region calc ITG.MakeUtils relative path
-ROOT_PROJECT_DIR ?= ../
-ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
-#endregion calc ITG.MakeUtils relative path
 
 #region symbols
 
