@@ -81,11 +81,15 @@ endif
 
 #region deprecated functions wrappers
 
+ifeq ($(need-help),$(false))
+
 # $(call _deprecated_function, function, replacement)
 _deprecated_function = $(call writewarning,Function $1 is deprecated.$(if $2, Please$(COMMA) see about $2.))
 
 # $(call _obsolete_function, function, replacement)
 _obsolete_function = $(call writeerror,Function $1 is not avaliable now. It is obsolete.$(if $2, Please$(COMMA) see about $2.))
+
+endif
 
 #endregion deprecated functions wrappers
 
