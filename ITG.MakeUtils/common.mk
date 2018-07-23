@@ -45,9 +45,16 @@ writeerror = \
 
 #endregion info, warning and error wrappers
 
+#region calc ITG.MakeUtils relative path
+ROOT_PROJECT_DIR ?= ../
+ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
+#endregion calc ITG.MakeUtils relative path
+
+include $(ITG_MAKEUTILS_DIR)GMSL/gmsl
+
 #region check make tool version and features
 
-ifeq (,$(filter oneshell,$(.FEATURES)))
+ifeq ($(call set_is_member,oneshell,$(call set_create,$(.FEATURES))),$(false))
 $(call writeerror,Requires make version that supports .ONESHELL feature.)
 endif
 
@@ -57,18 +64,11 @@ endif
 
 #endregion check make tool version and features
 
-#region calc ITG.MakeUtils relative path
-ROOT_PROJECT_DIR ?= ../
-ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
-#endregion calc ITG.MakeUtils relative path
-
 #region symbols
 
-SPACE              := $(empty) $(empty)
 COMMA              :=,
 LEFT_BRACKET       :=(
 RIGHT_BRACKET      :=)
-DOLLAR_SIGN        :=$$
 
 ifeq ($(OS),Windows_NT)
 PATHSEP            :=;
@@ -88,12 +88,6 @@ _obsolete_function = $(call writeerror,Function $1 is not avaliable now. It is o
 
 #endregion deprecated functions wrappers
 
-#region asserts
-
-_assert_not_null = $(if $1,,$(call writeerror,Illegal empty value.))
-
-#endregion asserts
-
 #region debug support
 
 ifdef DEBUG_TRACE
@@ -102,7 +96,7 @@ _debug_enter = $(info Entering $0($(_args)))
 
 _debug_leave = $(info Leaving $0)
 
-_args = $(subst $(SPACE),$(COMMA) ,$(strip $(foreach a,1 2 3 4 5 6 7 8 9,$($a))))
+_args = $(subst $(__gmsl_space),$(COMMA) ,$(strip $(foreach a,1 2 3 4 5 6 7 8 9,$($a))))
 
 endif
 
@@ -195,6 +189,9 @@ $(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 # $(call rwildcard,dir,filesfilter)
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
+# $(call reversedirpath,dirPath,pathToRootFromChild)
+reversedirpath = $(if $(strip $1),$(foreach d,$(call split,/,$1),../),./)
+
 # $(call setvariable, var, value)
 define setvariable
 $1:=$2
@@ -203,8 +200,8 @@ endef
 
 # $(call copyfile, to, from)
 define copyfile
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
+$(call assert,$1,Expected file name (to))
+$(call assert,$2,Expected file name (from))
 $1: $2
 	$$(MAKETARGETDIR)
 	$(COPY) $$< $$@
@@ -246,17 +243,13 @@ TargetWriter = $$(foreach path,$$($(1)),$$$$$$$$(ROOT_PROJECT_DIR)$(SUBPROJECT_D
 pushArtifactTargets = $(call exportGlobalVariablesAux,$(1),TargetWriter)
 pushArtifactTarget = $(pushArtifactTargets)
 
-# $(call calcRootProjectDir, Project)
-calcRootProjectAux = $(subst $(SPACE),/,$(patsubst %,..,$(subst /,$(SPACE),$(call getSubProjectDir,$1))))
-calcRootProjectDir = $(if $(call calcRootProjectAux,$1),$(call calcRootProjectAux,$1)/,./)
-
 # $(call getSubProjectDir, Project)
-getSubProjectDir = $(call _assert_not_null,$1)$($(1)_DIR)
+getSubProjectDir = $(call assert,$1,Expected project slug)$($(1)_DIR)
 
 # $(call setSubProjectDir, Project, ProjectDir)
 define setSubProjectDir
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
+$(call assert,$1,Expected project slug)
+$(call assert,$2,Expected project directory path)
 export $(1)_DIR := $2/
 endef
 
@@ -266,27 +259,27 @@ MAKE_SUBPROJECT = \
     -C $(call getSubProjectDir,$1) \
     SUBPROJECT=$1 \
     SUBPROJECT_DIR=$(call getSubProjectDir,$1) \
-    ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
-    SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
+    ROOT_PROJECT_DIR=$(call reversedirpath,$1) \
+    SUBPROJECT_EXPORTS_FILE=$(call reversedirpath,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
 
 # $(call MAKE_SUBPROJECT_TARGET, Target)
 MAKE_SUBPROJECT_TARGET = \
   $(MAKE) \
     -C $(ROOT_PROJECT_DIR) \
-    ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
+    ROOT_PROJECT_DIR=$(call reversedirpath,$1) \
     $1
 
 # $(call declareProjectTargets, Project)
 define declareProjectTargets
-$(call _assert_not_null,$1)
+$(call assert,$1,Expected project slug)
 $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 endef
 
 # $(call useSubProject, SubProject, SubProjectDir [, Targets ])
 define useSubProject
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
+$(call assert,$1,Expected project slug)
+$(call assert,$2,Expected project directory path)
 $(eval $(call setSubProjectDir,$1,$2))
 $(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $(SUBPROJECTS_EXPORTS_DIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES

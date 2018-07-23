@@ -14,9 +14,9 @@ TAR                ?= tar
 # TODO: и выполнить в одну строку
 # $(call copyFilesToZIP, targetZIP, sourceFiles, sourceFilesRootDir)
 define copyFilesToZIP
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
-$(call _assert_not_null,$3)
+$(call assert,$1,Expected zip file name)
+$(call assert,$2,Expected source files names)
+$(call assert,$3,Expected source files root directory path)
 $1:$2
 	$$(MAKETARGETDIR)
 	cd $3 && $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $3/%, %, $$^)

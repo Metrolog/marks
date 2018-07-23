@@ -47,6 +47,7 @@ PSRESOURCESOURCEDIR ?= ./
 ENCODINGRESOURCEDIR := Encoding/
 PROCSETRESOURCEDIR := ProcSet/
 FONTRESOURCEDIR := Font/
+FILERESOURCEDIR := File/
 RESOURCEDIRSUBDIRS = $(ENCODINGRESOURCEDIR) $(PROCSETRESOURCEDIR)
 
 $(PSRESOURCEOUTPUTDIR) $(PSRESOURCEOUTPUTDIR)$(ENCODINGRESOURCEDIR) $(PSRESOURCEOUTPUTDIR)$(PROCSETRESOURCEDIR):
@@ -69,7 +70,7 @@ $(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESO
 	$$(COPY) $$< $$@
 	$$(TOUCH) $$@
 
-$(if $2,$2,$$(PSRESOURCEOUTPUTDIR)): $(call getPostScriptResourceOutputFiles,$1,$2,$3)
+POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
 
 endef
 
@@ -81,14 +82,14 @@ $(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESO
 	$$(COPY) $$< $$@
 	$$(TOUCH) $$@
 
-$(if $2,$2,$$(PSRESOURCEOUTPUTDIR)): $(call getPostScriptResourceOutputFiles,$1,$2,$3)
+POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
 
 endef
 
 
 GSCMDLINE = $(GS) \
   $(foreach incdir,$(GSINCDIR),-I'$(incdir)') \
-  $(if $(GSFONTDIR),-sFONTPATH='$(subst $(SPACE),$(PATHSEP),$(strip $(GSFONTDIR)))')
+  $(if $(GSFONTDIR),-sFONTPATH='$(call merge,$(PATHSEP),$(GSFONTDIR))')
 
 #  $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
 
@@ -98,12 +99,25 @@ GSPSTOPDFFLAGS =
 GSPSTOPDFCMDLINE = $(GSCMDLINE) $(GSPSTOPDFFLAGS) \
   -sDEVICE=pdfwrite
 
-$(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps
+$(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES)
 	$(call writeinformation,Build file "$@" from "$<"...)
 	$(MAKETARGETDIR)
 	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
 	$(call writeinformation,File "$@" is ready.)
 	$(OPENTARGETPDF)
+
+
+GSPSTOEPSFLAGS =
+
+GSPSTOEPSCMDLINE = $(GSCMDLINE) $(GSPSTOEPSFLAGS) \
+  -sDEVICE=eps2write
+
+$(OUTPUTDIR)%.eps: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES)
+	$(call writeinformation,Build file "$@" from "$<"...)
+	$(MAKETARGETDIR)
+	$(GSPSTOEPSCMDLINE) -sOutputFile='$@' '$<'
+	$(call writeinformation,File "$@" is ready.)
+
 
 ifdef MAKE_TESTS_DIR
 
@@ -117,7 +131,7 @@ define definePostScriptClearTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
   $(GSCMDLINE) '$2';,\
-  $2 $3 \
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES) \
 )
 
 endef
@@ -140,7 +154,7 @@ $(call defineTest,$(basename $(notdir $1)),ps_build,\
   $(MKDIR) $(dir $1);\
   $(GSPSTOPDFCMDLINE) -sOutputFile='$1' '$2';\
   $$(call pushDeploymentArtifactFile,$$(notdir $1),$1);,\
-  $2 $3 \
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES) \
 )
 
 endef
