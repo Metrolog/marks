@@ -21,15 +21,16 @@ $(strip $1)_DIR := $(if $3,$(patsubst ./%,%,$(strip $3)),$(strip $1))
 
 .PHONY: maintainer-add-$(strip $1)
 maintainer-add-$(strip $1):
-	$(GIT) subtree add --prefix=$$($(strip $1)_DIR) --squash $$($(strip $1)_REPOSITORY_URL) master
+	$(GIT) remote add $1 $$($(strip $1)_REPOSITORY_URL)
+	$(GIT) subtree add --prefix=$$($(strip $1)_DIR) --squash $1 master
 
-.PHONY: maintainer-update-$(strip $1)
-maintainer-update-$(strip $1):
-	$(GIT) subtree pull --prefix=$$($(strip $1)_DIR) --squash $$($(strip $1)_REPOSITORY_URL) master
+.PHONY: maintainer-pull-$(strip $1)
+maintainer-pull-$(strip $1):
+	$(GIT) subtree pull --prefix=$$($(strip $1)_DIR) --squash $1 master
 
 .PHONY: maintainer-push-$(strip $1)
 maintainer-push-$(strip $1):
-	$(GIT) subtree push --prefix=$$($(strip $1)_DIR) $$($(strip $1)_REPOSITORY_URL) master
+	$(GIT) subtree push --prefix=$$($(strip $1)_DIR) $1 master
 
 endef
 
