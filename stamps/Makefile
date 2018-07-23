@@ -1,6 +1,6 @@
 #!/usr/bin/make
 
-all: pdf
+all:: pdf
 
 # ITG.MakeUtils
 

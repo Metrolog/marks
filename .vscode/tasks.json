@@ -18,10 +18,10 @@
             "label": "Выполнить сборку",
             "type": "shell",
             "windows": {
-                "command": "cmd /c 'make SHOW_PDF=yes 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+                "command": "cmd /c 'make all SHOW_PDF=yes 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
             },
             "linux": {
-                "command": "/bin/sh -c 'make SHOW_PDF=yes 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+                "command": "/bin/sh -c 'make all SHOW_PDF=yes 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
             },
             "group": {
                 "kind": "build",
