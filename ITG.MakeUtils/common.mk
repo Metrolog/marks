@@ -195,7 +195,7 @@ $(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 # $(call reversedirpath,dirPath,pathToRootFromChild)
-reversedirpath = $(if $(strip $1),$(foreach d,$(call split,/,$1),../),./)
+reversedirpath = $(if $(strip $1),$(call merge,/,$(foreach d,$(call split,/,$1),..))/,./)
 
 # $(call setvariable, var, value)
 define setvariable
@@ -264,14 +264,14 @@ MAKE_SUBPROJECT = \
     -C $(call getSubProjectDir,$1) \
     SUBPROJECT=$1 \
     SUBPROJECT_DIR=$(call getSubProjectDir,$1) \
-    ROOT_PROJECT_DIR=$(call reversedirpath,$1) \
+    ROOT_PROJECT_DIR=$(call reversedirpath,$(call getSubProjectDir,$1)) \
     SUBPROJECT_EXPORTS_FILE=$(call reversedirpath,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
 
 # $(call MAKE_SUBPROJECT_TARGET, Target)
 MAKE_SUBPROJECT_TARGET = \
   $(MAKE) \
     -C $(ROOT_PROJECT_DIR) \
-    ROOT_PROJECT_DIR=$(call reversedirpath,$1) \
+    ROOT_PROJECT_DIR=./ \
     $1
 
 # $(call declareProjectTargets, Project)
