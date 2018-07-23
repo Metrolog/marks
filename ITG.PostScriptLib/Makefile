@@ -18,7 +18,7 @@ ITG_POSTSCRIPTLIBDIR := $(PSRESOURCEOUTPUTDIR)
 .PHONY: ITG_PostScriptLib
 all:: ITG_PostScriptLib
 
-ITG_PostScriptLib: $(ITG_POSTSCRIPTLIBFILES)
+ITG_PostScriptLib: $(ITG_POSTSCRIPTLIBFILES) $(call print-help,ITG_PostScriptLib,Prepare postscript Resource dir in $(PSRESOURCEOUTPUTDIR) with ProcSet and other resources from ITG.PostScriptLib.)
 $(eval $(call pushArtifactTargets,ITG_POSTSCRIPTLIBFILES))
 $(eval $(call pushArtifactTargets,ITG_POSTSCRIPTLIBDIR))
 

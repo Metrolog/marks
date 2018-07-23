@@ -302,6 +302,8 @@ $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 all:: $1
 test: test-$1
+help::
+	@$(call MAKE_SUBPROJECT,$1) -s --no-print-directory help
 ifeq ($(filter clean distclean maintainer-clean,$(MAKECMDGOALS)),)
 mostlyclean::
 	$(call MAKE_SUBPROJECT,$1) mostlyclean
@@ -332,29 +334,29 @@ endif
 
 .DEFAULT_GOAL := all
 .PHONY: all
-all:: $(call print-help,all,Build all targets.)
+all:: $(call _itg_makeutils_print-help,all,Build all targets.)
 
 # not standard target. Use 'check'
 .PHONY: test
 test: MAKEFLAGS += --keep-going
 
 .PHONY: check
-check: test $(call print-help,check,Perform self-tests.)
+check: test $(call _itg_makeutils_print-help,check,Perform self-tests.)
 
 .PHONY: mostlyclean
-mostlyclean:: $(call print-help,mostlyclean,Like 'clean'$(COMMA) but may refrain from deleting a few files that people normally don’t want to recompile.)
+mostlyclean:: $(call _itg_makeutils_print-help,mostlyclean,Like 'clean'$(COMMA) but may refrain from deleting a few files that people normally don’t want to recompile.)
 	$(RMDIR) $(AUXDIR)
 	$(RMDIR) $(OUTPUTDIR)
 
 .PHONY: clean
-clean:: mostlyclean  $(call print-help,clean,Delete all files in the current directory that are normally created by building the program. Also delete files in other directories if they are created by this makefile. Don’t delete the files that record the configuration.)
+clean:: mostlyclean  $(call _itg_makeutils_print-help,clean,Delete all files in the current directory that are normally created by building the program. Also delete files in other directories if they are created by this makefile. Don’t delete the files that record the configuration.)
 
 .PHONY: distclean
-distclean:: clean $(call print-help,distclean,Delete all files in the current directory (or created by this makefile) that are created by configuring or building the program.)
+distclean:: clean $(call _itg_makeutils_print-help,distclean,Delete all files in the current directory (or created by this makefile) that are created by configuring or building the program.)
 	$(RMDIR) $(CONFIGDIR)
 
 .PHONY: maintainer-clean
-maintainer-clean:: distclean $(call print-help,maintainer-clean,This target is intended to be used by a maintainer of the package. Not by ordinary users. You may need special tools to reconstruct some of the files that ‘make maintainer-clean’ deletes. Since these files are normally included in the distribution.)
+maintainer-clean:: distclean $(call _itg_makeutils_print-help,maintainer-clean,This target is intended to be used by a maintainer of the package. Not by ordinary users. You may need special tools to reconstruct some of the files that ‘make maintainer-clean’ deletes. Since these files are normally included in the distribution.)
 
 #endregion standard targets support
 

@@ -43,5 +43,5 @@ STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCE
 $(eval $(call definePostScriptTests))
 
 .PHONY: pdf
-pdf: $(STAMPSPDFFILES)
+pdf: $(STAMPSPDFFILES) $(call print-help,pdf,Выполнить подготовку в $(SUBPROJECT_DIR)$(OUTPUTDIR) .pdf файлов с оттисками клейм (только для оттисков полимерных клейм с групповой раскладкой для изготовления полимерных клише) на основе исходных .ps файлов заказов в $(SUBPROJECT_DIR)$(STAMPSRCDIR).)
 	$(pushDeploymentArtifact)
