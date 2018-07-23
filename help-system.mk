@@ -16,7 +16,7 @@ $(if $(need-help),$(info $1 -- $2))
 endef
 
 ifndef SUBPROJECT
-_itg_makeutils_print-help = print-help
+_itg_makeutils_print-help = $(print-help)
 endif
 
 endif
