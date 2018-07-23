@@ -1,0 +1,4 @@
+*.ps   text  merge=text diff=text eol=crlf encoding=cp1251
+*.md   text  merge=text diff=text eol=crlf
+*.mk         merge=text diff=text eol=lf
+Makefile     merge=text diff=text eol=lf

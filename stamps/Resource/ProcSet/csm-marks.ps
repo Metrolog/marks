@@ -1,0 +1,879 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: Encoding (CP1251Encoding)
+%%+: Encoding (CP1253Encoding)
+%%+: ProcSet (csm-marks-params) 2.3 0
+%%+: ProcSet (csm-marks-cyr-signs) 2.2 0
+%%+: ProcSet (csm-marks-greek-signs) 2.2 0
+%%+: ProcSet (arrays) 2.2 0
+%%+: ProcSet (boxes) 2.2 0
+%%+: ProcSet (fonts) 2.2 0
+%%+: ProcSet (graphics) 2.2 0
+%%+: ProcSet (math) 2.2 0
+%%+: ProcSet (roman) 2.2 0
+%%+: ProcSet (si) 2.2 0
+%%+: ProcSet (graphics-alignments) 2.2 0
+%%+: ProcSet (image-st) 2.2 0
+%%DocumentSuppliedResources: Font stamp_sign_cyr
+%%+: Font stamp_sign_greek
+%%+: Font stamp_id
+%%+: Font stamp_gmc
+%%+: Font stamp_period
+%%+: Font stamp_year
+%%+: Font stamp_K
+%%+: ProcSet (csm-marks)
+%%Version: 2.2 0
+%%EndComments
+%%BeginProlog
+
+%%IncludeResource: ProcSet csm-marks-params 2.3 0
+
+%%IncludeResource: ProcSet arrays 2.2 0
+%%IncludeResource: ProcSet boxes 2.2 0
+/boxes /ProcSet findresource begin
+
+%%IncludeResource: ProcSet fonts 2.2 0
+%%IncludeResource: ProcSet graphics 2.2 0
+/graphics /ProcSet findresource begin
+
+%%IncludeResource: ProcSet math 2.2 0
+%%IncludeResource: ProcSet roman 2.2 0
+%%IncludeResource: ProcSet si 2.2 0
+/si /ProcSet findresource begin
+
+%%IncludeResource: ProcSet graphics-alignments 2.2 0
+/graphics-alignments /ProcSet findresource begin
+
+%%IncludeResource: ProcSet image-st 2.2 0
+
+/stamp_sign_cyr /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_sign_cyr
+/stamp_sign_cyr (GOST2930-62forMarks) /CP1251Encoding  /fonts /ProcSet findresource /reencodefont get exec  pop
+%%EndResource:
+} ifelse
+
+/stamp_sign_greek /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_sign_greek
+/stamp_sign_greek (GOST2930-62forMarks) /CP1253Encoding  /fonts /ProcSet findresource /reencodefont get exec  pop
+%%EndResource:
+} ifelse
+
+/stamp_id /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_id
+/stamp_id  /stamp_sign_cyr findfont  definefont pop
+%%EndResource:
+} ifelse
+
+/stamp_gmc /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_gmc
+/stamp_gmc  /stamp_sign_cyr findfont  definefont pop
+%%EndResource:
+} ifelse
+
+/stamp_period /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_period
+/stamp_period  /stamp_sign_cyr findfont  definefont pop
+%%EndResource:
+} ifelse
+
+/stamp_year /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_year
+/stamp_year  /stamp_period findfont  definefont pop
+%%EndResource:
+} ifelse
+
+/stamp_K /Font resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-Font
+%%BeginResource: Font stamp_K
+/stamp_K  /stamp_id findfont  definefont pop
+%%EndResource:
+} ifelse
+
+%%IncludeResource: ProcSet csm-marks-cyr-signs 2.2 0
+%%IncludeResource: ProcSet csm-marks-greek-signs 2.2 0
+
+%(csm-marks) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (csm-marks)
+/csm-marks  100 dict begin
+
+/months % [ 1 2 3 ] --> (1) (2) (3)
+{
+  { 2 string  cvs } forall
+} bind def
+% [ 1 12 range ]  months ==
+
+/quarters % [ 1 2 3 4 ] --> (I) (II) (III) (IV)
+{
+  /roman /ProcSet findresource /int_to_roman get  forall
+} bind def
+% [ 1 4 range ]  quarters ==
+
+/year % --> ()
+{
+  ()
+} bind def
+
+/stamp_sign_path_helper % (sign) angle --> - (добавляем к текущему пути путь знака поверителя)
+{
+  1 dict begin
+  /savedCTM matrix currentmatrix def
+  rotate
+  gsave
+    currentpoint
+    newpath
+    moveto
+    dup  true charpath
+    flattenpath pathbbox
+  grestore
+  3 -1 roll add 2 div neg  3 1 roll add 2 div neg  exch  rmoveto
+  true charpath
+  savedCTM setmatrix
+  end
+} bind def
+
+/stamp_sign_upath_helper % (sign) angle --> upath
+{
+  /stamp_sign_path_helper
+  true path_as_upath
+} def
+
+gsave
+
+/stamp_signs_upaths [
+  2 dict begin
+  /sign_scale 1  800 1000 div  div  def
+    [ 0 180 90 270 ]
+    {
+      /angle exch def
+
+      (stamp_sign_cyr) findfont
+      sign_scale scalefont setfont
+        /csm-marks-cyr-signs /ProcSet findresource /stamp_signs_cyr get
+        {
+          angle stamp_sign_upath_helper
+        }
+      forall
+
+      (stamp_sign_greek) findfont
+      sign_scale scalefont setfont
+        /csm-marks-greek-signs /ProcSet findresource /stamp_signs_greek get
+        {
+          angle stamp_sign_upath_helper
+        }
+      forall
+    }
+  forall
+  end
+] def
+
+grestore
+
+/stamp_sign_upath % sign_N --> upath
+{
+  stamp_signs_upaths  exch 1 sub  get
+} def
+
+
+/verification_stamp_id_h_size  3.8 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_sing_h_size  4.0 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_year_h_size  6.0 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_period_h_size  3 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rst_size  verification_stamp_period_h_size  def
+/verification_stamp_h_size  18.0 mm  1 mm  div  def
+/verification_stamp_thickness  0.5 mm  1 mm  div  def
+
+% генерация рисунка поверительного клейма
+/csm_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
+{
+  7 dict begin
+  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+  /scale_k size 18 div def % рассчитаем коэффициент для последующего масштабирования
+
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  currentpoint translate
+  scale_k scale_k scale
+  9 9 translate
+
+  % окружность
+  verification_stamp_h_size 2 div  0  moveto
+  0 0  verification_stamp_h_size 2 div  0 360 arc  closepath
+  verification_stamp_h_size 2 div verification_stamp_thickness sub  0  moveto
+  0 0  verification_stamp_h_size 2 div verification_stamp_thickness sub  360 0 arcn  closepath
+
+  % шифр поверительного клейма организации
+  (stamp_id) findfont
+  verification_stamp_id_h_size scalefont setfont
+  0 -7.5 moveto
+    verification_stamp_id
+    string_center_bottom
+  true charpath
+
+  % год
+  (stamp_year) findfont
+  verification_stamp_year_h_size scalefont setfont
+  -5.5 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 2 sub
+        1
+      getinterval
+    string_center_middle
+  true charpath
+  5.5 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 1 sub
+        1
+      getinterval
+    string_center_middle
+  true charpath
+
+  % индивидуальный знак поверителя
+    verification_stamp_sign 0 ne
+    {
+      matrix currentmatrix
+        verification_stamp_sing_h_size dup scale
+        verification_stamp_sign stamp_sign_upath uappend
+      setmatrix
+    }
+  if
+
+    verification_stamp_period () eq
+    {
+      % знак СТ
+      0 5.5 moveto
+      currentpoint translate
+      verification_stamp_rst_size dup scale
+      /image-st /ProcSet findresource /ust get  uappend
+    }
+    {
+      % период
+      (stamp_period) findfont
+      verification_stamp_period_h_size scalefont setfont
+      -2.0 5.5 moveto
+        verification_stamp_period
+        string_center_middle
+      true charpath
+
+      % знак СТ
+      2.5 5.5 moveto
+      currentpoint translate
+      verification_stamp_rst_size dup scale
+      /image-st /ProcSet findresource /ust get  uappend
+    }
+  ifelse
+
+  % восстановливаем систему координат
+  setmatrix
+
+  end
+} bind def
+
+/csm_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
+{
+  /csm_verification_stamp_path
+  false path_as_upath
+} def
+
+% генерация рисунка поверительного клейма для государственных научных метрологических
+% институтов
+
+/gmc_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
+{
+  7 dict begin
+  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+  /scale_k size 18 div def % рассчитаем коэффициент для последующего масштабирования
+
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  currentpoint translate
+  scale_k scale_k scale
+  9 9 translate
+
+  % окружность
+  18 2 div  0  moveto
+  0 0  18 2 div  0 360 arc  closepath
+  18 2 div 0.5 sub  0  moveto
+  0 0  18 2 div 0.5 sub  360 0 arcn  closepath
+
+  % знак Гмц
+  (stamp_gmc) findfont
+  verification_stamp_id_h_size scalefont setfont
+  0 -7.5 moveto
+    (Гмц)
+    string_center_bottom
+  true charpath
+
+  % год
+  (stamp_year) findfont
+  verification_stamp_year_h_size scalefont setfont
+  -5.5 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 2 sub
+        1
+      getinterval
+      dup
+    string_center_middle
+  true charpath
+  string_BBox size_of_BBox pop
+  5.5 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 1 sub
+        1
+      getinterval
+      dup
+    string_center_middle
+  true charpath
+  string_BBox size_of_BBox pop  neg
+
+    add  2 div
+  % шифр поверительного клейма
+  matrix currentmatrix
+      exch
+      0
+    pop pop % translate
+    1 1 scale
+    (stamp_id) findfont
+    verification_stamp_id_h_size scalefont setfont
+    0 0 moveto
+      verification_stamp_id
+      string_center_middle
+    true charpath
+  setmatrix
+
+    verification_stamp_period () eq
+    {
+      % знак СТ
+      0 5.5 moveto
+      currentpoint translate
+      verification_stamp_rst_size dup scale
+      /image-st /ProcSet findresource /ust get  uappend
+    }
+    {
+      % период
+      (stamp_period) findfont
+      verification_stamp_period_h_size scalefont setfont
+      -2.0 5.5 moveto
+        verification_stamp_period
+        string_center_middle
+      true charpath
+
+      % знак СТ
+      2.5 5.5 moveto
+      currentpoint translate
+      verification_stamp_rst_size dup scale
+      /image-st /ProcSet findresource /ust get  uappend
+    }
+  ifelse
+
+  % восстановливаем систему координат
+  setmatrix
+
+  end
+} bind def
+
+/gmc_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
+{
+  /gmc_verification_stamp_path
+  false path_as_upath
+} def
+
+
+% генерация рисунка поверительного клейма для юридических лиц и индивидуальных предпринимателей
+
+/verification_stamp_rect_id_h_size  2.5 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rect_sing_h_size  2.25 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rect_year_h_size  5.0 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rect_period_h_size  2 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rect_rst_size  verification_stamp_rect_period_h_size  def
+/verification_stamp_rect_h_size  18.0 mm  1 mm  div  def
+/verification_stamp_rect_v_size  12.0 mm  1 mm  div  def
+/verification_stamp_rect_thickness  verification_stamp_thickness  def
+
+/ul_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
+{
+  7 dict begin
+  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+  /scale_k size verification_stamp_rect_h_size div def % рассчитаем коэффициент для последующего масштабирования
+
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  currentpoint translate
+  scale_k scale_k scale
+
+    verification_stamp_for_production
+    {
+        verification_stamp_rect_h_size 2 div
+        verification_stamp_rect_v_size 2 div
+      translate
+
+      % прямоугольник
+        verification_stamp_rect_h_size
+        verification_stamp_rect_v_size
+        verification_stamp_rect_thickness
+        0
+      centered_frame
+
+      % индивидуальный знак поверителя
+        verification_stamp_sign 0 ne
+        {
+          matrix currentmatrix
+            0 -3.5 translate
+            verification_stamp_rect_sing_h_size dup scale
+            verification_stamp_sign stamp_sign_upath uappend
+          setmatrix
+        }
+      if
+
+      % год
+      (stamp_year) findfont
+      verification_stamp_rect_year_h_size scalefont setfont
+      -6.0 0 moveto
+            verification_stamp_year 4 string cvs
+            dup length 2 sub
+            1
+          getinterval
+        string_center_middle
+      true charpath
+      6.0 0 moveto
+            verification_stamp_year 4 string cvs
+            dup length 1 sub
+            1
+          getinterval
+        string_center_middle
+      true charpath
+
+      % шифр поверительного клейма
+      matrix currentmatrix
+        1 1 scale
+        (stamp_id) findfont
+        verification_stamp_rect_id_h_size scalefont setfont
+        0 0 moveto
+          verification_stamp_id
+          string_center_middle
+        true charpath
+      setmatrix
+
+        verification_stamp_period () eq
+        {
+          % знак СТ
+          0 3.5 moveto
+          currentpoint translate
+          verification_stamp_rect_rst_size dup scale
+          /image-st /ProcSet findresource /ust get  uappend
+        }
+        {
+          % период
+          (stamp_period) findfont
+          verification_stamp_rect_period_h_size scalefont setfont
+          -2.0 3.5 moveto
+            verification_stamp_period
+            string_center_middle
+          true charpath
+
+          % знак СТ
+          2.5 3.5 moveto
+          currentpoint translate
+          verification_stamp_rect_rst_size dup scale
+          /image-st /ProcSet findresource /ust get  uappend
+        }
+      ifelse
+    }
+    {
+        verification_stamp_rect_h_size 2 div
+        verification_stamp_rect_h_size 2 div
+      translate
+
+      % прямоугольник
+        verification_stamp_rect_h_size
+        dup
+        verification_stamp_rect_thickness
+        0
+      centered_frame
+
+      % шифр поверительного клейма организации
+      (stamp_id) findfont
+      verification_stamp_id_h_size scalefont setfont
+      0 -7.5 moveto
+        verification_stamp_id
+        string_center_bottom
+      true charpath
+
+      % год
+      (stamp_year) findfont
+      verification_stamp_year_h_size scalefont setfont
+      -5.5 0 moveto
+            verification_stamp_year 4 string cvs
+            dup length 2 sub
+            1
+          getinterval
+        string_center_middle
+      true charpath
+      5.5 0 moveto
+            verification_stamp_year 4 string cvs
+            dup length 1 sub
+            1
+          getinterval
+        string_center_middle
+      true charpath
+
+      % индивидуальный знак поверителя
+        verification_stamp_sign 0 ne
+        {
+          matrix currentmatrix
+            verification_stamp_sing_h_size dup scale
+            verification_stamp_sign stamp_sign_upath uappend
+          setmatrix
+        }
+      if
+
+        verification_stamp_period () eq
+        {
+          % знак СТ
+          0 5.5 moveto
+          currentpoint translate
+          3 3 scale
+          /image-st /ProcSet findresource /ust get  uappend
+        }
+        {
+          % период
+          (stamp_period) findfont
+          verification_stamp_period_h_size scalefont setfont
+          -2.0 5.5 moveto
+            verification_stamp_period
+            string_center_middle
+          true charpath
+
+          % знак СТ
+          2.5 5.5 moveto
+          currentpoint translate
+          3 3 scale
+          /image-st /ProcSet findresource /ust get  uappend
+        }
+      ifelse
+    }
+  ifelse
+
+  % восстановливаем систему координат
+  setmatrix
+
+  end
+} bind def
+
+/ul_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
+{
+  /ul_verification_stamp_path
+  false path_as_upath
+} def
+
+
+% генерация рисунка поверительного клейма стального ударного (ромбовидного)
+
+/verification_stamp_rhombus_h_size  18.0 mm  1 mm  div  def
+/verification_stamp_rhombus_radius  verification_stamp_rhombus_h_size  4 div  def
+/verification_stamp_rhombus_thickness  verification_stamp_thickness  def
+/verification_stamp_rhombus_rst_size  5.0 mm  1 mm div  def
+/verification_stamp_rhombus_id_h_size  2.5 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rhombus_sing_h_size  4.0 mm  800 1000 div  div  1 mm div  def
+/verification_stamp_rhombus_year_h_size  verification_stamp_year_h_size  def
+
+/verification_stamp_rhombus_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
+{
+  7 dict begin
+  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+  /scale_k size verification_stamp_rhombus_h_size div def % рассчитаем коэффициент для последующего масштабирования
+
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  currentpoint translate
+  scale_k scale_k scale
+  45 rotate
+
+  verification_stamp_rhombus_h_size 2 div  dup  translate
+
+  % рамка
+  matrix currentmatrix
+    45 rotate
+      verification_stamp_rhombus_h_size
+      dup
+      verification_stamp_rhombus_thickness
+      verification_stamp_rhombus_radius
+    centered_frame
+  setmatrix
+
+  % индивидуальный знак поверителя
+    verification_stamp_sign 0 ne
+    {
+      matrix currentmatrix
+        0 6.0 translate
+        verification_stamp_rhombus_sing_h_size dup scale
+        verification_stamp_sign stamp_sign_upath uappend
+      setmatrix
+    }
+  if
+
+  % год
+  (stamp_year) findfont
+  verification_stamp_rhombus_year_h_size scalefont setfont
+  -6.0 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 2 sub
+        1
+      getinterval
+    string_center_middle
+  true charpath
+  6.0 0 moveto
+        verification_stamp_year 4 string cvs
+        dup length 1 sub
+        1
+      getinterval
+    string_center_middle
+  true charpath
+
+  % шифр поверительного клейма
+  matrix currentmatrix
+    1 1 scale
+    (stamp_id) findfont
+    verification_stamp_rhombus_id_h_size scalefont setfont
+    0 0 moveto
+      verification_stamp_id
+      string_center_middle
+    true charpath
+  setmatrix
+
+  % знак СТ
+  0 -6.0 moveto
+  currentpoint translate
+  verification_stamp_rhombus_rst_size dup scale
+  /image-st /ProcSet findresource /ust get  uappend
+
+  % восстановливаем систему координат
+  setmatrix
+
+  end
+} bind def
+
+/verification_stamp_rhombus_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
+{
+  /verification_stamp_rhombus_path
+  false path_as_upath
+} def
+
+
+% генерация рисунка поверительного клейма
+/verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
+{
+  3 index length  % verification_stamp_id length
+    dup  1 eq
+    { pop  gmc_verification_stamp_path }
+    {
+        dup  2 eq
+        { pop  csm_verification_stamp_path }
+        {
+            dup  3 eq
+            { pop  ul_verification_stamp_path }
+            {
+              pop
+              pop pop pop pop pop pop
+              (Error: stamp Id length must be less than or equal to 3.) =
+              stop
+            }
+          ifelse
+        }
+      ifelse
+    }
+  ifelse
+} def
+
+/verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
+{
+  /verification_stamp_path
+  false path_as_upath
+} def
+
+
+% знак калибровки
+gsave
+  (stamp_K) findfont
+  1 scalefont  setfont
+  (K) 0 stamp_sign_upath_helper
+  /uK exch cvlit def
+grestore
+
+/calibration_stamp_h_size  verification_stamp_h_size  def
+/calibration_stamp_thickness  verification_stamp_thickness  def
+/calibration_stamp_period_h_size  verification_stamp_period_h_size  def
+/calibration_stamp_sing_h_size  calibration_stamp_period_h_size  def
+/calibration_stamp_K_h_size  6 mm  1 mm  div  def
+
+% генерация рисунка калибровочного клейма
+/calibration_stamp_path % размер знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
+{
+  6 dict begin
+  /stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
+  /size exch def % размер клейма
+  /stamp_sign exch def % индивидуальный знак поверителя
+  /stamp_id exch def % шифр клейма
+  /stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /stamp_year exch def % год клейма
+  /scale_k size calibration_stamp_h_size div def % рассчитаем коэффициент для последующего масштабирования
+
+  % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
+  matrix currentmatrix
+  currentpoint translate
+  scale_k scale_k scale
+  9 9 translate
+
+  % квадрат
+    calibration_stamp_h_size
+    dup
+    calibration_stamp_thickness
+    0
+  centered_frame
+
+  % шифр клейма организации
+  (stamp_id) findfont
+  4 scalefont setfont
+  0 -5.5 moveto
+    stamp_id
+    string_center_middle
+  true charpath
+
+  % индивидуальный знак поверителя
+    stamp_sign 0 ne
+    {
+      matrix currentmatrix
+        2.5 5.5 moveto
+        currentpoint translate
+        calibration_stamp_sing_h_size  dup  scale
+        stamp_sign stamp_sign_upath uappend
+      setmatrix
+    }
+  if
+
+  % год
+  (stamp_year) findfont
+  6 scalefont setfont
+  % -4 0 moveto
+  -5.5 0 moveto
+        stamp_year 4 string cvs
+        dup length 2 sub
+        1
+      getinterval
+    % string_right_middle
+    string_center_middle
+  true charpath
+  % 4 0 moveto
+  5.5 0 moveto
+        stamp_year 4 string cvs
+        dup length 1 sub
+        1
+      getinterval
+    % string_left_middle
+    string_center_middle
+  true charpath
+
+  % период
+  (stamp_period) findfont
+  calibration_stamp_period_h_size scalefont setfont
+  -2.5 5.5 moveto
+    stamp_period
+    string_center_middle
+  true charpath
+
+  % знак калибровки
+  0 0 moveto
+  currentpoint translate
+  calibration_stamp_K_h_size dup scale
+  uK uappend
+
+  % восстановливаем систему координат
+  setmatrix
+
+  end
+} bind def
+
+/calibration_stamp_upath % размер знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
+{
+  /calibration_stamp_path
+  false path_as_upath
+} def
+
+/create_stamps % год [массив периодов] (шифр клейма) [массив знаков поверителей] размер при_выпуске_из_производства функция_генерации  --> выполнение функции генерации для всех заданных клейм
+{
+  9 dict begin
+  /stamp_functor exch def
+  /stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
+  /size exch def % размер клейма
+  /verification_stamp_sign exch def % индивидуальный знак поверителя
+  /verification_stamp_id exch def % шифр поверительного клейма
+  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
+  /verification_stamp_year exch def % год поверительного клейма
+
+      verification_stamp_period type /arraytype eq
+      { verification_stamp_period }
+      { [ verification_stamp_period ] }
+    ifelse
+    {
+      /verification_stamp_current_period exch def
+
+          verification_stamp_sign type /arraytype eq
+          { verification_stamp_sign }
+          { [ verification_stamp_sign ] }
+        ifelse
+        {
+          /verification_stamp_current_sign exch def
+            verification_stamp_year
+            verification_stamp_current_period
+            verification_stamp_id
+            verification_stamp_current_sign
+            size
+            stamp_for_production
+          stamp_functor load exec
+        }
+      forall
+    }
+  forall
+
+  end
+} def
+
+currentdict end  dup length dict copy  /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+end % /graphics-alignments /ProcSet findresource begin
+end % /si /ProcSet findresource begin
+end % /graphics /ProcSet findresource begin
+end % /boxes /ProcSet findresource begin
+
+%%EndProlog

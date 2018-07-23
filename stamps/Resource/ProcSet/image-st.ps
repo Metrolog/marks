@@ -1,0 +1,92 @@
+%!PS-Adobe-3.0
+%%Title: RosStandard sign without 'r'
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (boxes) 2.2 0
+%%+: ProcSet (graphics) 2.2 0
+%%+: ProcSet (math) 2.2 0
+%%DocumentSuppliedResources: ProcSet (image-st)
+%%Version: 2.2 0
+%%EndComments
+%%BeginProlog
+
+%%IncludeResource: ProcSet graphics 2.2 0
+%%IncludeResource: ProcSet math 2.2 0
+
+%(image-st) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (image-st)
+/image-st <<
+
+% знак –осстандарта
+/ST % H_size --> -
+{
+  10 dict begin
+  /H exch def % параметр H (высота) знака
+  /x1  15   /math /ProcSet findresource /tan get exec   H 2 div  mul  neg  def
+  /R1  H  H 2 div  15 cos  div  sub  def
+  /x2  0.17 H mul  def
+  /y2  R1 dup mul  x2 x1 sub  dup mul  sub  sqrt  def
+  /R2  y2  0.25 H mul  add  def
+  /x4  0.5 H mul  def
+  /y4  3 sqrt  2 div  H mul  H 2 div  sub  def
+  /x5  x4  def
+  /y5  R2 dup mul  x5 x2 sub  dup mul  sub  sqrt  y2 sub  def
+
+  % сохран€ем на стеке текущую матрицу преобразовани€ системы координат дл€ последующего восстановлени€
+  matrix currentmatrix
+  % переносим начало координат в центр символа —т
+  currentpoint translate
+
+  % —
+  x4 y4 moveto
+    0  H 2 div neg  H
+    x4 y4  /graphics /ProcSet findresource /arc_angle_from get exec
+    105
+  arc
+  x1 0 R1 105 255 arc
+    0  H 2 div  H
+    255
+    x4  y4 neg  /graphics /ProcSet findresource /arc_angle_to get exec
+  arc
+  x5  y5 neg  lineto
+    x2 y2 R2
+    x5  y5 neg  /graphics /ProcSet findresource /arc_angle_from get exec
+    270
+  arcn
+  x2 0  0.25 H mul  270 90 arcn
+    x2  y2 neg  R2
+    90
+    x5 y5  /graphics /ProcSet findresource /arc_angle_to get exec
+  arcn
+  closepath
+
+  % “
+    0.5  0.18 2 div  add  H mul
+    0.25 H mul  2 div  neg
+  moveto
+  0  0.25 0.1 sub  H mul  rlineto
+  0.35 0.18 sub  2 div  H mul  0  rlineto
+  0  0.1 H mul  rlineto
+  0.35 H mul neg  0  rlineto
+  0  0.1 H mul neg  rlineto
+  0.35 0.18 sub  2 div  H mul  0  rlineto
+  0  0.25 0.1 sub  H mul  neg  rlineto
+  closepath
+
+  % восстановливаем систему координат
+  setmatrix
+
+  end
+} bind
+
+% /ust  1 /ST true path_as_upath  cvlit
+dup  1 exch  true  /graphics /ProcSet findresource /path_as_upath get exec  cvlit  /ust exch
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog

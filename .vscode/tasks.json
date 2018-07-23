@@ -1,0 +1,102 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+
+    "tasks": [
+        {
+            "label": "Удалить временные файлы",
+            "type": "shell",
+            "command": "make clean",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Выполнить сборку",
+            "type": "shell",
+            "windows": {
+                "command": "cmd /c 'make SHOW_PDF=yes 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+            },
+            "linux": {
+                "command": "/bin/sh -c 'make SHOW_PDF=yes 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher":  [
+                {
+                    "owner": "custom",
+                    "fileLocation": "absolute",
+                    "pattern": [
+                        {
+                            "regexp": "^(.+?):(\\d+):\\s+(.*?) Stop\\.$",
+                            "file": 1,
+                            "line": 2,
+                            "message": 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "Выполнить тесты",
+            "type": "shell",
+            "windows": {
+                "command": "cmd /c 'make check 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+            },
+            "linux": {
+                "command": "/bin/sh -c 'make check 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher":  [
+                {
+                    "owner": "custom",
+                    "fileLocation": "absolute",
+                    "pattern": [
+                        {
+                            "regexp": "^(.+?):(\\d+):\\s+(.*?) Stop\\.$",
+                            "file": 1,
+                            "line": 2,
+                            "message": 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "Отправить изменения в ITG.MakeUtils",
+            "type": "shell",
+            "command": "make maintainer-push-makeutils",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Получить изменения из ITG.MakeUtils",
+            "type": "shell",
+            "command": "make maintainer-pull-makeutils",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

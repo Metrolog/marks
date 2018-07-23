@@ -1,0 +1,21 @@
+image:
+  - WMF 5
+#  - Ubuntu
+
+version: 2.3.0.{build}
+
+install:
+  - sh: |
+      sudo apt-get update
+      sudo apt-get install -y make ghostscript
+  - ps: |
+      if ( -not $isLinux ) {
+        .\install\install.ps1 -ErrorAction Stop -InformationAction Continue -Verbose
+      }
+  - make --version
+
+build_script:
+  - make
+
+test_script:
+  - make check --keep-going

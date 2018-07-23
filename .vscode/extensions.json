@@ -1,0 +1,17 @@
+{
+	// See http://go.microsoft.com/fwlink/?LinkId=827846
+	// for the documentation about the extensions.json format
+	"recommendations": [
+		"eamodio.gitlens",
+		"greatminds.gitflow4code",
+		"sidneys1.gitconfig",
+		"EditorConfig.EditorConfig",
+		"DavidAnson.vscode-markdownlint",
+		"sleistner.vscode-fileutils",
+		"bierner.markdown-preview-github-styles",
+		"redhat.vscode-yaml",
+		"Gruntfuggly.todo-tree",
+		"ms-vscode.PowerShell",
+		"mxschmitt.postscript"
+	]
+}

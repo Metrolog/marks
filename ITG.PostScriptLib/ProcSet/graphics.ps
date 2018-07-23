@@ -1,0 +1,189 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: ProcSet (graphics)
+%%Version: 2.2 0
+%%EndComments
+%%BeginProlog
+
+%(graphics) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (graphics)
+/graphics <<
+
+/stringheight
+{
+  /boxes /ProcSet findresource /string_BBox get exec
+  /boxes /ProcSet findresource /size_of_BBox get exec
+  exch pop
+} bind
+
+/string_center_bottom
+{
+  dup  /boxes /ProcSet findresource /string_BBox get exec
+    exch  4 -1 roll  sub  2 div  neg
+    3 1 roll  pop  neg
+  rmoveto
+} bind
+
+/string_center_middle
+{
+  dup  /boxes /ProcSet findresource /string_BBox get exec
+    exch  4 -1 roll  sub  2 div  neg
+    3 1 roll  add  2 div  neg
+  rmoveto
+} bind
+
+/string_left_middle
+{
+  dup  /boxes /ProcSet findresource /string_BBox get exec
+    exch  4 -1 roll  exch pop  neg
+    3 1 roll  add  2 div  neg
+  rmoveto
+} bind
+
+/string_right_middle
+{
+  dup  /boxes /ProcSet findresource /string_BBox get exec
+    exch  4 -1 roll  pop  neg
+    3 1 roll  add  2 div  neg
+  rmoveto
+} bind
+
+/arc_angle_from
+{
+  5 dict begin
+  /y1 exch def
+  /x1 exch def
+  /r exch def
+  /yc exch def
+  /xc exch def
+    xc yc r
+    y1 yc sub  x1 xc sub  atan
+  end
+} bind
+
+/arc_angle_to
+{
+  6 dict begin
+  /y2 exch def
+  /x2 exch def
+  /a1 exch def
+  /r exch def
+  /yc exch def
+  /xc exch def
+    xc yc r a1
+    y2 yc sub  x2 xc sub  atan
+  end
+} bind
+
+/path_as_upath % path_generator bool --> userpath
+{
+  1 dict begin
+  /cache_upath exch def
+  gsave
+  newpath
+  0 0 moveto
+    dup type  /nametype  eq
+    { load }
+  if
+  exec
+  cache_upath upath
+  grestore
+  end
+} bind
+
+/centered_frame
+{
+  9 dict begin
+  /radius exch def
+  /thickness exch def
+  /size_v exch def
+  /size_h exch def
+
+  /size_h_2_ext  size_h 2 div  def
+  /size_v_2_ext  size_v 2 div  def
+  /radius_ext  radius thickness add  def
+  /size_h_2  size_h_2_ext thickness sub  def
+  /size_v_2  size_v_2_ext thickness sub  def
+
+    radius 0 eq
+    {
+      size_h_2_ext neg  size_v_2_ext neg  moveto
+      size_h  0  rlineto
+      0  size_v  rlineto
+      size_h neg  0  rlineto
+      closepath
+      thickness dup  rmoveto
+      0  size_v thickness 2 mul sub  rlineto
+      size_h thickness 2 mul sub  0  rlineto
+      0  size_v thickness 2 mul sub neg  rlineto
+      closepath
+    }
+    {
+      size_h_2_ext neg  0  moveto
+        size_h_2_ext neg
+        size_v_2_ext neg
+        0
+        size_v_2_ext neg
+        radius_ext
+      arct
+        size_h_2_ext
+        size_v_2_ext neg
+        size_h_2_ext
+        0
+        radius_ext
+      arct
+        size_h_2_ext
+        size_v_2_ext
+        0
+        size_v_2_ext
+        radius_ext
+      arct
+        size_h_2_ext neg
+        size_v_2_ext
+        size_h_2_ext neg
+        0
+        radius_ext
+      arct
+      closepath
+
+      size_h_2 neg  0  moveto
+        size_h_2 neg
+        size_v_2
+        0
+        size_v_2
+        radius
+      arct
+        size_h_2
+        size_v_2
+        size_h_2
+        0
+        radius
+      arct
+        size_h_2
+        size_v_2 neg
+        0
+        size_v_2 neg
+        radius
+      arct
+        size_h_2 neg
+        size_v_2 neg
+        size_h_2 neg
+        0
+        radius
+      arct
+      closepath
+    }
+  ifelse
+
+  end
+} bind
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog

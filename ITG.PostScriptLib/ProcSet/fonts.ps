@@ -1,0 +1,34 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: ProcSet (fonts)
+%%Version: 2.2 0
+%%EndComments
+%%BeginProlog
+
+%(fonts) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (fonts)
+/fonts <<
+
+/reencodefont % newfontname font Encoding reen`codefont --> font
+{
+  exch dup type dup /nametype eq exch /stringtype eq or { findfont } if
+  dup length dict begin
+    {
+      1 index /FID ne 2 index /UniqueID ne and { def } { pop pop } ifelse
+    } forall
+    /Encoding exch dup type /nametype eq { /Encoding findresource } if def
+    dup /FontName exch def
+    currentdict
+  end
+  definefont
+} bind
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog
