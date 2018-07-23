@@ -89,7 +89,7 @@ endef
 
 GSCMDLINE = $(GS) \
   $(foreach incdir,$(GSINCDIR),-I'$(incdir)') \
-  $(if $(GSFONTDIR),-sFONTPATH='$(subst $(__gmsl_space),$(PATHSEP),$(strip $(GSFONTDIR)))')
+  $(if $(GSFONTDIR),-sFONTPATH='$(call merge,$(PATHSEP),$(GSFONTDIR))')
 
 #  $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
 

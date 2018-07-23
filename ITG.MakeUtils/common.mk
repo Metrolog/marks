@@ -189,6 +189,9 @@ $(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 # $(call rwildcard,dir,filesfilter)
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
+# $(call reversedirpath,dirPath,pathToRootFromChild)
+reversedirpath = $(if $(strip $1),$(foreach d,$(call split,/,$1),../),./)
+
 # $(call setvariable, var, value)
 define setvariable
 $1:=$2
@@ -240,10 +243,6 @@ TargetWriter = $$(foreach path,$$($(1)),$$$$$$$$(ROOT_PROJECT_DIR)$(SUBPROJECT_D
 pushArtifactTargets = $(call exportGlobalVariablesAux,$(1),TargetWriter)
 pushArtifactTarget = $(pushArtifactTargets)
 
-# $(call calcRootProjectDir, Project)
-calcRootProjectAux = $(subst $(__gmsl_space),/,$(patsubst %,..,$(subst /,$(__gmsl_space),$(call getSubProjectDir,$1))))
-calcRootProjectDir = $(if $(call calcRootProjectAux,$1),$(call calcRootProjectAux,$1)/,./)
-
 # $(call getSubProjectDir, Project)
 getSubProjectDir = $(call assert,$1,Expected project slug)$($(1)_DIR)
 
@@ -260,14 +259,14 @@ MAKE_SUBPROJECT = \
     -C $(call getSubProjectDir,$1) \
     SUBPROJECT=$1 \
     SUBPROJECT_DIR=$(call getSubProjectDir,$1) \
-    ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
-    SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
+    ROOT_PROJECT_DIR=$(call reversedirpath,$1) \
+    SUBPROJECT_EXPORTS_FILE=$(call reversedirpath,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
 
 # $(call MAKE_SUBPROJECT_TARGET, Target)
 MAKE_SUBPROJECT_TARGET = \
   $(MAKE) \
     -C $(ROOT_PROJECT_DIR) \
-    ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
+    ROOT_PROJECT_DIR=$(call reversedirpath,$1) \
     $1
 
 # $(call declareProjectTargets, Project)
