@@ -51,6 +51,13 @@ ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_
 #endregion calc ITG.MakeUtils relative path
 
 include $(ITG_MAKEUTILS_DIR)GMSL/gmsl
+include $(ITG_MAKEUTILS_DIR)help-system.mk
+
+ifdef SUBPROJECT
+  .DEFAULT_GOAL := all
+else
+  .DEFAULT_GOAL := help
+endif
 
 #region check make tool version and features
 
@@ -329,8 +336,8 @@ endif
 
 #region standard targets support
 
-.DEFAULT_GOAL := all
 .PHONY: all
+all:: $(call print-help,all,Build all targets.)
 
 # not standard target. Use 'check'
 .PHONY: test
