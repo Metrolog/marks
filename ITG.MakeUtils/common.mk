@@ -53,12 +53,6 @@ ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_
 include $(ITG_MAKEUTILS_DIR)GMSL/gmsl
 include $(ITG_MAKEUTILS_DIR)help-system.mk
 
-ifdef SUBPROJECT
-  .DEFAULT_GOAL := all
-else
-  .DEFAULT_GOAL := help
-endif
-
 #region check make tool version and features
 
 ifeq ($(call set_is_member,oneshell,$(call set_create,$(.FEATURES))),$(false))
@@ -336,6 +330,7 @@ endif
 
 #region standard targets support
 
+.DEFAULT_GOAL := all
 .PHONY: all
 all:: $(call print-help,all,Build all targets.)
 
@@ -344,22 +339,22 @@ all:: $(call print-help,all,Build all targets.)
 test: MAKEFLAGS += --keep-going
 
 .PHONY: check
-check: test
+check: test $(call print-help,check,Perform self-tests.)
 
 .PHONY: mostlyclean
-mostlyclean::
+mostlyclean:: $(call print-help,mostlyclean,Like 'clean'$(COMMA) but may refrain from deleting a few files that people normally don’t want to recompile.)
 	$(RMDIR) $(AUXDIR)
 	$(RMDIR) $(OUTPUTDIR)
 
 .PHONY: clean
-clean:: mostlyclean
+clean:: mostlyclean  $(call print-help,clean,Delete all files in the current directory that are normally created by building the program. Also delete files in other directories if they are created by this makefile. Don’t delete the files that record the configuration.)
 
 .PHONY: distclean
-distclean:: clean
+distclean:: clean $(call print-help,distclean,Delete all files in the current directory (or created by this makefile) that are created by configuring or building the program.)
 	$(RMDIR) $(CONFIGDIR)
 
 .PHONY: maintainer-clean
-maintainer-clean:: distclean
+maintainer-clean:: distclean $(call print-help,maintainer-clean,This target is intended to be used by a maintainer of the package. Not by ordinary users. You may need special tools to reconstruct some of the files that ‘make maintainer-clean’ deletes. Since these files are normally included in the distribution.)
 
 #endregion standard targets support
 
