@@ -7,7 +7,7 @@ ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
 include $(ITG_MAKEUTILS_DIR)common.mk
 include $(ITG_MAKEUTILS_DIR)appveyor.mk
 
-all: CP1251 CP1253
+all:: CP1251 CP1253
 
 AGLFNFILE ?= agl-aglfn/aglfn.txt
 

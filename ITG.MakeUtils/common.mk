@@ -51,6 +51,7 @@ ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_
 #endregion calc ITG.MakeUtils relative path
 
 include $(ITG_MAKEUTILS_DIR)GMSL/gmsl
+include $(ITG_MAKEUTILS_DIR)help-system.mk
 
 #region check make tool version and features
 
@@ -80,11 +81,15 @@ endif
 
 #region deprecated functions wrappers
 
+ifeq ($(need-help),$(false))
+
 # $(call _deprecated_function, function, replacement)
 _deprecated_function = $(call writewarning,Function $1 is deprecated.$(if $2, Please$(COMMA) see about $2.))
 
 # $(call _obsolete_function, function, replacement)
 _obsolete_function = $(call writeerror,Function $1 is not avaliable now. It is obsolete.$(if $2, Please$(COMMA) see about $2.))
+
+endif
 
 #endregion deprecated functions wrappers
 
@@ -301,6 +306,8 @@ $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 all:: $1
 test: test-$1
+help::
+	@$(call MAKE_SUBPROJECT,$1) -s --no-print-directory help
 ifeq ($(filter clean distclean maintainer-clean,$(MAKECMDGOALS)),)
 mostlyclean::
 	$(call MAKE_SUBPROJECT,$1) mostlyclean
@@ -331,28 +338,29 @@ endif
 
 .DEFAULT_GOAL := all
 .PHONY: all
+all:: $(call _itg_makeutils_print-help,all,Build all targets.)
 
 # not standard target. Use 'check'
 .PHONY: test
 test: MAKEFLAGS += --keep-going
 
 .PHONY: check
-check: test
+check: test $(call _itg_makeutils_print-help,check,Perform self-tests.)
 
 .PHONY: mostlyclean
-mostlyclean::
+mostlyclean:: $(call _itg_makeutils_print-help,mostlyclean,Like 'clean'$(COMMA) but may refrain from deleting a few files that people normally don’t want to recompile.)
 	$(RMDIR) $(AUXDIR)
 	$(RMDIR) $(OUTPUTDIR)
 
 .PHONY: clean
-clean:: mostlyclean
+clean:: mostlyclean  $(call _itg_makeutils_print-help,clean,Delete all files in the current directory that are normally created by building the program. Also delete files in other directories if they are created by this makefile. Don’t delete the files that record the configuration.)
 
 .PHONY: distclean
-distclean:: clean
+distclean:: clean $(call _itg_makeutils_print-help,distclean,Delete all files in the current directory (or created by this makefile) that are created by configuring or building the program.)
 	$(RMDIR) $(CONFIGDIR)
 
 .PHONY: maintainer-clean
-maintainer-clean:: distclean
+maintainer-clean:: distclean $(call _itg_makeutils_print-help,maintainer-clean,This target is intended to be used by a maintainer of the package. Not by ordinary users. You may need special tools to reconstruct some of the files that ‘make maintainer-clean’ deletes. Since these files are normally included in the distribution.)
 
 #endregion standard targets support
 

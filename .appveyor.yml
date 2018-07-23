@@ -15,7 +15,7 @@ install:
   - make --version
 
 build_script:
-  - make
+  - make all
 
 test_script:
   - make check --keep-going
