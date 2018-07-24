@@ -22,8 +22,8 @@ STAMPLIBDIR := $(PSRESOURCESOURCEDIR)
 ENCODINGSDIR := $(STAMPLIBDIR)$(ENCODINGRESOURCEDIR)
 
 ifeq ($(filter %clean,$(MAKECMDGOALS)),)
-$(eval $(call copyfileto, $(ENCODINGSDIR), $(CP1251TARGET)))
-$(eval $(call copyfileto, $(ENCODINGSDIR), $(CP1253TARGET)))
+$(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1251TARGET)))
+$(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1253TARGET)))
 endif
 
 maintainer-clean::
