@@ -55,9 +55,9 @@ include $(ITG_MAKEUTILS_DIR)help-system.mk
 
 #region check make tool version and features
 
-ifeq ($(call set_is_member,oneshell,$(call set_create,$(.FEATURES))),$(false))
-$(call writeerror,Requires make version that supports .ONESHELL feature.)
-endif
+#ifeq ($(call set_is_member,oneshell,$(call set_create,$(.FEATURES))),$(false))
+#$(call writeerror,Requires make version that supports .ONESHELL feature.)
+#endif
 
 ifneq (3.82,$(firstword $(sort $(MAKE_VERSION) 3.82)))
 $(call writeerror,Requires make version 3.82 or higher.)
@@ -143,6 +143,14 @@ TOUCH              := touch
 COPY               := cp
 CURL               := curl
 
+DIRMARKERFILE      := ~.dirstate
+
+%/$(DIRMARKERFILE):
+	$(MAKETARGETDIR)
+	@$(TOUCH) $@
+
+TARGETDIR = $$(@D)/$(DIRMARKERFILE)
+
 # $(call dirname,dir)
 dirname = $(patsubst %/,%,$1)
 
@@ -154,9 +162,6 @@ AUXDIR             ?= obj/
 OUTPUTDIR          ?= release/
 SOURCESDIR         ?= sources/
 CONFIGDIR          ?= config/
-
-$(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
-	$(MAKETARGETASDIR)
 
 #endregion common dirs
 
@@ -177,8 +182,7 @@ endef
 define copyfile
 $(call assert,$1,Expected file name (to))
 $(call assert,$2,Expected file name (from))
-$1: $2
-	$$(MAKETARGETDIR)
+$1: $2 | $$(TARGETDIR)
 	$(COPY) $$< $$@
 endef
 
@@ -191,14 +195,12 @@ copyfilefrom = $(call copyfile,$1,$2$(notdir $1))
 #region subprojects support
 
 SUBPROJECTS_EXPORTS_DIR := $(CONFIGDIR)subprojectExports/
-$(SUBPROJECTS_EXPORTS_DIR): | $(CONFIGDIR)
-	$(MAKETARGETASDIR)
 
 SUBPROJECT_EXPORTS_FILE ?= $(SUBPROJECTS_EXPORTS_DIR)undefined
 
 .PHONY: .GLOBAL_VARIABLES
 .GLOBAL_VARIABLES: $(SUBPROJECT_EXPORTS_FILE)
-$(SUBPROJECT_EXPORTS_FILE):: $(MAKEFILE_LIST)
+$(SUBPROJECT_EXPORTS_FILE):: $(MAKEFILE_LIST) | $(TARGETDIR)
 	$(file > $@,# subproject exported variables)
 
 # $(call exportGlobalVariablesAux, Variables, Writer)
@@ -256,7 +258,7 @@ define useSubProject
 $(call assert,$1,Expected project slug)
 $(call assert,$2,Expected project directory path)
 $(eval $(call setSubProjectDir,$1,$2))
-$(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $(SUBPROJECTS_EXPORTS_DIR)
+$(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $$(TARGETDIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
 .PHONY: $1 $3
 ifeq ($(filter %clean,$(MAKECMDGOALS)),)

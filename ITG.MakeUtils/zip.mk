@@ -13,8 +13,7 @@ define copyFilesToZIP
 $(call assert,$1,Expected zip file name)
 $(call assert,$2,Expected source files names)
 $(call assert,$3,Expected source files root directory path)
-$1:$2
-	$$(MAKETARGETDIR)
+$1:$2 | $$(TARGETDIR)
 	cd $3; $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $3/%, %, $$^)
 	$(TOUCH) $$@
 endef

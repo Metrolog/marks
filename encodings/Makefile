@@ -16,15 +16,12 @@ AGLFNFILE ?= agl-aglfn/aglfn.txt
 
 MAPPINGSDIR = maps/
 
-$(MAPPINGSDIR)MAPPINGS/%.TXT:
-	$(call writeinformation,Downloading file "$(@F)"...)
-	$(MAKETARGETDIR)
-	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o '$@'
+$(MAPPINGSDIR)MAPPINGS/%.TXT: | $(TARGETDIR)
+	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o "$@"
 
-$(OUTPUTDIR)%.ps:
+$(OUTPUTDIR)%.ps: | $(TARGETDIR)
 	$(call writeinformation,Creating PostScript encoding file "$(@F)" from "$<"...)
-	$(MAKETARGETDIR)
-	$(RUNPOWERSCRIPT) ./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath '$<' -FilePath '$@' $(VERBOSEFLAGS)
+	$(RUNPOWERSHELLSCRIPT) ./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath '$<' -FilePath '$@' $(VERBOSEFLAGS)
 
 # $(call mapPSEncodingFileToSource, uri, encoding)
 define mapPSEncodingFileToSource

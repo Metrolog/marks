@@ -64,8 +64,7 @@ getEncodedFile = $1.enc
 
 # $(call encodeFile, to, from, secret)
 define encodeFile
-$(if $1,$1,$(call getEncodedFile,$2)): $2 | $$(SECURE_FILE_TOOL)
-	$$(MAKETARGETDIR)
+$(if $1,$1,$(call getEncodedFile,$2)): $2 | $$(SECURE_FILE_TOOL) $$(TARGETDIR)
 	$$(SECURE_FILE_TOOL) \
     -secret $$(if $3,$3,$$(SECURE_FILES_SECRET)) \
     -encrypt $$(call winPath,$$<) \
@@ -75,8 +74,7 @@ endef
 
 # $(call decodeFile, to, from, secret)
 define decodeFile
-$1: $(if $2,$2,$(call getEncodedFile,$1)) | $$(SECURE_FILE_TOOL)
-	$$(MAKETARGETDIR)
+$1: $(if $2,$2,$(call getEncodedFile,$1)) | $$(SECURE_FILE_TOOL) $$(TARGETDIR)
 	$$(SECURE_FILE_TOOL) \
     -secret $$(if $3,$3,$$(SECURE_FILES_SECRET)) \
     -decrypt $$(call winPath,$$<) \

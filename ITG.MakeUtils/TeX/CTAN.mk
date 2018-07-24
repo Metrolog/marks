@@ -179,9 +179,8 @@ $(TDSTARGET) $(CTANTARGET): | .CTAN
 
 else
 
-$(CTANMAKEFILE): $(MAKEFILE_LIST)
+$(CTANMAKEFILE): $(MAKEFILE_LIST) | $(TARGETDIR)
 	$(call writeinformation,Building intermediate makefile for CTAN "$@"...)
-	$(MAKETARGETDIR)
 	$(file > $@,# intermediate makefile for CTAN archive)
 	$(file >> $@,SUBMAKE_TEX_CTAN := $(dir $(lastword $(MAKEFILE_LIST))))
 	$(file >> $@,include Makefile)

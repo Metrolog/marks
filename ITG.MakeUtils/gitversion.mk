@@ -11,9 +11,8 @@ GITVERSION ?= gitversion
 
 export GITVERSIONMAKEFILE ?= $(abspath $(AUXDIR)version.mk)
 
-$(GITVERSIONMAKEFILE): $(REPOVERSION)
+$(GITVERSIONMAKEFILE): $(REPOVERSION) | $(TARGETDIR)
 	$(call writeinformation,Generating version data file "$@" with GitVersion...)
-	$(MAKETARGETDIR)
 	$(GITVERSION) /exec $(MAKE) /execargs "--makefile=$(MAKE_GITVERSION_DIR)gitversion-buildcache.mk $@"
 	$(call writeinformation,File "$@" is ready.)
 

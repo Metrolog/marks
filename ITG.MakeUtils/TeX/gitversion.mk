@@ -7,10 +7,9 @@ MAKE_TEX_GITVERSION_DIR = $(ITG_MAKEUTILS_DIR)TeX/
 
 include $(ITG_MAKEUTILS_DIR)gitversion.mk
 
-%/version.tex %/version.dtx: $(REPOVERSION)
+%/version.tex %/version.dtx: $(REPOVERSION) | $(TARGETDIR)
 	$(call writeinformation,Generating latex version file "$@"...)
-	$(MAKETARGETDIR)
-	@git log -1 --date=format:%Y/%m/%d --format="format:\
+	@$(GIT) log -1 --date=format:%Y/%m/%d --format="format:\
 %%\iffalse%n\
 %%<*version>%n\
 %%\fi%n\
@@ -25,7 +24,7 @@ include $(ITG_MAKEUTILS_DIR)gitversion.mk
 %%</version>%n\
 %%\fi%n\
 " > $@
-	touch $@
+	$(TOUCH) $@
 	$(call writeinformation,File "$@" is ready.)
 
 endif

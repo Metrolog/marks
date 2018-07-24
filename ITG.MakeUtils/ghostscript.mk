@@ -50,10 +50,6 @@ FONTRESOURCEDIR := Font/
 FILERESOURCEDIR := File/
 RESOURCEDIRSUBDIRS = $(ENCODINGRESOURCEDIR) $(PROCSETRESOURCEDIR)
 
-$(PSRESOURCEOUTPUTDIR) $(PSRESOURCEOUTPUTDIR)$(ENCODINGRESOURCEDIR) $(PSRESOURCEOUTPUTDIR)$(PROCSETRESOURCEDIR):
-	$(MAKETARGETASDIR)
-
-
 # $(call getPostScriptResourceSourceFiles[, resSourceDir])
 getPostScriptResourceSourceFiles = \
   $(foreach d,$(if $1,$1,$(PSRESOURCESOURCEDIR)),$(wildcard $d*.ps) $(foreach s,$(RESOURCEDIRSUBDIRS), $(wildcard $d$s*.ps)))
@@ -65,10 +61,8 @@ getPostScriptResourceOutputFiles = \
 # $(call preparePostScriptResource[, fromDir[, toDir[, files]]] )
 define preparePostScriptResource
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps
-	$$(MAKETARGETDIR)
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps | $$(TARGETDIR)
 	$$(COPY) $$< $$@
-	$$(TOUCH) $$@
 
 POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
 
@@ -77,10 +71,8 @@ endef
 # $(call copyPostScriptResource[, fromDir[, toDir[, files]]] )
 define copyPostScriptResource
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%
-	$$(MAKETARGETDIR)
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))% | $$(TARGETDIR)
 	$$(COPY) $$< $$@
-	$$(TOUCH) $$@
 
 POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
 
@@ -99,9 +91,8 @@ GSPSTOPDFFLAGS =
 GSPSTOPDFCMDLINE = $(GSCMDLINE) $(GSPSTOPDFFLAGS) \
   -sDEVICE=pdfwrite
 
-$(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES)
+$(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
 	$(call writeinformation,Build file "$@" from "$<"...)
-	$(MAKETARGETDIR)
 	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
 	$(call writeinformation,File "$@" is ready.)
 	$(OPENTARGETPDF)
@@ -112,9 +103,8 @@ GSPSTOEPSFLAGS =
 GSPSTOEPSCMDLINE = $(GSCMDLINE) $(GSPSTOEPSFLAGS) \
   -sDEVICE=eps2write
 
-$(OUTPUTDIR)%.eps: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES)
+$(OUTPUTDIR)%.eps: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
 	$(call writeinformation,Build file "$@" from "$<"...)
-	$(MAKETARGETDIR)
 	$(GSPSTOEPSCMDLINE) -sOutputFile='$@' '$<'
 	$(call writeinformation,File "$@" is ready.)
 
