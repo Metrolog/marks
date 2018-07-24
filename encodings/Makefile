@@ -6,6 +6,7 @@ ROOT_PROJECT_DIR ?= ../
 ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
 include $(ITG_MAKEUTILS_DIR)common.mk
 include $(ITG_MAKEUTILS_DIR)appveyor.mk
+include $(ITG_MAKEUTILS_DIR)powershell.mk
 
 all:: CP1251 CP1253
 
@@ -19,14 +20,11 @@ $(MAPPINGSDIR)MAPPINGS/%.TXT:
 	$(call writeinformation,Downloading file "$(@F)"...)
 	$(MAKETARGETDIR)
 	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o '$@'
-	$(TOUCH) $@
-	$(call writeinformation,File "$(@F)" is downloaded.)
 
 $(OUTPUTDIR)%.ps:
 	$(call writeinformation,Creating PostScript encoding file "$(@F)" from "$<"...)
 	$(MAKETARGETDIR)
-	./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath '$<' -FilePath '$@' $(VERBOSEFLAGS)
-	$(call writeinformation,File "$(@F)" is ready.)
+	$(RUNPOWERSCRIPT) ./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath '$<' -FilePath '$@' $(VERBOSEFLAGS)
 
 # $(call mapPSEncodingFileToSource, uri, encoding)
 define mapPSEncodingFileToSource

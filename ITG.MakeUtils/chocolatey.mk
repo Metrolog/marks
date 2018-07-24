@@ -68,7 +68,7 @@ $$($(1)TARGETS): \
     $6
 	$$(call writeinformation,Generating chocolatey package file "$$@"...)
 	$$(MAKETARGETDIR)
-	cd $$(@D) && $$(CHOCO) \
+	cd $$(@D); $$(CHOCO) \
     pack $$(call reversedirpath,$$(@D))$$< \
     --force \
     --version $$($(1)VERSION) \

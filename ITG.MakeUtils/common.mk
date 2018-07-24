@@ -121,57 +121,27 @@ OSabsPath = $(call _deprecated_function,OSabsPath)$(abspath $1)
 #region setup shell
 
 ifeq ($(OS),Windows_NT)
-
-PowerShell         := powershell
-
-# под cygwin $(MAKE) == '/usr/bin/make'. Поэтому приходится явно переназначать.
-ifeq ($(MAKE),/usr/bin/make)
-MAKE := make
-OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -w $(abspath $1))
-endif
-
+  ifeq (a,$(shell echo "a"))
+    ISCYGWIN := $(true)
+    MAKE := make
+    OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -w $(abspath $1))
+  else
+    ISCYGWIN := $(false)
+  endif
 else
-
-PowerShell         := /usr/bin/pwsh
-
+  ISCYGWIN := $(false)
 endif
 
 VERBOSE            ?= true
 
-ifeq ($(VERBOSE),true)
-  VERBOSEFLAGS := -Verbose
-else
-  VERBOSEFLAGS :=
-endif
-
-.ONESHELL::
-
-POWERSHELLMODULES  := \
-  '$(ITG_MAKEUTILS_DIR)ITG.MakeUtils/ITG.MakeUtils.psd1'
-
-SHELL              := $(PowerShell)
-
-.SHELLFLAGS        = \
-  -NoLogo \
-  -NonInteractive \
-  -ExecutionPolicy unrestricted \
-  -Command \
-    $$ConfirmPreference = 'High'; \
-    $$InformationPreference = 'Continue'; \
-    $$ErrorActionPreference = 'Stop'; \
-    $$VerbosePreference = 'SilentlyContinue'; \
-    $$DebugPreference = 'SilentlyContinue'; \
-    $(POWERSHELLMODULES) | Import-Module -ErrorAction 'Stop' -Verbose:$$False;
-
-MKDIR              := mkdir $(VERBOSEFLAGS) -p
+MKDIR              := mkdir -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
-RMDIR              := rm $(VERBOSEFLAGS) -r -f
-RM                 := rm $(VERBOSEFLAGS) -r -f
-# TODO: переписать TOUCH на PowerShell
+RMDIR              := rm -r -f
+RM                 := rm -r -f
 TOUCH              := touch
-COPY               := cp $(VERBOSEFLAGS)
-CURL               := curl $(VERBOSEFLAGS)
+COPY               := cp
+CURL               := curl
 
 # $(call dirname,dir)
 dirname = $(patsubst %/,%,$1)
