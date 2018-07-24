@@ -25,6 +25,5 @@ include $(ITG_MAKEUTILS_DIR)gitversion.mk
 %%\fi%n\
 " > $@
 	$(TOUCH) $@
-	$(call writeinformation,File "$@" is ready.)
 
 endif

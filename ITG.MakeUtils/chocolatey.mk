@@ -71,8 +71,7 @@ $$($(1)TARGETS): \
     --force \
     --version $$($(1)VERSION) \
     --verbose
-	@touch $$@
-	$$(call writeinformation,File "$$@" is ready.)
+	$$(TOUCH) $$@
 
 .PHONY: $1
 $(1): $$($(1)TARGETS)

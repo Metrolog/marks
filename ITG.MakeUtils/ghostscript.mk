@@ -94,7 +94,6 @@ GSPSTOPDFCMDLINE = $(GSCMDLINE) $(GSPSTOPDFFLAGS) \
 $(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
 	$(call writeinformation,Build file "$@" from "$<"...)
 	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
-	$(call writeinformation,File "$@" is ready.)
 	$(OPENTARGETPDF)
 
 
@@ -106,7 +105,6 @@ GSPSTOEPSCMDLINE = $(GSCMDLINE) $(GSPSTOEPSFLAGS) \
 $(OUTPUTDIR)%.eps: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
 	$(call writeinformation,Build file "$@" from "$<"...)
 	$(GSPSTOEPSCMDLINE) -sOutputFile='$@' '$<'
-	$(call writeinformation,File "$@" is ready.)
 
 
 ifdef MAKE_TESTS_DIR

@@ -187,7 +187,6 @@ $(CTANMAKEFILE): $(MAKEFILE_LIST) | $(TARGETDIR)
 	$(foreach ctanfile,$(CTANFILES),$(file >> $@,$(call copyFileToTDSandCTAN,$(ctanfile))))
 	$(file >> $@,$(call copyFilesToZIP,$(TDSTARGET),,$(LATEXTDSAUXDIR)))
 	$(file >> $@,$(call copyFilesToZIP,$(CTANTARGET),,$(LATEXCTANAUXDIR)))
-	$(call writeinformation,File "$@" is ready.)
 
 $(TDSTARGET) $(CTANTARGET): $(CTANMAKEFILE)
 	$(MAKE) --makefile $(CTANMAKEFILE) $@
