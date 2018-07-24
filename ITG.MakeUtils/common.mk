@@ -120,6 +120,8 @@ OSabsPath = $(call _deprecated_function,OSabsPath)$(abspath $1)
 
 #region setup shell
 
+SHELLTYPE := sh
+
 ifeq ($(OS),Windows_NT)
   ifeq (a,$(shell echo "a"))
     ISCYGWIN := $(true)

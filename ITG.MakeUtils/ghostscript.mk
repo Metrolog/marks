@@ -139,9 +139,9 @@ TESTSPS2PDFOUTPUTFILES = $(patsubst $(TESTSPS2PDFSOURCEDIR)%.ps,$(TESTSPS2PDFOUT
 define definePostScript2PDFTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
-  $(MKDIR) $(dir $1);\
+  $(MKDIR) '$(dir $1)';\
   $(GSPSTOPDFCMDLINE) -sOutputFile='$1' '$2';\
-  $$(call pushDeploymentArtifactFile,$$(notdir $1),$1);,\
+  $$(call pushDeploymentArtifactFile,$$(notdir $1),$1),\
   $2 $3 $$(POSTSCRIPTRESOURCEFILES) \
 )
 
