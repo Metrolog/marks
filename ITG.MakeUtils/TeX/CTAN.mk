@@ -19,7 +19,7 @@ export CTAN_DIRECTORY ?= /macros/latex/contrib/$(LATEXPKG)/
 export LICENSE ?= free
 export FREEVERSION ?= lppl
 
-include $(ITG_MAKEUTILS_DIR)appveyor.mk
+include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
 #
 # common

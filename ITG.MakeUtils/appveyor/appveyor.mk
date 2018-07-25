@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_APPVEYOR_DIR
-MAKE_APPVEYOR_DIR = $(ITG_MAKEUTILS_DIR)
+MAKE_APPVEYOR_DIR = $(ITG_MAKEUTILS_DIR)appveyor/
 
 include $(ITG_MAKEUTILS_DIR)nuget.mk
 

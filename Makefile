@@ -4,7 +4,7 @@ ROOT_PROJECT_DIR ?= ./
 ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
 include $(ITG_MAKEUTILS_DIR)common.mk
 include $(ITG_MAKEUTILS_DIR)git.mk
-include $(ITG_MAKEUTILS_DIR)appveyor.mk
+include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
 # sub projects
 
