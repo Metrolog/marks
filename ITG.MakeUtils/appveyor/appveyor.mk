@@ -5,7 +5,7 @@ endif
 ifndef MAKE_APPVEYOR_DIR
 MAKE_APPVEYOR_DIR = $(MAKE_COMMON_DIR)appveyor/
 
-include $(MAKE_COMMON_DIR)nuget.mk
+include $(MAKE_COMMON_DIR)nuget/nuget.mk
 
 ifdef APPVEYOR
 
