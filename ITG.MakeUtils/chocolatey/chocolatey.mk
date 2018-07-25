@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_CHOCOLATEY_DIR
-MAKE_CHOCOLATEY_DIR = $(ITG_MAKEUTILS_DIR)
+MAKE_CHOCOLATEY_DIR = $(ITG_MAKEUTILS_DIR)chocolatey/
 
 include $(realpath $(ITG_MAKEUTILS_DIR)tests.mk)
 
