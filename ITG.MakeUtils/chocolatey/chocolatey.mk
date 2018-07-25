@@ -5,7 +5,7 @@ endif
 ifndef MAKE_CHOCOLATEY_DIR
 MAKE_CHOCOLATEY_DIR = $(MAKE_COMMON_DIR)chocolatey/
 
-include $(realpath $(MAKE_COMMON_DIR)tests.mk)
+include $(realpath $(MAKE_COMMON_DIR)tests/tests.mk)
 
 CHOCO              ?= choco
 NUGET              ?= nuget

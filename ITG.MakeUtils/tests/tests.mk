@@ -4,7 +4,7 @@ endif
 
 ifndef MAKE_TESTS_DIR
 
-MAKE_TESTS_DIR = $(MAKE_COMMON_DIR)
+MAKE_TESTS_DIR = $(MAKE_COMMON_DIR)tests/
 
 TESTSDIR ?= tests/
 
