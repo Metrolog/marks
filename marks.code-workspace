@@ -7,6 +7,8 @@
 	"settings": {
 		"[postscript]": {
 			"files.encoding": "windows1251"
-		}
+		},
+		"shellcheck.customArgs": ["-x"],
+		"shellcheck.exclude": []
 	},
 }
