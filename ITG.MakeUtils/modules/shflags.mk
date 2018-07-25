@@ -7,4 +7,4 @@ include $(ITG_MAKEUTILS_DIR)git/git.mk
 
 # sub projects
 
-$(eval $(call useExternalSubProjectAsSubtree,gmsl,https://github.com/gmsl/gmsl.git,$(MAKE_COMMON_DIR)GMSL/))
+$(eval $(call useExternalSubProjectAsSubtree,shflags,https://github.com/kward/shflags.git,$(MAKE_COMMON_DIR)shflags/))
