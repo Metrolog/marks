@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_ZIP_DIR
-MAKE_ZIP_DIR = $(MAKE_COMMON_DIR)
+MAKE_ZIP_DIR = $(MAKE_COMMON_DIR)zip/
 
 ZIP                ?= zip -o -9
 TAR                ?= tar
