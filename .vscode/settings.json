@@ -4,5 +4,6 @@
 	},
 	"[postscript]": {
 		"files.encoding": "windows1251"
-	}
+	},
+	"shellcheck.executablePath": "~\\scoop\\apps\\shellcheck\\current\\shellcheck.exe"
 }
