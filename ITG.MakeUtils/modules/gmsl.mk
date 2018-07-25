@@ -2,8 +2,8 @@
 
 ROOT_PROJECT_DIR ?= ./
 ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
-include $(MAKE_COMMON_DIR)common.mk
-include $(MAKE_COMMON_DIR)git/git.mk
+include $(ITG_MAKEUTILS_DIR)common.mk
+include $(ITG_MAKEUTILS_DIR)git/git.mk
 
 # sub projects
 
