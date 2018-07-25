@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_POWERSHELL_DIR
-MAKE_POWERSHELL_DIR = $(MAKE_COMMON_DIR)
+MAKE_POWERSHELL_DIR = $(MAKE_COMMON_DIR)powershell/
 
 ifeq ($(OS),Windows_NT)
 
@@ -15,7 +15,7 @@ POWERSHELL := /usr/bin/pwsh
 
 endif
 
-#POWERSHELLMODULES := '$(MAKE_COMMON_DIR)ITG.MakeUtils/ITG.MakeUtils.psd1'
+#POWERSHELLMODULES := '$(MAKE_POWERSHELL_DIR)ITG.MakeUtils/ITG.MakeUtils.psd1'
 
 POWERSHELLFLAGS ?= \
   -NoLogo \
