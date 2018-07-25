@@ -50,8 +50,8 @@ ROOT_PROJECT_DIR ?= ../
 ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
 #endregion calc ITG.MakeUtils relative path
 
-include $(ITG_MAKEUTILS_DIR)GMSL/gmsl
-include $(ITG_MAKEUTILS_DIR)help-system.mk
+include $(MAKE_COMMON_DIR)GMSL/gmsl
+include $(MAKE_COMMON_DIR)help-system.mk
 
 #region check make tool version and features
 

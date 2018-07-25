@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_HELP_SYSTEM_DIR
-MAKE_HELP_SYSTEM_DIR = $(ITG_MAKEUTILS_DIR)
+MAKE_HELP_SYSTEM_DIR = $(MAKE_COMMON_DIR)
 
 need-help := $(filter help,$(MAKECMDGOALS))
 

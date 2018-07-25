@@ -3,9 +3,9 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_CHOCOLATEY_DIR
-MAKE_CHOCOLATEY_DIR = $(ITG_MAKEUTILS_DIR)chocolatey/
+MAKE_CHOCOLATEY_DIR = $(MAKE_COMMON_DIR)chocolatey/
 
-include $(realpath $(ITG_MAKEUTILS_DIR)tests.mk)
+include $(realpath $(MAKE_COMMON_DIR)tests.mk)
 
 CHOCO              ?= choco
 NUGET              ?= nuget

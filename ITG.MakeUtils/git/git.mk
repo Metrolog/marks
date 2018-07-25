@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_GIT_DIR
-MAKE_GIT_DIR = $(ITG_MAKEUTILS_DIR)
+MAKE_GIT_DIR = $(MAKE_COMMON_DIR)git/
 
 REPOROOT = $(ROOT_PROJECT_DIR)
 REPOVERSION = $(REPOROOT).git/logs/HEAD

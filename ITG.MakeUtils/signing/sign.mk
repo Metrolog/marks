@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_SIGNING_SIGN_DIR
-MAKE_SIGNING_SIGN_DIR = $(ITG_MAKEUTILS_DIR)signing/
+MAKE_SIGNING_SIGN_DIR = $(MAKE_COMMON_DIR)signing/
 
 CODE_SIGNING_CERTIFICATE_PASSWORD ?= pfxpassword
 OPENSSL ?= openssl

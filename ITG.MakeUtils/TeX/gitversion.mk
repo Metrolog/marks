@@ -3,9 +3,9 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_TEX_GITVERSION_DIR
-MAKE_TEX_GITVERSION_DIR = $(ITG_MAKEUTILS_DIR)TeX/
+MAKE_TEX_GITVERSION_DIR = $(MAKE_COMMON_DIR)TeX/
 
-include $(ITG_MAKEUTILS_DIR)gitversion.mk
+include $(MAKE_COMMON_DIR)git/gitversion.mk
 
 %/version.tex %/version.dtx: $(REPOVERSION) | $(TARGETDIR)
 	$(call writeinformation,Generating latex version file "$@"...)

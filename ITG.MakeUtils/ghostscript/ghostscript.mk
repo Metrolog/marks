@@ -4,9 +4,9 @@ endif
 
 ifndef MAKE_GHOSTSCRIPT_DIR
 
-include $(ITG_MAKEUTILS_DIR)pdf.mk
+include $(MAKE_COMMON_DIR)pdf.mk
 
-MAKE_GHOSTSCRIPT_DIR = $(ITG_MAKEUTILS_DIR)ghostscript/
+MAKE_GHOSTSCRIPT_DIR = $(MAKE_COMMON_DIR)ghostscript/
 
 ifeq ($(OS),Windows_NT)
   ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)

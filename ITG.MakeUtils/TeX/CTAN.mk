@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_TEX_CTAN_DIR
-MAKE_TEX_CTAN_DIR = $(ITG_MAKEUTILS_DIR)TeX/
+MAKE_TEX_CTAN_DIR = $(MAKE_COMMON_DIR)TeX/
 
 LATEXTDSAUXDIR ?= $(AUXDIR)tds/
 TDSFILE ?= $(LATEXPKG).tds.zip
@@ -19,7 +19,7 @@ export CTAN_DIRECTORY ?= /macros/latex/contrib/$(LATEXPKG)/
 export LICENSE ?= free
 export FREEVERSION ?= lppl
 
-include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
+include $(MAKE_COMMON_DIR)appveyor/appveyor.mk
 
 #
 # common
