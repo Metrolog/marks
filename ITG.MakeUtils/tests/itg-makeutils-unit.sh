@@ -44,7 +44,12 @@ default_on_test_change() {
 	eval set -- "${FLAGS_ARGV}"
 
 	set -o errexit
-	echo $"Test \"${FLAGS_test_id:?}\" is ${FLAGS_test_status:?}."
+
+	if [[ ${FLAGS_test_exit_code:?} -ne 0 ]]; then
+		printf $"Test \"%s\" is %s with exit code %d.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}" "${FLAGS_test_exit_code:?}"
+	else
+		printf $"Test \"%s\" is %s.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}"
+	fi
 
 	exit 0
 
@@ -65,13 +70,13 @@ main() {
 	eval set -- "${FLAGS_ARGV}"
 
 	echo '==============================================================================='
-	( "${FLAGS_on_test_add:?}" --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler" "\"on_test_add\""
-	( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler" "\"on_test_status_change\""
+	( "${FLAGS_on_test_add:?}" --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
+	( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 	echo "$@"
 	if ( "$@"; ); then
-		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Passed ) || printf $"Error in %s event handler" "\"on_test_status_change\""
+		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Passed ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 	else
-		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Failed --test_exit_code $? ) || printf $"Error in %s event handler" "\"on_test_status_change\""
+		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Failed --test_exit_code $? ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 	fi
 	echo '==============================================================================='
 
