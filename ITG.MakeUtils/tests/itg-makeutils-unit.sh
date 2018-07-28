@@ -11,7 +11,7 @@ readonly MAKE_COMMON_DIR=$(dirname "$MAKE_TESTS_DIR")
 . "$MAKE_COMMON_DIR/shflags/shflags"
 FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
 
-DEFINE_string test_id '' 'test id (slug)'
+DEFINE_string test_id '' $"test id (slug)"
 
 
 default_on_test_creation() {
@@ -38,13 +38,13 @@ default_on_test_change() {
 	fi
 
 	FLAGS_PARENT="default_on_test_change"
-	DEFINE_string test_status 'None' 'test status (None, Running, Passed, Failed, Ignored, Skipped, Inconclusive, NotFound, Cancelled, NotRunnable)'
-	DEFINE_integer test_exit_code 0 'test exit code'
+	DEFINE_string test_status 'None' $"test status (None, Running, Passed, Failed, Ignored, Skipped, Inconclusive, NotFound, Cancelled, NotRunnable)"
+	DEFINE_integer test_exit_code 0 $"test exit code"
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
 
 	set -o errexit
-	echo "Test \"${FLAGS_test_id:?}\" is ${FLAGS_test_status:?}."
+	echo $"Test \"${FLAGS_test_id:?}\" is ${FLAGS_test_status:?}."
 
 	exit 0
 
@@ -59,19 +59,19 @@ main() {
 	fi
 
 	FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
-	DEFINE_string on_test_add 'default_on_test_creation' 'test creation event handler'
-	DEFINE_string on_test_status_change 'default_on_test_change' 'tests events handler'
+	DEFINE_string on_test_add 'default_on_test_creation' $"test creation event handler"
+	DEFINE_string on_test_status_change 'default_on_test_change' $"tests events handler"
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
 
 	echo '==============================================================================='
-	( "${FLAGS_on_test_add:?}" --test_id "${FLAGS_test_id:?}" ) || echo "Error in \"on_test_add\" event handler"
-	( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || { echo "Error in \"on_test_status_change\" event handler"; }
+	( "${FLAGS_on_test_add:?}" --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler" "\"on_test_add\""
+	( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler" "\"on_test_status_change\""
 	echo "$@"
 	if ( "$@"; ); then
-		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Passed ) || { echo "Error in \"on_test_status_change\" event handler"; }
+		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Passed ) || printf $"Error in %s event handler" "\"on_test_status_change\""
 	else
-		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Failed --test_exit_code $? ) || { "echo Error in \"on_test_status_change\" event handler"; }
+		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Failed --test_exit_code $? ) || printf $"Error in %s event handler" "\"on_test_status_change\""
 	fi
 	echo '==============================================================================='
 

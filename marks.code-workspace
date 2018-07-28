@@ -9,6 +9,6 @@
 			"files.encoding": "windows1251"
 		},
 		"shellcheck.customArgs": ["-x"],
-		"shellcheck.exclude": []
+		"shellcheck.exclude": [2039]
 	},
 }
