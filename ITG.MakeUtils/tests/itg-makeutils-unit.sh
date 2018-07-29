@@ -14,7 +14,7 @@ readonly MAKE_COMMON_DIR=$(dirname "$MAKE_TESTS_DIR")
 FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
 
 DEFINE_string test_id '' $"test id (slug)"
-
+DEFINE_string test_file '' $"test file path"
 
 default_on_test_creation() {
 
@@ -27,7 +27,11 @@ default_on_test_creation() {
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
 
-	exit 0
+	if [ "${FLAGS_test_file}" ]; then
+		printf $"Test \"%s\" (from file \"%s\").\\n" "${FLAGS_test_id:?}" "${FLAGS_test_file:-}"
+	else
+		printf $"Test \"%s\".\\n" "${FLAGS_test_id:?}"
+	fi
 
 }
 
@@ -59,8 +63,6 @@ default_on_test_change() {
 			printf $"Test \"%s\" is %s.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}"
 		fi
 	fi
-
-	exit 0
 
 }
 

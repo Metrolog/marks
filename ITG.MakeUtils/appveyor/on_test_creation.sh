@@ -21,6 +21,7 @@ on_test_creation() {
 	FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
 
 	DEFINE_string test_id '' $"test id (slug)"
+	DEFINE_string test_file '' $"test file path"
 
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
@@ -28,7 +29,7 @@ on_test_creation() {
 	set -o errexit
 	appveyor AddTest "${FLAGS_test_id:?}" \
 		-Framework MSTest \
-		-FileName "${FLAGS_test_file_name:-}"
+		-FileName "${FLAGS_test_file:-}"
 
 }
 

@@ -29,16 +29,16 @@ TESTTOOL ?= $(MAKE_TESTS_DIR)itg-makeutils-unit.sh
 testPlatformAddTest =
 testPlatformSetStatus =
 
-# $(call testPlatformWrapper,testId,testScript)
-testPlatformWrapper = $(TESTTOOL) --test_id "$1" --on_test_add "$(call testPlatformAddTest)" --on_test_status_change "$(call testPlatformSetStatus)" "$2"
+# $(call testPlatformWrapper,testId,testScript,testfile)
+testPlatformWrapper = $(TESTTOOL) --test_id "$1" $(if $3,--test_file "$3") --on_test_add "$(call testPlatformAddTest)" --on_test_status_change "$(call testPlatformSetStatus)" "$2"
 
 endif
 
-# $(call defineTest,id,targetId,script,dependencies)
+# $(call defineTest,id,targetId,script,dependencies,testfile)
 define defineTest
 .PHONY: test.$(1)-$(2)
 test.$(1)-$(2): $(4)
-	$(call testPlatformWrapper,$$@,$3)
+	$(call testPlatformWrapper,$$@,$3,$$(strip $5))
 
 .PHONY: test-$(2)
 test-$(2): | test.$(1)-$(2)

@@ -21,6 +21,7 @@ on_test_change() {
 	FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
 
 	DEFINE_string test_id '' $"test id (slug)"
+	DEFINE_string test_file '' $"test file path"
 	DEFINE_string test_status 'None' $"test status (None, Running, Passed, Failed, Ignored, Skipped, Inconclusive, NotFound, Cancelled, NotRunnable)"
 	DEFINE_integer test_exit_code 0 $"test exit code"
 	DEFINE_integer duration 0 $"test execution duration"
@@ -31,7 +32,7 @@ on_test_change() {
 	set -o errexit
 	appveyor UpdateTest "${FLAGS_test_id:?}" \
 		-Framework MSTest \
-		-FileName "${FLAGS_test_file_name:-}" \
+		-FileName "${FLAGS_test_file:-}" \
 		-Outcome "${FLAGS_test_status:?}" \
 		-Duration "${FLAGS_duration:?}" \
 		-StdOut "${FLAGS_test_stdout:-}" \
