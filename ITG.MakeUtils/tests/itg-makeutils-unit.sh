@@ -79,7 +79,7 @@ main() {
 	eval set -- "${FLAGS_ARGV}"
 
 	shopt -s execfail
-	unset FLAGS_ARGV
+	unset FLAGS_ARGC
 	echo '==============================================================================='
 	( default_on_test_creation --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
 	if [ "${FLAGS_on_test_add}" ]; then
