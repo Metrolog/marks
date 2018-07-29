@@ -30,6 +30,7 @@ on_test_change() {
 
 	set -o errexit
 	appveyor UpdateTest "${FLAGS_test_id:?}" \
+		-Framework MSTest \
 		-FileName "${FLAGS_test_file_name:-}" \
 		-Outcome "${FLAGS_test_status:?}" \
 		-Duration "${FLAGS_duration:?}" \
