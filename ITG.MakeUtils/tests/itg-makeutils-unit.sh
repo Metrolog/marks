@@ -79,14 +79,15 @@ main() {
 	eval set -- "${FLAGS_ARGV}"
 
 	shopt -s execfail
+	unset FLAGS_ARGV
 	echo '==============================================================================='
 	( default_on_test_creation --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
 	if [ "${FLAGS_on_test_add}" ]; then
-		( exec -c "${FLAGS_on_test_add}" --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
+		( "${FLAGS_on_test_add}" --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
 	fi
 	( default_on_test_change --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 	if [ "${FLAGS_on_test_status_change}" ]; then
-		( exec -c "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+		( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 	fi
   	echo "$@"
 	TEST_EXIT_CODE=0
@@ -96,7 +97,7 @@ main() {
 		DURATION=$((FINISH_TIME-START_TIME))
 		( default_on_test_change --test_id "${FLAGS_test_id:?}" --test_status Passed --duration $DURATION ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 		if [ "${FLAGS_on_test_status_change}" ]; then
-			( exec -c "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Passed --duration $DURATION ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+			( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Passed --duration $DURATION ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 		fi
 	else
 		TEST_EXIT_CODE=$?
@@ -104,7 +105,7 @@ main() {
 		DURATION=$((FINISH_TIME-START_TIME))
 		( default_on_test_change --test_id "${FLAGS_test_id:?}" --test_status Failed --duration $DURATION --test_exit_code $TEST_EXIT_CODE ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 		if [ "${FLAGS_on_test_status_change}" ]; then
-			( exec -c "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Failed --duration $DURATION --test_exit_code $TEST_EXIT_CODE ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+			( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Failed --duration $DURATION --test_exit_code $TEST_EXIT_CODE ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 		fi
 	fi
 	echo '==============================================================================='
