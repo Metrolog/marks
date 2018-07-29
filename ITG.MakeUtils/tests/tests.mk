@@ -24,6 +24,8 @@ endif
 
 ifeq ($(SHELLTYPE),sh)
 
+TESTTOOL ?= $(MAKE_TESTS_DIR)itg-makeutils-unit.sh
+
 # $(call testPlatformSetStatus,testId,status,duration)
 testPlatformAddTest = $$$${Function:Add-UnitTest}
 
@@ -31,7 +33,7 @@ testPlatformAddTest = $$$${Function:Add-UnitTest}
 testPlatformSetStatus = $$$${Function:Set-UnitTestStatusInformation}
 
 # $(call testPlatformWrapper,testId,testScript)
-testPlatformWrapper = $2
+testPlatformWrapper = $(TESTTOOL) --test_id "$1" "$2"
 
 endif
 
@@ -39,9 +41,7 @@ endif
 define defineTest
 .PHONY: test.$(1)-$(2)
 test.$(1)-$(2): $(4)
-	@echo '==============================================================================='
 	$(call testPlatformWrapper,$$@,$3)
-	@echo '==============================================================================='
 
 .PHONY: test-$(2)
 test-$(2): | test.$(1)-$(2)

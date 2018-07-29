@@ -126,7 +126,7 @@ ifeq ($(OS),Windows_NT)
   ifeq (a,$(shell echo "a"))
     ISCYGWIN := $(true)
     MAKE := make
-    OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -w $(abspath $1))
+    OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -m $(abspath $1))
   else
     ISCYGWIN := $(false)
   endif
