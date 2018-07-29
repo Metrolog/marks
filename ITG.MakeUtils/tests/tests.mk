@@ -26,14 +26,11 @@ ifeq ($(SHELLTYPE),sh)
 
 TESTTOOL ?= $(MAKE_TESTS_DIR)itg-makeutils-unit.sh
 
-# $(call testPlatformSetStatus,testId,status,duration)
-testPlatformAddTest = $$$${Function:Add-UnitTest}
-
-# $(call testPlatformSetStatus,testId,status,duration)
-testPlatformSetStatus = $$$${Function:Set-UnitTestStatusInformation}
+testPlatformAddTest =
+testPlatformSetStatus =
 
 # $(call testPlatformWrapper,testId,testScript)
-testPlatformWrapper = $(TESTTOOL) --test_id "$1" "$2"
+testPlatformWrapper = $(TESTTOOL) --test_id "$1" --on_test_add "$(call testPlatformAddTest)" --on_test_status_change "$(call testPlatformSetStatus)" "$2"
 
 endif
 

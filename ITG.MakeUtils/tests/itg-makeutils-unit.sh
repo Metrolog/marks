@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set +o errexit
+
 export POSIXLY_CORRECT=1
 
 readonly THIS_SCRIPT="$0"
@@ -44,8 +46,6 @@ default_on_test_change() {
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
 
-	set -o errexit
-
 	if [[ ${FLAGS_duration:?} -ne 0 ]]; then
 		if [[ ${FLAGS_test_exit_code:?} -ne 0 ]]; then
 			printf $"Test \"%s\" is %s with exit code %d in %d ms.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}" "${FLAGS_test_exit_code:?}" "${FLAGS_duration:?}"
@@ -73,28 +73,42 @@ main() {
 	fi
 
 	FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
-	DEFINE_string on_test_add 'default_on_test_creation' $"test creation event handler"
-	DEFINE_string on_test_status_change 'default_on_test_change' $"tests events handler"
+	DEFINE_string on_test_add '' $"test creation event handler"
+	DEFINE_string on_test_status_change '' $"tests events handler"
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
 
 	echo '==============================================================================='
-	( "${FLAGS_on_test_add:?}" --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
-	( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+	( default_on_test_creation --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
+	if [ "${FLAGS_on_test_add}" ]; then
+		( "${FLAGS_on_test_add}" --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
+	fi
+	( default_on_test_change --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+	if [ "${FLAGS_on_test_status_change}" ]; then
+		( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+	fi
   	echo "$@"
+	TEST_EXIT_CODE=0
 	START_TIME=$(($(date +%s%3N)))
 	if ( eval "$@" ); then
 		FINISH_TIME=$(($(date +%s%3N)))
 		DURATION=$((FINISH_TIME-START_TIME))
-		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Passed --duration $DURATION ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+		( default_on_test_change --test_id "${FLAGS_test_id:?}" --test_status Passed --duration $DURATION ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+		if [ "${FLAGS_on_test_status_change}" ]; then
+			( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Passed --duration $DURATION ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+		fi
 	else
+		TEST_EXIT_CODE=$?
 		FINISH_TIME=$(($(date +%s%3N)))
 		DURATION=$((FINISH_TIME-START_TIME))
-		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Failed --duration $DURATION --test_exit_code $? ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+		( default_on_test_change --test_id "${FLAGS_test_id:?}" --test_status Failed --duration $DURATION --test_exit_code $TEST_EXIT_CODE ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+		if [ "${FLAGS_on_test_status_change}" ]; then
+			( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Failed --duration $DURATION --test_exit_code $TEST_EXIT_CODE ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+		fi
 	fi
 	echo '==============================================================================='
 
-	exit 0
+	exit $TEST_EXIT_CODE
 
 }
 
