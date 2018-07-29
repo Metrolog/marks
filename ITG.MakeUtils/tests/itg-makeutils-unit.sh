@@ -83,16 +83,22 @@ main() {
 	shopt -s execfail
 	unset FLAGS_ARGC
 	echo '==============================================================================='
-	( default_on_test_creation --test_id "${FLAGS_test_id:?}" ) || \
+	( default_on_test_creation --test_id "${FLAGS_test_id:?}" \
+		${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} ) || \
 		printf $"Error in %s event handler.\\n" "\"on_test_add\""
 	if [ "${FLAGS_on_test_add}" ]; then
-		( "${FLAGS_on_test_add}" --test_id "${FLAGS_test_id:?}" ) || \
+		( "${FLAGS_on_test_add}" --test_id "${FLAGS_test_id:?}" \
+			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} ) || \
 			printf $"Error in %s event handler.\\n" "\"on_test_add\""
 	fi
-	( default_on_test_change --test_id "${FLAGS_test_id:?}" --test_status Running ) || \
+	( default_on_test_change --test_id "${FLAGS_test_id:?}" \
+		${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
+		--test_status Running ) || \
 		printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 	if [ "${FLAGS_on_test_status_change}" ]; then
-		( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || \
+		( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" \
+			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
+			--test_status Running ) || \
 			printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 	fi
   	echo "$@"
@@ -101,11 +107,14 @@ main() {
 	if ( eval "$@" ); then
 		FINISH_TIME=$(($(date +%s%3N)))
 		DURATION=$((FINISH_TIME-START_TIME))
-		( default_on_test_change --test_id "${FLAGS_test_id:?}" --test_status Passed \
+		( default_on_test_change --test_id "${FLAGS_test_id:?}" \
+			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
+			--test_status Passed \
 			--duration $DURATION ) || \
 			printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 		if [ "${FLAGS_on_test_status_change}" ]; then
 			( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" \
+				${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
 				--test_status Passed \
 				--duration $DURATION ) || \
 				printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
@@ -115,12 +124,14 @@ main() {
 		FINISH_TIME=$(($(date +%s%3N)))
 		DURATION=$((FINISH_TIME-START_TIME))
 		( default_on_test_change --test_id "${FLAGS_test_id:?}" \
+			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
 			--test_status Failed \
 			--duration $DURATION \
 			--test_exit_code $TEST_EXIT_CODE ) || \
 			printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 		if [ "${FLAGS_on_test_status_change}" ]; then
 			( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" \
+				${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
 				--test_status Failed \
 				--duration $DURATION \
 				--test_exit_code $TEST_EXIT_CODE ) || \
