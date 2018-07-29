@@ -21,7 +21,7 @@ STAMPSSOURCEFILES := $(call rwildcard,$(STAMPSRCDIR),*.ps)
 STAMPLIBDIR := $(PSRESOURCESOURCEDIR)
 ENCODINGSDIR := $(STAMPLIBDIR)$(ENCODINGRESOURCEDIR)
 
-ifeq ($(filter %clean,$(MAKECMDGOALS)),)
+ifeq ($(filter %clean .GLOBAL_VARIABLES,$(MAKECMDGOALS)),)
 $(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1251TARGET)))
 $(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1253TARGET)))
 endif
