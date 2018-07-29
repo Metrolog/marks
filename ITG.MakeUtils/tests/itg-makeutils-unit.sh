@@ -40,15 +40,24 @@ default_on_test_change() {
 	FLAGS_PARENT="default_on_test_change"
 	DEFINE_string test_status 'None' $"test status (None, Running, Passed, Failed, Ignored, Skipped, Inconclusive, NotFound, Cancelled, NotRunnable)"
 	DEFINE_integer test_exit_code 0 $"test exit code"
+	DEFINE_integer duration 0 $"test execution duration"
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
 
 	set -o errexit
 
-	if [[ ${FLAGS_test_exit_code:?} -ne 0 ]]; then
-		printf $"Test \"%s\" is %s with exit code %d.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}" "${FLAGS_test_exit_code:?}"
+	if [[ ${FLAGS_duration:?} -ne 0 ]]; then
+		if [[ ${FLAGS_test_exit_code:?} -ne 0 ]]; then
+			printf $"Test \"%s\" is %s with exit code %d in %d ms.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}" "${FLAGS_test_exit_code:?}" "${FLAGS_duration:?}"
+		else
+			printf $"Test \"%s\" is %s in %d ms.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}" "${FLAGS_duration:?}"
+		fi
 	else
-		printf $"Test \"%s\" is %s.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}"
+		if [[ ${FLAGS_test_exit_code:?} -ne 0 ]]; then
+			printf $"Test \"%s\" is %s with exit code %d.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}" "${FLAGS_test_exit_code:?}"
+		else
+			printf $"Test \"%s\" is %s.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}"
+		fi
 	fi
 
 	exit 0
@@ -72,11 +81,16 @@ main() {
 	echo '==============================================================================='
 	( "${FLAGS_on_test_add:?}" --test_id "${FLAGS_test_id:?}" ) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
 	( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Running ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
-	echo "$@"
-	if ( "$@"; ); then
-		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Passed ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+  	echo "$@"
+	START_TIME=$(($(date +%s%3N)))
+	if ( eval "$@" ); then
+		FINISH_TIME=$(($(date +%s%3N)))
+		DURATION=$((FINISH_TIME-START_TIME))
+		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Passed --duration $DURATION ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 	else
-		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Failed --test_exit_code $? ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+		FINISH_TIME=$(($(date +%s%3N)))
+		DURATION=$((FINISH_TIME-START_TIME))
+		( "${FLAGS_on_test_status_change:?}" --test_id "${FLAGS_test_id:?}" --test_status Failed --duration $DURATION --test_exit_code $? ) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
 	fi
 	echo '==============================================================================='
 
