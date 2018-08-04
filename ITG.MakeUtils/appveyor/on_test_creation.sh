@@ -31,10 +31,9 @@ on_test_creation() {
 	unset OPTIND
 
 	set -o xtrace
-	# shellcheck disable=2016
-	appveyor AddTest \'"${test_id}"\' \
+	appveyor AddTest "${test_id}" \
 		-Framework MSTest \
-		"${test_file:+-FileName '${test_file}'}"
+		${test_file:+-FileName "${test_file}"}
 	@set +o xtrace
 
 }

@@ -49,13 +49,15 @@ on_test_change() {
 	shift $((OPTIND - 1))
 	unset OPTIND
 
-	appveyor UpdateTest "${test_id@Q}" \
+	set -o xtrace
+	appveyor UpdateTest \'"${test_id}"\' \
 		-Framework MSTest \
-		"${test_file:+-FileName "${test_file@Q}"}" \
+		${test_file:+-FileName "${test_file}"} \
 		-Outcome "${test_status}" \
-		"${test_duration:+-Duration "${test_duration}"}" \
-		"${test_stdout:+-StdOut "${test_stdout@Q}"}" \
-		"${test_stderr:+-StdErr "${test_stderr@Q}"}"
+		${test_duration:+-Duration "${test_duration}"} \
+		${test_stdout:+-StdOut "${test_stdout}"} \
+		${test_stderr:+-StdErr "${test_stderr}"}
+	@set +o xtrace
 
 }
 
