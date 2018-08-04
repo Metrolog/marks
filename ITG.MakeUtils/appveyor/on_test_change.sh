@@ -57,7 +57,7 @@ on_test_change() {
 		${test_duration:+-Duration "${test_duration}"} \
 		${test_stdout:+-StdOut "${test_stdout}"} \
 		${test_stderr:+-StdErr "${test_stderr}"}
-	@set +o xtrace
+	# set +o xtrace
 
 }
 

@@ -34,7 +34,7 @@ on_test_creation() {
 	appveyor AddTest "${test_id}" \
 		-Framework MSTest \
 		${test_file:+-FileName "${test_file}"}
-	@set +o xtrace
+	# set +o xtrace
 
 }
 
