@@ -32,10 +32,10 @@ on_test_creation() {
 
 	echo appveyor AddTest "${test_id}" \
 		-Framework MSTest \
-		"${test_file:+-FileName ${test_file@Q}}"
+		"${test_file:+-FileName ${test_file}}"
 	appveyor AddTest "${test_id}" \
 		-Framework MSTest \
-		"${test_file:+-FileName ${test_file@Q}}"
+		"${test_file:+-FileName ${test_file}}"
 
 }
 
