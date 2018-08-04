@@ -27,7 +27,7 @@ default_on_test_creation() {
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
 
-	if [ "${FLAGS_test_file}" ]; then
+	if [ "${FLAGS_test_file?}" ]; then
 		printf $"Test \"%s\" (from file \"%s\").\\n" "${FLAGS_test_id:?}" "${FLAGS_test_file:-}"
 	else
 		printf $"Test \"%s\".\\n" "${FLAGS_test_id:?}"
@@ -86,7 +86,7 @@ main() {
 	( default_on_test_creation --test_id "${FLAGS_test_id:?}" \
 		${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} ) || \
 		printf $"Error in %s event handler.\\n" "\"on_test_add\""
-	if [ "${FLAGS_on_test_add}" ]; then
+	if [ "${FLAGS_on_test_add?}" ]; then
 		( "${FLAGS_on_test_add}" --test_id "${FLAGS_test_id:?}" \
 			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} ) || \
 			printf $"Error in %s event handler.\\n" "\"on_test_add\""
@@ -95,7 +95,7 @@ main() {
 		${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
 		--test_status Running ) || \
 		printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
-	if [ "${FLAGS_on_test_status_change}" ]; then
+	if [ "${FLAGS_on_test_status_change?}" ]; then
 		( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" \
 			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
 			--test_status Running ) || \
