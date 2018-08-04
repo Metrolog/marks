@@ -30,9 +30,9 @@ on_test_creation() {
 	shift $((OPTIND - 1))
 	unset OPTIND
 
-	appveyor AddTest "${test_id}" \
+	appveyor AddTest "${test_id@Q}" \
 		-Framework MSTest \
-		"${test_file:+-FileName ${test_file}}"
+		"${test_file:+-FileName ${test_file@Q}}"
 
 }
 
