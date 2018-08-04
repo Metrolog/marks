@@ -1,44 +1,61 @@
 #!/bin/sh
 
-set +o errexit
-
+set -o errexit
 export POSIXLY_CORRECT=1
-
-readonly THIS_SCRIPT="$0"
-readonly THIS_SCRIPT_FILENAME=$(basename "$THIS_SCRIPT")
-readonly MAKE_APPVEYOR_DIR=$(dirname "$THIS_SCRIPT")
-readonly MAKE_COMMON_DIR=$(dirname "$MAKE_APPVEYOR_DIR")
 
 on_test_change() {
 
-	if [ $# -lt 1 ]; then
-		( on_test_change --help )
-		exit 1
+	local statuses='None|Running|Passed|Failed|Ignored|Skipped|Inconclusive|NotFound|Cancelled|NotRunnable'
+	while getopts n:f:s:d:o:e:x: opt
+	do
+		# shellcheck disable=2034
+		case $opt in
+		n)	local test_id="$OPTARG";;
+		f)	local test_file="$OPTARG";;
+		s)	local test_status="$OPTARG";;
+		d)	local test_duration="$OPTARG";;
+		x)	local test_exit_code="$OPTARG";;
+		o)	local test_stdout="$OPTARG";;
+		e)	local test_stderr="$OPTARG";;
+		?)	printf $"Usage: %s: \
+					-n 'test id' \
+					[-f 'test file name'] \
+					-s '%s' \
+					[-d duration] \
+					[-o 'stdout'] \
+					[-e 'stderr'] \
+					[-x exit code] \
+					\\n" \
+				"$0" "$statuses"
+			exit 2;;
+		esac
+	done
+	if
+		[ -z "${test_id-}" ] ||
+		[ -z "${test_status-}" ] || [[ ! "${test_status}" =~ $statuses ]]
+	then
+		printf $"Usage: %s: \
+				-n 'test id' \
+				[-f 'test file name'] \
+				-s '%s' \
+				[-d duration] \
+				[-o 'stdout'] \
+				[-e 'stderr'] \
+				[-x exit code] \
+				\\n" \
+			"$0" "$statuses"
+		exit 2
 	fi
+	shift $((OPTIND - 1))
+	unset OPTIND
 
-	# shellcheck source=../shflags/shflags
-	. "$MAKE_COMMON_DIR/shflags/shflags"
-	FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
-
-	DEFINE_string test_id '' $"test id (slug)"
-	DEFINE_string test_file '' $"test file path"
-	DEFINE_string test_status 'None' $"test status (None, Running, Passed, Failed, Ignored, Skipped, Inconclusive, NotFound, Cancelled, NotRunnable)"
-	DEFINE_integer test_exit_code 0 $"test exit code"
-	DEFINE_integer duration 0 $"test execution duration"
-	DEFINE_string test_stdout '' $"test stdout pipe's content"
-	DEFINE_string test_stderr '' $"test stderr pipe's content"
-
-	FLAGS "$@" || exit $?
-	eval set -- "${FLAGS_ARGV}"
-
-	set -o errexit
-	appveyor UpdateTest "${FLAGS_test_id:?}" \
+	appveyor UpdateTest "${test_id}" \
 		-Framework MSTest \
-		-FileName "${FLAGS_test_file:-}" \
-		-Outcome "${FLAGS_test_status:?}" \
-		-Duration "${FLAGS_duration:?}" \
-		-StdOut "${FLAGS_test_stdout:-}" \
-		-StdErr "${FLAGS_test_stderr:-}"
+		"${test_file:+-FileName "${test_file}"}" \
+		-Outcome "${test_status}" \
+		"${test_duration:+-Duration "${test_duration}"}" \
+		"${test_stdout:+-StdOut "${test_stdout}"}" \
+		"${test_stderr:+-StdErr "${test_stderr}"}"
 
 }
 

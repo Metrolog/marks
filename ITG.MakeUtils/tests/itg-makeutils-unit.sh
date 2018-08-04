@@ -1,36 +1,39 @@
 #!/bin/sh
 
-set +o errexit
-
+set -o errexit
 export POSIXLY_CORRECT=1
-
-readonly THIS_SCRIPT="$0"
-readonly THIS_SCRIPT_FILENAME=$(basename "$THIS_SCRIPT")
-readonly MAKE_TESTS_DIR=$(dirname "$0")
-readonly MAKE_COMMON_DIR=$(dirname "$MAKE_TESTS_DIR")
-
-# shellcheck source=../shflags/shflags
-. "$MAKE_COMMON_DIR/shflags/shflags"
-FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
-
-DEFINE_string test_id '' $"test id (slug)"
-DEFINE_string test_file '' $"test file path"
 
 default_on_test_creation() {
 
-	if [ $# -lt 1 ]; then
-		( default_on_test_creation --help )
-		exit 1
+	while getopts n:f: opt
+	do
+		case $opt in
+		n)	local test_id="$OPTARG";;
+		f)	local test_file="$OPTARG";;
+		?)	printf $"Usage: %s: \
+				-n 'test id' \
+				[-f 'test file name'] \
+				\\n" \
+		 		"$0"
+			exit 2;;
+		esac
+	done
+	if [ -z "${test_id-}" ]
+	then
+		printf $"Usage: %s: \
+			-n 'test id' \
+			[-f 'test file name'] \
+			\\n" \
+			"$0"
+		exit 2
 	fi
+	shift $((OPTIND - 1))
+	unset OPTIND
 
-	FLAGS_PARENT="default_on_test_creation"
-	FLAGS "$@" || exit $?
-	eval set -- "${FLAGS_ARGV}"
-
-	if [ "${FLAGS_test_file?}" ]; then
-		printf $"Test \"%s\" (from file \"%s\").\\n" "${FLAGS_test_id:?}" "${FLAGS_test_file:-}"
+	if [ -z "${test_file-}" ]; then
+		printf $"Test \"%s\" (from file \"%s\").\\n" "${test_id}" "${test_file}"
 	else
-		printf $"Test \"%s\".\\n" "${FLAGS_test_id:?}"
+		printf $"Test \"%s\".\\n" "${test_id}"
 	fi
 
 }
@@ -38,37 +41,64 @@ default_on_test_creation() {
 
 default_on_test_change() {
 
-	if [ $# -lt 1 ]; then
-		( default_on_test_change --help )
-		exit 1
+	local statuses='None|Running|Passed|Failed|Ignored|Skipped|Inconclusive|NotFound|Cancelled|NotRunnable'
+	while getopts n:f:s:d:o:e:x: opt
+	do
+		# shellcheck disable=2034
+		case $opt in
+		n)	local test_id="$OPTARG";;
+		f)	local test_file="$OPTARG";;
+		s)	local test_status="$OPTARG";;
+		d)	local test_duration="$OPTARG";;
+		x)	local test_exit_code="$OPTARG";;
+		o)	local test_stdout="$OPTARG";;
+		e)	local test_stderr="$OPTARG";;
+		?)	printf $"Usage: %s: \
+					-n 'test id' \
+					[-f 'test file name'] \
+					-s '%s' \
+					[-d duration] \
+					[-o 'stdout'] \
+					[-e 'stderr'] \
+					[-x exit code] \
+					\\n" \
+				"$0" "$statuses"
+			exit 2;;
+		esac
+	done
+	if
+		[ -z "${test_id-}" ] ||
+		[ -z "${test_status-}" ] || [[ ! "${test_status}" =~ $statuses ]]
+	then
+		printf $"Usage: %s: \
+				-n 'test id' \
+				[-f 'test file name'] \
+				-s '%s' \
+				[-d duration] \
+				[-o 'stdout'] \
+				[-e 'stderr'] \
+				[-x exit code] \
+				\\n" \
+			"$0" "$statuses"
+		exit 2
 	fi
+	shift $((OPTIND - 1))
+	unset OPTIND
 
-	FLAGS_PARENT="default_on_test_change"
-	DEFINE_string test_status 'None' $"test status (None, Running, Passed, Failed, Ignored, Skipped, Inconclusive, NotFound, Cancelled, NotRunnable)"
-	DEFINE_integer test_exit_code 0 $"test exit code"
-	DEFINE_integer duration 0 $"test execution duration"
-	DEFINE_string test_stdout '' $"test stdout pipe's content"
-	DEFINE_string test_stderr '' $"test stderr pipe's content"
-	FLAGS "$@" || exit $?
-	eval set -- "${FLAGS_ARGV}"
-
-	if [ "${FLAGS_test_stdout?}" ]; then
-		echo ${FLAGS_test_stdout}
-	fi
-	if [ "${FLAGS_test_stderr?}" ]; then
-		echo ${FLAGS_test_stderr} >&2
-	fi
-	if [[ ${FLAGS_duration:?} -ne 0 ]]; then
-		if [[ ${FLAGS_test_exit_code:?} -ne 0 ]]; then
-			printf $"Test \"%s\" is %s with exit code %d in %d ms.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}" "${FLAGS_test_exit_code:?}" "${FLAGS_duration:?}"
+	if [[ ${test_duration-0} -ne 0 ]]
+	then
+		if [[ ${test_exit_code-0} -ne 0 ]]
+		then
+			printf $"Test \"%s\" is %s with exit code %d in %d ms.\\n" "${test_id}" "${test_status}" "${test_exit_code}" "${test_duration}"
 		else
-			printf $"Test \"%s\" is %s in %d ms.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}" "${FLAGS_duration:?}"
+			printf $"Test \"%s\" is %s in %d ms.\\n" "${test_id}" "${test_status}" "${test_duration}"
 		fi
 	else
-		if [[ ${FLAGS_test_exit_code:?} -ne 0 ]]; then
-			printf $"Test \"%s\" is %s with exit code %d.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}" "${FLAGS_test_exit_code:?}"
+		if [[ ${test_exit_code-0} -ne 0 ]]
+		then
+			printf $"Test \"%s\" is %s with exit code %d.\\n" "${test_id}" "${test_status}" "${test_exit_code}"
 		else
-			printf $"Test \"%s\" is %s.\\n" "${FLAGS_test_id:?}" "${FLAGS_test_status:?}"
+			printf $"Test \"%s\" is %s.\\n" "${test_id}" "${test_status}"
 		fi
 	fi
 
@@ -77,49 +107,72 @@ default_on_test_change() {
 
 main() {
 
-	if [ $# -lt 1 ]; then
-		( main --help )
-		exit 1
+	while getopts n:f:a:s opt
+	do
+		case $opt in
+		n)	local test_id="$OPTARG";;
+		f)	local test_file="$OPTARG";;
+		a)	local test_on_add="$OPTARG";;
+		s)	local test_on_status_change="$OPTARG";;
+		?)	printf $"Usage: %s: \
+					-n 'test id' \
+					[-f 'test file name'] \
+					[-a 'test creation event handler'] \
+					[-s 'tests events handler'] \
+					\\n" \
+				"$0"
+			exit 2;;
+		esac
+	done
+	if
+		[ -z "${test_id-}" ]
+	then
+		printf $"Usage: %s: \
+				-n 'test id' \
+				[-f 'test file name'] \
+				[-a 'test creation event handler'] \
+				[-s 'tests events handler'] \
+				\\n" \
+			"$0"
+		exit 2
 	fi
-
-	FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
-	DEFINE_string on_test_add '' $"test creation event handler"
-	DEFINE_string on_test_status_change '' $"tests events handler"
-	FLAGS "$@" || exit $?
-	eval set -- "${FLAGS_ARGV}"
+	shift $((OPTIND - 1))
+	unset OPTIND
 
 	shopt -s execfail
-	unset FLAGS_ARGC
 	echo '==============================================================================='
-	( default_on_test_creation --test_id "${FLAGS_test_id:?}" \
-		${FLAGS_test_file:+--test_file "${FLAGS_test_file}"}
-	) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
-	if [ "${FLAGS_on_test_add?}" ]; then
-		( "${FLAGS_on_test_add}" --test_id "${FLAGS_test_id:?}" \
-			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
-		) || printf $"Error in %s event handler.\\n" "\"on_test_add\""
+	default_on_test_creation -n "${test_id}" \
+		${test_file:+-f "${test_file}"}
+	if [ "${test_on_add:-}" ]
+	then
+		( "${test_on_add}" -n "${test_id}" \
+			${test_file:+-f "${test_file}"} \
+		) || printf $"Error in \"%s\" event handler.\\n" 'on test add'
 	fi
-	( default_on_test_change --test_id "${FLAGS_test_id:?}" \
-		${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
-		--test_status Running \
-	) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
-	if [ "${FLAGS_on_test_status_change?}" ]; then
-		( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" \
-			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
-			--test_status Running \
-		) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+	default_on_test_change -n "${test_id}" \
+		${test_file:+-f "${test_file}"} \
+		-s Running
+	if [ "${test_on_status_change:-}" ]
+	then
+		( "${test_on_status_change}" -n "${test_id}" \
+			${test_file:+-f "${test_file}"} \
+			-s Running \
+		) || printf $"Error in \"%s\" event handler.\\n" 'on test status change'
 	fi
   	echo "$@"
 	local TEST_EXIT_CODE=0
 	local START_TIME=$(($(date +%s%3N)))
 
-	local TEST_STDOUT_FILENAME=$(mktemp)
-	local TEST_STDERR_FILENAME=$(mktemp)
-	( eval "$@" ) > $TEST_STDOUT_FILENAME 2> $TEST_STDERR_FILENAME
+	local TEST_STDOUT_FILENAME
+	TEST_STDOUT_FILENAME=$(mktemp)
+	local TEST_STDERR_FILENAME
+	TEST_STDERR_FILENAME=$(mktemp)
+	( eval "$@" ) > "$TEST_STDOUT_FILENAME" 2> "$TEST_STDERR_FILENAME"
 	local TEST_EXIT_CODE=$?
 	local FINISH_TIME=$(($(date +%s%3N)))
 	local DURATION=$((FINISH_TIME-START_TIME))
-	local TEST_STDOUT=$(< "${TEST_STDOUT_FILENAME}")
+	local TEST_STDOUT
+	TEST_STDOUT=$(< "${TEST_STDOUT_FILENAME}")
 	rm "${TEST_STDOUT_FILENAME}"
 	local TEST_STDOUT_QUOTED="${TEST_STDOUT}"
 	if [ "${TEST_STDOUT_QUOTED}" ]; then
@@ -128,7 +181,8 @@ main() {
 	else
 		TEST_STDOUT_QUOTED=\'\'
 	fi
-	local TEST_STDERR=$(< "${TEST_STDERR_FILENAME}")
+	local TEST_STDERR
+	TEST_STDERR=$(< "${TEST_STDERR_FILENAME}")
 	rm "${TEST_STDERR_FILENAME}"
 	local TEST_STDERR_QUOTED="${TEST_STDERR}"
 	if [ "${TEST_STDERR_QUOTED}" ]; then
@@ -139,40 +193,40 @@ main() {
 	fi
 
 	if [[ $TEST_EXIT_CODE -eq 0 ]]; then
-		( default_on_test_change --test_id "${FLAGS_test_id:?}" \
-			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
-			--test_status Passed \
-			--duration $DURATION \
+		default_on_test_change -n "${test_id}" \
+			${test_file:+-f "${test_file}"} \
+			-s Passed \
+			-d $DURATION \
 #			--test_stdout "${TEST_STDOUT_QUOTED}" \
 #			--test_stderr "${TEST_STDERR_QUOTED}" \
-		) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
-		if [ "${FLAGS_on_test_status_change?}" ]; then
-			( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" \
-				${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
-				--test_status Passed \
-				--duration $DURATION \
+		if [ "${test_on_status_change:-}" ]
+		then
+			( "${test_on_status_change}" -n "${test_id}" \
+				${test_file:+-f "${test_file}"} \
+				-s Passed \
+				-d $DURATION \
 #				--test_stdout "${TEST_STDOUT_QUOTED}" \
 #				--test_stderr "${TEST_STDERR_QUOTED}" \
-			) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+			) || printf $"Error in \"%s\" event handler.\\n" 'on test status change'
 		fi
 	else
-		( default_on_test_change --test_id "${FLAGS_test_id:?}" \
-			${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
-			--test_status Failed \
-			--duration $DURATION \
-			--test_exit_code $TEST_EXIT_CODE \
+		default_on_test_change -n "${test_id}" \
+			${test_file:+-f "${test_file}"} \
+			-s Failed \
+			-x $TEST_EXIT_CODE \
+			-d $DURATION \
 #			--test_stdout "${TEST_STDOUT_QUOTED}" \
 #			--test_stderr "${TEST_STDERR_QUOTED}" \
-		) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
-		if [ "${FLAGS_on_test_status_change?}" ]; then
-			( "${FLAGS_on_test_status_change}" --test_id "${FLAGS_test_id:?}" \
-				${FLAGS_test_file:+--test_file "${FLAGS_test_file}"} \
-				--test_status Failed \
-				--duration $DURATION \
-				--test_exit_code $TEST_EXIT_CODE \
+		if [ "${test_on_status_change:-}" ]
+		then
+			( "${test_on_status_change}" -n "${test_id}" \
+				${test_file:+-f "${test_file}"} \
+				-s Failed \
+				-x $TEST_EXIT_CODE \
+				-d $DURATION \
 #				--test_stdout "${TEST_STDOUT_QUOTED}" \
 #				--test_stderr "${TEST_STDERR_QUOTED}" \
-			) || printf $"Error in %s event handler.\\n" "\"on_test_status_change\""
+			) || printf $"Error in \"%s\" event handler.\\n" 'on test status change'
 		fi
 	fi
 	echo '==============================================================================='

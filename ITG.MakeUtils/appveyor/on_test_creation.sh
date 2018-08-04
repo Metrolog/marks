@@ -1,35 +1,38 @@
 #!/bin/sh
 
-set +o errexit
-
+set -o errexit
 export POSIXLY_CORRECT=1
-
-readonly THIS_SCRIPT="$0"
-readonly THIS_SCRIPT_FILENAME=$(basename "$THIS_SCRIPT")
-readonly MAKE_APPVEYOR_DIR=$(dirname "$THIS_SCRIPT")
-readonly MAKE_COMMON_DIR=$(dirname "$MAKE_APPVEYOR_DIR")
 
 on_test_creation() {
 
-	if [ $# -lt 1 ]; then
-		( on_test_creation --help )
-		exit 1
+	while getopts n:f: opt
+	do
+		case $opt in
+		n)	local test_id="$OPTARG";;
+		f)	local test_file="$OPTARG";;
+		?)	printf $"Usage: %s: \
+					-n 'test id' \
+					[-f 'test file name'] \
+					\\n" \
+				"$0"
+			exit 2;;
+		esac
+	done
+	if [ -z "${test_id-}" ]
+	then
+		printf $"Usage: %s: \
+				-n 'test id' \
+				[-f 'test file name'] \
+				\\n" \
+			"$0"
+		exit 2
 	fi
+	shift $((OPTIND - 1))
+	unset OPTIND
 
-	# shellcheck source=../shflags/shflags
-	. "$MAKE_COMMON_DIR/shflags/shflags"
-	FLAGS_PARENT="$THIS_SCRIPT_FILENAME"
-
-	DEFINE_string test_id '' $"test id (slug)"
-	DEFINE_string test_file '' $"test file path"
-
-	FLAGS "$@" || exit $?
-	eval set -- "${FLAGS_ARGV}"
-
-	set -o errexit
-	appveyor AddTest "${FLAGS_test_id:?}" \
+	appveyor AddTest "${test_id}" \
 		-Framework MSTest \
-		-FileName "${FLAGS_test_file:-}"
+		"${test_file:+-FileName ${test_file}}"
 
 }
 

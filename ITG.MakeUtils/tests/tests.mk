@@ -30,7 +30,7 @@ testPlatformAddTest =
 testPlatformSetStatus =
 
 # $(call testPlatformWrapper,testId,testScript,testfile)
-testPlatformWrapper = $(TESTTOOL) --test_id "$1" $(if $3,--test_file "$3") --on_test_add "$(call testPlatformAddTest)" --on_test_status_change "$(call testPlatformSetStatus)" "$2"
+testPlatformWrapper = $(TESTTOOL) -n "$1" $(if $3,-f "$3") $(if $(testPlatformAddTest),-a '$(testPlatformAddTest)') $(if $(testPlatformSetStatus),-s '$(testPlatformSetStatus)') "$2"
 
 endif
 
