@@ -25,6 +25,8 @@ on_test_change() {
 	DEFINE_string test_status 'None' $"test status (None, Running, Passed, Failed, Ignored, Skipped, Inconclusive, NotFound, Cancelled, NotRunnable)"
 	DEFINE_integer test_exit_code 0 $"test exit code"
 	DEFINE_integer duration 0 $"test execution duration"
+	DEFINE_string test_stdout '' $"test stdout pipe's content"
+	DEFINE_string test_stderr '' $"test stderr pipe's content"
 
 	FLAGS "$@" || exit $?
 	eval set -- "${FLAGS_ARGV}"
