@@ -8,22 +8,16 @@ default_on_test_creation() {
 	while getopts n:f: opt
 	do
 		case $opt in
-		n)	local test_id="$OPTARG";;
-		f)	local test_file="$OPTARG";;
-		?)	printf $"Usage: %s: \
-				-n 'test id' \
-				[-f 'test file name'] \
-				\\n" \
+		(n)	local test_id="$OPTARG";;
+		(f)	local test_file="$OPTARG";;
+		(?)	printf $"Usage: %s: -n 'test id' [-f 'test file name']\\n" \
 		 		"$0"
 			exit 2;;
 		esac
 	done
 	if [ -z "${test_id-}" ]
 	then
-		printf $"Usage: %s: \
-			-n 'test id' \
-			[-f 'test file name'] \
-			\\n" \
+		printf $"Usage: %s: -n 'test id' [-f 'test file name']\\n" \
 			"$0"
 		exit 2
 	fi
@@ -46,22 +40,14 @@ default_on_test_change() {
 	do
 		# shellcheck disable=2034
 		case $opt in
-		n)	local test_id="$OPTARG";;
-		f)	local test_file="$OPTARG";;
-		s)	local test_status="$OPTARG";;
-		d)	local test_duration="$OPTARG";;
-		x)	local test_exit_code="$OPTARG";;
-		o)	local test_stdout="$OPTARG";;
-		e)	local test_stderr="$OPTARG";;
-		?)	printf $"Usage: %s: \
-					-n 'test id' \
-					[-f 'test file name'] \
-					-s '%s' \
-					[-d duration] \
-					[-o 'stdout'] \
-					[-e 'stderr'] \
-					[-x exit code] \
-					\\n" \
+		(n)	local test_id="$OPTARG";;
+		(f)	local test_file="$OPTARG";;
+		(s)	local test_status="$OPTARG";;
+		(d)	local test_duration="$OPTARG";;
+		(x)	local test_exit_code="$OPTARG";;
+		(o)	local test_stdout="$OPTARG";;
+		(e)	local test_stderr="$OPTARG";;
+		(?)	printf $"Usage: %s: -n 'test id' [-f 'test file name'] -s '%s' [-d duration] [-o 'stdout'] [-e 'stderr'] [-x exit code]\\n" \
 				"$0" "$statuses"
 			exit 2;;
 		esac
@@ -70,15 +56,7 @@ default_on_test_change() {
 		[ -z "${test_id-}" ] ||
 		[ -z "${test_status-}" ] || [[ ! "${test_status}" =~ $statuses ]]
 	then
-		printf $"Usage: %s: \
-				-n 'test id' \
-				[-f 'test file name'] \
-				-s '%s' \
-				[-d duration] \
-				[-o 'stdout'] \
-				[-e 'stderr'] \
-				[-x exit code] \
-				\\n" \
+		printf $"Usage: %s: -n 'test id' [-f 'test file name'] -s '%s' [-d duration] [-o 'stdout'] [-e 'stderr'] [-x exit code]\\n" \
 			"$0" "$statuses"
 		exit 2
 	fi
@@ -107,32 +85,24 @@ default_on_test_change() {
 
 main() {
 
-	while getopts n:f:a:s opt
+	while getopts n:r:f:a:s opt
 	do
 		case $opt in
-		n)	local test_id="$OPTARG";;
-		f)	local test_file="$OPTARG";;
-		a)	local test_on_add="$OPTARG";;
-		s)	local test_on_status_change="$OPTARG";;
-		?)	printf $"Usage: %s: \
-					-n 'test id' \
-					[-f 'test file name'] \
-					[-a 'test creation event handler'] \
-					[-s 'tests events handler'] \
-					\\n" \
+		(n)	local test_id="$OPTARG";;
+		(r)	local test_recipe_filename="$OPTARG";;
+		(f)	local test_file="$OPTARG";;
+		(a)	local test_on_add="$OPTARG";;
+		(s)	local test_on_status_change="$OPTARG";;
+		(?)	printf $"Usage: %s: -n 'test id' [-r 'test recipe script file name'] [-f 'test file name'] [-a 'test creation event handler'] [-s 'tests events handler']\\n" \
 				"$0"
 			exit 2;;
 		esac
 	done
 	if
-		[ -z "${test_id-}" ]
+		[ -z "${test_id-}" ] ||
+		[ -z "${test_recipe_filename}" ]
 	then
-		printf $"Usage: %s: \
-				-n 'test id' \
-				[-f 'test file name'] \
-				[-a 'test creation event handler'] \
-				[-s 'tests events handler'] \
-				\\n" \
+		printf $"Usage: %s: -n 'test id' [-r 'test recipe script file name'] [-f 'test file name'] [-a 'test creation event handler'] [-s 'tests events handler']\\n" \
 			"$0"
 		exit 2
 	fi
@@ -154,7 +124,7 @@ main() {
 		-s Running
 	if [ "${test_on_status_change:-}" ]
 	then
-		( set -o xtrace; "${test_on_status_change}" -n "${test_id}" \
+		( "${test_on_status_change}" -n "${test_id}" \
 			${test_file:+-f "${test_file}"} \
 			-s Running \
 		) || printf $"Error in \"%s\" event handler.\\n" 'on test status change'
@@ -166,8 +136,7 @@ main() {
 	TEST_STDOUT_FILENAME=$(mktemp)
 	local TEST_STDERR_FILENAME
 	TEST_STDERR_FILENAME=$(mktemp)
-	echo "$@"
-	( eval "$@" ) > "$TEST_STDOUT_FILENAME" 2> "$TEST_STDERR_FILENAME"
+	. "${test_recipe_filename}" > "$TEST_STDOUT_FILENAME" 2> "$TEST_STDERR_FILENAME"
 	local TEST_EXIT_CODE=$?
 	local FINISH_TIME=$(($(date +%s%3N)))
 	local DURATION=$((FINISH_TIME-START_TIME))

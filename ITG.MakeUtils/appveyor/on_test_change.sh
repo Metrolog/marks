@@ -17,15 +17,7 @@ on_test_change() {
 		x)	local test_exit_code="$OPTARG";;
 		o)	local test_stdout="$OPTARG";;
 		e)	local test_stderr="$OPTARG";;
-		?)	printf $"Usage: %s: \
-					-n 'test id' \
-					[-f 'test file name'] \
-					-s '%s' \
-					[-d duration] \
-					[-o 'stdout'] \
-					[-e 'stderr'] \
-					[-x exit code] \
-					\\n" \
+		?)	printf $"Usage: %s: -n 'test id' [-f 'test file name'] -s '%s' [-d duration] [-o 'stdout'] [-e 'stderr'] [-x exit code]\\n" \
 				"$0" "$statuses"
 			exit 2;;
 		esac
@@ -34,15 +26,7 @@ on_test_change() {
 		[ -z "${test_id-}" ] ||
 		[ -z "${test_status-}" ] || [[ ! "${test_status}" =~ $statuses ]]
 	then
-		printf $"Usage: %s: \
-				-n 'test id' \
-				[-f 'test file name'] \
-				-s '%s' \
-				[-d duration] \
-				[-o 'stdout'] \
-				[-e 'stderr'] \
-				[-x exit code] \
-				\\n" \
+		printf $"Usage: %s: -n 'test id' [-f 'test file name'] -s '%s' [-d duration] [-o 'stdout'] [-e 'stderr'] [-x exit code]\\n" \
 			"$0" "$statuses"
 		exit 2
 	fi

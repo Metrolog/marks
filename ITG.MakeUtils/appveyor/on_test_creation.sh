@@ -10,20 +10,14 @@ on_test_creation() {
 		case $opt in
 		n)	local test_id="$OPTARG";;
 		f)	local test_file="$OPTARG";;
-		?)	printf $"Usage: %s: \
-					-n 'test id' \
-					[-f 'test file name'] \
-					\\n" \
+		?)	printf $"Usage: %s: -n 'test id' [-f 'test file name']\\n" \
 				"$0"
 			exit 2;;
 		esac
 	done
 	if [ -z "${test_id-}" ]
 	then
-		printf $"Usage: %s: \
-				-n 'test id' \
-				[-f 'test file name'] \
-				\\n" \
+		printf $"Usage: %s: -n 'test id' [-f 'test file name']\\n" \
 			"$0"
 		exit 2
 	fi

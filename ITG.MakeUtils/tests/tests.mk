@@ -7,6 +7,7 @@ ifndef MAKE_TESTS_DIR
 MAKE_TESTS_DIR = $(MAKE_COMMON_DIR)tests/
 
 TESTSDIR ?= tests/
+TESTSRECIPESDIR = $(AUXDIR)
 
 ifeq ($(SHELLTYPE),PowerShell)
 
@@ -34,20 +35,27 @@ testPlatformWrapper = $(TESTTOOL) \
   -n '$1' $(if $3,-f '$3') \
   $(if $(testPlatformAddTest),-a '$(testPlatformAddTest)') \
   $(if $(testPlatformSetStatus),-s '$(testPlatformSetStatus)') \
-  '$2'
+  -r '$2'
 
 endif
 
+testRecipeFileName = $(TESTSRECIPESDIR)test_recipe.$1-$2.sh
+
 # $(call defineTest,id,targetId,script,dependencies,testfile)
 define defineTest
-.PHONY: test.$(1)-$(2)
-test.$(1)-$(2): $(4)
-	$(call testPlatformWrapper,$$@,$3,$$(strip $5))
 
-.PHONY: test-$(2)
-test-$(2): | test.$(1)-$(2)
+$(call testRecipeFileName,$1,$2): $4 $5 | $$(TARGETDIR)
+	$$(file > $$@,#!/bin/sh)
+	$$(file >> $$@,$3)
 
-test: | test-$(2)
+.PHONY: test.$1-$2
+test.$1-$2: $(call testRecipeFileName,$1,$2) $4
+	$(call testPlatformWrapper,$$@,$$<,$(strip $5))
+
+.PHONY: test-$2
+test-$2: | test.$1-$2
+
+test: | test-$2
 
 endef
 
