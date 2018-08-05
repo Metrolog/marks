@@ -6,6 +6,7 @@ export POSIXLY_CORRECT=1
 on_test_change() {
 
 	local statuses='None|Running|Passed|Failed|Ignored|Skipped|Inconclusive|NotFound|Cancelled|NotRunnable'
+	test_duration=0
 	while getopts n:f:s:d:o:e:x: opt
 	do
 		# shellcheck disable=2034
@@ -38,7 +39,7 @@ on_test_change() {
 		-Framework MSTest \
 		${test_file:+-FileName "${test_file}"} \
 		-Outcome "${test_status}" \
-		${test_duration:+-Duration "${test_duration}"} \
+		-Duration "${test_duration}" \
 		${test_stdout:+-StdOut "${test_stdout}"} \
 		${test_stderr:+-StdErr "${test_stderr}"}
 	# set +o xtrace
