@@ -41,7 +41,7 @@ endif
 
 testRecipeFileName = $(TESTSRECIPESDIR)test_recipe.$1-$2.sh
 
-# $(call defineTest,id,targetId,script,dependencies,testfile)
+# $(call defineTest,id,targetId,script,dependencies,testfile,afterFinish)
 define defineTest
 
 $(call testRecipeFileName,$1,$2): $4 $5 | $$(TARGETDIR)
@@ -51,6 +51,7 @@ $(call testRecipeFileName,$1,$2): $4 $5 | $$(TARGETDIR)
 .PHONY: test.$1-$2
 test.$1-$2: $(call testRecipeFileName,$1,$2) $4
 	$(call testPlatformWrapper,$$@,$$<,$(strip $5))
+	$6
 
 .PHONY: test-$2
 test-$2: | test.$1-$2
