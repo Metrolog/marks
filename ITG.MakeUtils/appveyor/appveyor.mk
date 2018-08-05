@@ -63,7 +63,7 @@ writeerroraux = \
   $(shell appveyor AddMessage "$1" -Category Error $(if $2,-Details "$2"))
 
 pushDeploymentArtifactFile = \
-  appveyor PushArtifact "$2" -DeploymentName "$1"
+  appveyor PushArtifact '$2' -DeploymentName '$1'
 
 pushDeploymentArtifactFiles = \
   $(foreach a,$2,$(call pushDeploymentArtifactFile,$1,$(call OSabsPath,$a)))

@@ -10,7 +10,7 @@ TESTSDIR ?= tests/
 
 ifeq ($(SHELLTYPE),PowerShell)
 
-# $(call testPlatformSetStatus,testId,status,duration)
+# $(call testPlatformAddTest,testId,status,duration)
 testPlatformAddTest = $$$${Function:Add-UnitTest}
 
 # $(call testPlatformSetStatus,testId,status,duration)
@@ -30,7 +30,11 @@ testPlatformAddTest =
 testPlatformSetStatus =
 
 # $(call testPlatformWrapper,testId,testScript,testfile)
-testPlatformWrapper = $(TESTTOOL) -n "$1" $(if $3,-f "$3") $(if $(testPlatformAddTest),-a '$(testPlatformAddTest)') $(if $(testPlatformSetStatus),-s '$(testPlatformSetStatus)') "$2"
+testPlatformWrapper = $(TESTTOOL) \
+  -n '$1' $(if $3,-f '$3') \
+  $(if $(testPlatformAddTest),-a '$(testPlatformAddTest)') \
+  $(if $(testPlatformSetStatus),-s '$(testPlatformSetStatus)') \
+  '$2'
 
 endif
 
