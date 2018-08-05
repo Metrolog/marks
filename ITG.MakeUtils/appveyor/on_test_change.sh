@@ -35,7 +35,7 @@ on_test_change() {
 	unset OPTIND
 
 	set -o xtrace
-	appveyor UpdateTest \'"${test_id}"\' \
+	appveyor UpdateTest "${test_id}" \
 		-Framework MSTest \
 		${test_file:+-FileName "${test_file}"} \
 		-Outcome "${test_status}" \
