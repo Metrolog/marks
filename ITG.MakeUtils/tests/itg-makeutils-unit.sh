@@ -154,12 +154,11 @@ main() {
 		-s Running
 	if [ "${test_on_status_change:-}" ]
 	then
-		( "${test_on_status_change}" -n "${test_id}" \
+		( set -o xtrace; "${test_on_status_change}" -n "${test_id}" \
 			${test_file:+-f "${test_file}"} \
 			-s Running \
 		) || printf $"Error in \"%s\" event handler.\\n" 'on test status change'
 	fi
-  	echo "$@"
 	local TEST_EXIT_CODE=0
 	local START_TIME=$(($(date +%s%3N)))
 
@@ -167,6 +166,7 @@ main() {
 	TEST_STDOUT_FILENAME=$(mktemp)
 	local TEST_STDERR_FILENAME
 	TEST_STDERR_FILENAME=$(mktemp)
+	echo "$@"
 	( eval "$@" ) > "$TEST_STDOUT_FILENAME" 2> "$TEST_STDERR_FILENAME"
 	local TEST_EXIT_CODE=$?
 	local FINISH_TIME=$(($(date +%s%3N)))
