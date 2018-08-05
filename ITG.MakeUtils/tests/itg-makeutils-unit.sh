@@ -85,7 +85,7 @@ default_on_test_change() {
 
 main() {
 
-	while getopts n:r:f:a:s opt
+	while getopts n:r:f:a:s: opt
 	do
 		case $opt in
 		(n)	local test_id="$OPTARG";;
@@ -98,9 +98,16 @@ main() {
 			exit 2;;
 		esac
 	done
+	echo ------------------------------------------------------
+	echo $test_id
+	echo $test_recipe_filename
+	echo $test_file
+	echo $test_on_add
+	echo $test_on_status_change
+	echo ------------------------------------------------------
 	if
 		[ -z "${test_id-}" ] ||
-		[ -z "${test_recipe_filename}" ]
+		[ -z "${test_recipe_filename-}" ]
 	then
 		printf $"Usage: %s: -n 'test id' [-r 'test recipe script file name'] [-f 'test file name'] [-a 'test creation event handler'] [-s 'tests events handler']\\n" \
 			"$0"
