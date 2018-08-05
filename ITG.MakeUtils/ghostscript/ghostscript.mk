@@ -4,9 +4,9 @@ endif
 
 ifndef MAKE_GHOSTSCRIPT_DIR
 
-include $(ITG_MAKEUTILS_DIR)pdf.mk
+include $(MAKE_COMMON_DIR)pdf.mk
 
-MAKE_GHOSTSCRIPT_DIR = $(ITG_MAKEUTILS_DIR)
+MAKE_GHOSTSCRIPT_DIR = $(MAKE_COMMON_DIR)ghostscript/
 
 ifeq ($(OS),Windows_NT)
   ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
@@ -50,10 +50,6 @@ FONTRESOURCEDIR := Font/
 FILERESOURCEDIR := File/
 RESOURCEDIRSUBDIRS = $(ENCODINGRESOURCEDIR) $(PROCSETRESOURCEDIR)
 
-$(PSRESOURCEOUTPUTDIR) $(PSRESOURCEOUTPUTDIR)$(ENCODINGRESOURCEDIR) $(PSRESOURCEOUTPUTDIR)$(PROCSETRESOURCEDIR):
-	$(MAKETARGETASDIR)
-
-
 # $(call getPostScriptResourceSourceFiles[, resSourceDir])
 getPostScriptResourceSourceFiles = \
   $(foreach d,$(if $1,$1,$(PSRESOURCESOURCEDIR)),$(wildcard $d*.ps) $(foreach s,$(RESOURCEDIRSUBDIRS), $(wildcard $d$s*.ps)))
@@ -65,10 +61,8 @@ getPostScriptResourceOutputFiles = \
 # $(call preparePostScriptResource[, fromDir[, toDir[, files]]] )
 define preparePostScriptResource
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps
-	$$(MAKETARGETDIR)
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps | $$(TARGETDIR)
 	$$(COPY) $$< $$@
-	$$(TOUCH) $$@
 
 POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
 
@@ -77,10 +71,8 @@ endef
 # $(call copyPostScriptResource[, fromDir[, toDir[, files]]] )
 define copyPostScriptResource
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%
-	$$(MAKETARGETDIR)
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))% | $$(TARGETDIR)
 	$$(COPY) $$< $$@
-	$$(TOUCH) $$@
 
 POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
 
@@ -89,7 +81,7 @@ endef
 
 GSCMDLINE = $(GS) \
   $(foreach incdir,$(GSINCDIR),-I'$(incdir)') \
-  $(if $(GSFONTDIR),-sFONTPATH='$(subst $(SPACE),$(PATHSEP),$(strip $(GSFONTDIR)))')
+  $(if $(GSFONTDIR),-sFONTPATH='$(call merge,$(PATHSEP),$(GSFONTDIR))')
 
 #  $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
 
@@ -99,11 +91,9 @@ GSPSTOPDFFLAGS =
 GSPSTOPDFCMDLINE = $(GSCMDLINE) $(GSPSTOPDFFLAGS) \
   -sDEVICE=pdfwrite
 
-$(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES)
+$(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
 	$(call writeinformation,Build file "$@" from "$<"...)
-	$(MAKETARGETDIR)
 	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
-	$(call writeinformation,File "$@" is ready.)
 	$(OPENTARGETPDF)
 
 
@@ -112,11 +102,9 @@ GSPSTOEPSFLAGS =
 GSPSTOEPSCMDLINE = $(GSCMDLINE) $(GSPSTOEPSFLAGS) \
   -sDEVICE=eps2write
 
-$(OUTPUTDIR)%.eps: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES)
+$(OUTPUTDIR)%.eps: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
 	$(call writeinformation,Build file "$@" from "$<"...)
-	$(MAKETARGETDIR)
 	$(GSPSTOEPSCMDLINE) -sOutputFile='$@' '$<'
-	$(call writeinformation,File "$@" is ready.)
 
 
 ifdef MAKE_TESTS_DIR
@@ -131,7 +119,8 @@ define definePostScriptClearTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
   $(GSCMDLINE) '$2';,\
-  $2 $3 $$(POSTSCRIPTRESOURCEFILES) \
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES),,\
+  $2 \
 )
 
 endef
@@ -151,10 +140,11 @@ TESTSPS2PDFOUTPUTFILES = $(patsubst $(TESTSPS2PDFSOURCEDIR)%.ps,$(TESTSPS2PDFOUT
 define definePostScript2PDFTest
 
 $(call defineTest,$(basename $(notdir $1)),ps_build,\
-  $(MKDIR) $(dir $1);\
-  $(GSPSTOPDFCMDLINE) -sOutputFile='$1' '$2';\
-  $$(call pushDeploymentArtifactFile,$$(notdir $1),$1);,\
-  $2 $3 $$(POSTSCRIPTRESOURCEFILES) \
+  $(GSPSTOPDFCMDLINE) -sOutputFile='$1' '$2',\
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES),\
+	$(call TARGETDIR,$1),\
+  $2,\
+  $$(call pushDeploymentArtifactFile,$$(notdir $1),$1)\
 )
 
 endef

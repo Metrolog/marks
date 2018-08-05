@@ -1,6 +1,8 @@
 #!/usr/bin/make
 
-all: marks-pdf marks-eps
+all:: marks-pdf marks-eps
+# TODO убрать
+###all:: pdf
 
 # ITG.MakeUtils
 
@@ -8,9 +10,9 @@ ROOT_PROJECT_DIR ?= ../
 ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
 include $(ITG_MAKEUTILS_DIR)common.mk
 
-include $(ITG_MAKEUTILS_DIR)tests.mk
-include $(ITG_MAKEUTILS_DIR)ghostscript.mk
-include $(ITG_MAKEUTILS_DIR)appveyor.mk
+include $(ITG_MAKEUTILS_DIR)tests/tests.mk
+include $(ITG_MAKEUTILS_DIR)ghostscript/ghostscript.mk
+include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
 STAMPS_MAKEFILE_LOADED := true
 
@@ -22,9 +24,9 @@ STAMPSSOURCEFILES := $(call rwildcard,$(STAMPSRCDIR),*.ps)
 STAMPLIBDIR := $(PSRESOURCESOURCEDIR)
 ENCODINGSDIR := $(STAMPLIBDIR)$(ENCODINGRESOURCEDIR)
 
-ifeq ($(filter %clean,$(MAKECMDGOALS)),)
-$(eval $(call copyfileto, $(ENCODINGSDIR), $(CP1251TARGET)))
-$(eval $(call copyfileto, $(ENCODINGSDIR), $(CP1253TARGET)))
+ifeq ($(filter %clean .GLOBAL_VARIABLES,$(MAKECMDGOALS)),)
+$(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1251TARGET)))
+$(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1253TARGET)))
 endif
 
 maintainer-clean::
@@ -36,7 +38,7 @@ GSFONTDIR := $(GSFONTDIR) $(call OSabsPath,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCED
 $(eval $(foreach f,$(STAMPFONTFILES),$(call copyfileto,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR),$f)))
 POSTSCRIPTRESOURCEFILES += $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f))
 
-$(eval $(call preparePostScriptResource))
+$(eval $(call preparePostScriptResource,,,$(call uniq,$(call getPostScriptResourceSourceFiles) $(ENCODINGSDIR)$(notdir $(CP1251TARGET)) $(ENCODINGSDIR)$(notdir $(CP1253TARGET)))))
 $(eval $(call copyPostScriptResource,$(ITG_POSTSCRIPTLIBDIR),,$(ITG_POSTSCRIPTLIBFILES)))
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCEFILES))
@@ -44,8 +46,12 @@ STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCE
 $(eval $(call definePostScriptTests))
 
 .PHONY: marks-pdf
-marks-pdf: $(STAMPSPDFFILES)
-	$(pushDeploymentArtifact)
+marks-pdf: $(STAMPSPDFFILES) $(call print-help,marks-pdf,Выполнить подготовку в $(SUBPROJECT_DIR)$(OUTPUTDIR) .pdf файлов с оттисками клейм (только для оттисков полимерных клейм с групповой раскладкой для изготовления полимерных клише) на основе исходных .ps файлов заказов в $(SUBPROJECT_DIR)$(STAMPSRCDIR).)
+
+# TODO: убрать
+#.PHONY: pdf
+#pdf: $(STAMPSPDFFILES) $(call print-help,pdf,Выполнить подготовку в $(SUBPROJECT_DIR)$(OUTPUTDIR) .pdf файлов с оттисками клейм (только для оттисков полимерных клейм с групповой раскладкой для изготовления полимерных клише) на основе исходных .ps файлов заказов в $(SUBPROJECT_DIR)$(STAMPSRCDIR).)
+#	$(pushDeploymentArtifact)
 
 
 # multiple output files orders support

@@ -3,16 +3,17 @@
 	// for the documentation about the extensions.json format
 	"recommendations": [
 		"eamodio.gitlens",
-		"greatminds.gitflow4code",
+		"vector-of-bool.gitflow",
 		"sidneys1.gitconfig",
 		"EditorConfig.EditorConfig",
-		"DavidAnson.vscode-markdownlint",
 		"sleistner.vscode-fileutils",
-		"bierner.markdown-preview-github-styles",
-		"redhat.vscode-yaml",
 		"Gruntfuggly.todo-tree",
+		"redhat.vscode-yaml",
+		"DavidAnson.vscode-markdownlint",
+		"bierner.markdown-preview-github-styles",
 		"ms-vscode.PowerShell",
 		"sjhuangx.vscode-scheme",
-		"mxschmitt.postscript"
+		"mxschmitt.postscript",
+		"timonwong.shellcheck"
 	]
 }

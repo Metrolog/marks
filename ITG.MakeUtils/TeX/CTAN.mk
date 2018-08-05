@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_TEX_CTAN_DIR
-MAKE_TEX_CTAN_DIR = $(ITG_MAKEUTILS_DIR)TeX/
+MAKE_TEX_CTAN_DIR = $(MAKE_COMMON_DIR)TeX/
 
 LATEXTDSAUXDIR ?= $(AUXDIR)tds/
 TDSFILE ?= $(LATEXPKG).tds.zip
@@ -19,7 +19,7 @@ export CTAN_DIRECTORY ?= /macros/latex/contrib/$(LATEXPKG)/
 export LICENSE ?= free
 export FREEVERSION ?= lppl
 
-include $(ITG_MAKEUTILS_DIR)appveyor.mk
+include $(MAKE_COMMON_DIR)appveyor/appveyor.mk
 
 #
 # common
@@ -179,16 +179,14 @@ $(TDSTARGET) $(CTANTARGET): | .CTAN
 
 else
 
-$(CTANMAKEFILE): $(MAKEFILE_LIST)
+$(CTANMAKEFILE): $(MAKEFILE_LIST) | $(TARGETDIR)
 	$(call writeinformation,Building intermediate makefile for CTAN "$@"...)
-	$(MAKETARGETDIR)
 	$(file > $@,# intermediate makefile for CTAN archive)
 	$(file >> $@,SUBMAKE_TEX_CTAN := $(dir $(lastword $(MAKEFILE_LIST))))
 	$(file >> $@,include Makefile)
 	$(foreach ctanfile,$(CTANFILES),$(file >> $@,$(call copyFileToTDSandCTAN,$(ctanfile))))
 	$(file >> $@,$(call copyFilesToZIP,$(TDSTARGET),,$(LATEXTDSAUXDIR)))
 	$(file >> $@,$(call copyFilesToZIP,$(CTANTARGET),,$(LATEXCTANAUXDIR)))
-	$(call writeinformation,File "$@" is ready.)
 
 $(TDSTARGET) $(CTANTARGET): $(CTANMAKEFILE)
 	$(MAKE) --makefile $(CTANMAKEFILE) $@

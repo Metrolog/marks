@@ -3,19 +3,18 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_GITVERSION_DIR
-MAKE_GITVERSION_DIR = $(ITG_MAKEUTILS_DIR)
 
-include $(ITG_MAKEUTILS_DIR)git.mk
+include $(MAKE_COMMON_DIR)git/git.mk
+
+MAKE_GITVERSION_DIR = $(MAKE_GIT_DIR)
 
 GITVERSION ?= gitversion
 
 export GITVERSIONMAKEFILE ?= $(abspath $(AUXDIR)version.mk)
 
-$(GITVERSIONMAKEFILE): $(REPOVERSION)
+$(GITVERSIONMAKEFILE): $(REPOVERSION) | $(TARGETDIR)
 	$(call writeinformation,Generating version data file "$@" with GitVersion...)
-	$(MAKETARGETDIR)
 	$(GITVERSION) /exec $(MAKE) /execargs "--makefile=$(MAKE_GITVERSION_DIR)gitversion-buildcache.mk $@"
-	$(call writeinformation,File "$@" is ready.)
 
 ifeq ($(filter clean,$(MAKECMDGOALS)),)
 include $(GITVERSIONMAKEFILE)

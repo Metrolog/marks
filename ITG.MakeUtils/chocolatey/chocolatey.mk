@@ -3,9 +3,9 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_CHOCOLATEY_DIR
-MAKE_CHOCOLATEY_DIR = $(ITG_MAKEUTILS_DIR)
+MAKE_CHOCOLATEY_DIR = $(MAKE_COMMON_DIR)chocolatey/
 
-include $(realpath $(ITG_MAKEUTILS_DIR)tests.mk)
+include $(realpath $(MAKE_COMMON_DIR)tests/tests.mk)
 
 CHOCO              ?= choco
 NUGET              ?= nuget
@@ -23,8 +23,7 @@ getChocoPackageWebFileChecksumAuxFile = $(call getExternalFileId,$1)_AUXFILE$(2)
 # $(call getChocoPackageWebFileChecksumFile,externalFileXml,bitsPrefix)
 getChocoPackageWebFileChecksumFile = $(dir $1)$(call getExternalFileId,$1)$(if $(2),($2)).$(FILEHASHALGORITHM).checksum.txt
 
-%.externalfile.tmp: %.externalfile.xml
-	$(MAKETARGETDIR)
+%.externalfile.tmp: %.externalfile.xml | $(TARGETDIR)
 	$(call psExecuteCommand, \
     Invoke-WebRequest \
       -Uri ( ( Select-Xml -LiteralPath '$<' -XPath '/package/files/file[@fileid=\"$(call getExternalFileId,$*)\"]/@url').Node.Value ) \
@@ -37,8 +36,7 @@ getChocoPackageWebFileChecksumFile = $(dir $1)$(call getExternalFileId,$1)$(if $
 clean::
 	shopt -s globstar; rm -rf **/*.externalfile.tmp
 
-%.$(FILEHASHALGORITHM).checksum.txt: %.externalfile.tmp %.externalfile.xml
-	$(MAKETARGETDIR)
+%.$(FILEHASHALGORITHM).checksum.txt: %.externalfile.tmp %.externalfile.xml | $(TARGETDIR)
 	$(call psExecuteCommand, \
     ( Get-FileHash -LiteralPath '$<' -Algorithm $(FILEHASHALGORITHM) -Verbose ).Hash \
     | Out-File -LiteralPath '$@' -Encoding utf8 -Force \
@@ -65,16 +63,15 @@ $$($(1)TARGETS): \
     $$($(1)TOOLS) \
     $(wildcard $(SOURCESDIR)$2/*.ignore) \
     $(patsubst %.externalfile.xml,%.$(FILEHASHALGORITHM).checksum.txt,$(wildcard $(SOURCESDIR)$2/*.externalfile.xml)) \
-    $6
+    $6 \
+    | $$(TARGETDIR)
 	$$(call writeinformation,Generating chocolatey package file "$$@"...)
-	$$(MAKETARGETDIR)
-	cd $$(@D) && $$(CHOCO) \
-    pack $$(subst $$(SPACE),/,$$(patsubst %,..,$$(subst /,$$(SPACE),$$(@D))))/$$< \
+	cd $$(@D); $$(CHOCO) \
+    pack $$(call reversedirpath,$$(@D))$$< \
     --force \
     --version $$($(1)VERSION) \
     --verbose
-	@touch $$@
-	$$(call writeinformation,File "$$@" is ready.)
+	$$(TOUCH) $$@
 
 .PHONY: $1
 $(1): $$($(1)TARGETS)

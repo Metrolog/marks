@@ -3,9 +3,9 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_SIGNING_SIGN_BASIC_DIR
-MAKE_SIGNING_SIGN_BASIC_DIR = $(ITG_MAKEUTILS_DIR)signing/
+MAKE_SIGNING_SIGN_BASIC_DIR = $(MAKE_COMMON_DIR)signing/
 
-include $(ITG_MAKEUTILS_DIR)signing/sign.mk
+include $(MAKE_COMMON_DIR)signing/sign.mk
 
 CODE_SIGNING_CERTIFICATE_DIR = certificate/
 CODE_SIGNING_CERTIFICATE := $(CODE_SIGNING_CERTIFICATE_DIR)cert.pfx

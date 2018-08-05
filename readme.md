@@ -82,6 +82,10 @@
 
     make all
 
+Для доступа к справке по целям `make`:
+
+    make help
+
 ## Внесение изменений
 
 Репозиторий проекта размещён по адресу [github.com/Metrolog/marks](https://github.com/Metrolog/marks).

@@ -3,16 +3,16 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_NUGET_DIR
-MAKE_NUGET_DIR = $(ITG_MAKEUTILS_DIR)
+MAKE_NUGET_DIR = $(MAKE_COMMON_DIR)nuget/
 
 NUGET ?= nuget
 NUGET_PACKAGES_DIR ?= packages/
 
 $(NUGET_PACKAGES_DIR)%: $(MAKEFILES)
 	$(NUGET) \
-    install $(firstword $(subst /,$(SPACE),$(patsubst $(NUGET_PACKAGES_DIR)%,%,$@))) \
+    install $(firstword $(subst /,$(__gmsl_space),$(patsubst $(NUGET_PACKAGES_DIR)%,%,$@))) \
     -OutputDirectory $(call winPath,$(NUGET_PACKAGES_DIR)) \
-    $(NUGET_PACKAGE_INSTALL_ARGS_$(firstword $(subst /,$(SPACE),$(patsubst $(NUGET_PACKAGES_DIR)%,%,$@)))) \
+    $(NUGET_PACKAGE_INSTALL_ARGS_$(firstword $(subst /,$(__gmsl_space),$(patsubst $(NUGET_PACKAGES_DIR)%,%,$@)))) \
     -ExcludeVersion
 
 clean::
