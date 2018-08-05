@@ -9,7 +9,7 @@ default_on_test_creation() {
 	do
 		case $opt in
 		(n)	local test_id="$OPTARG";;
-		(f)	local test_file="$OPTARG";;
+		(f)	local test_filename="$OPTARG";;
 		(?)	printf $"Usage: %s: -n 'test id' [-f 'test file name']\\n" \
 		 		"$0"
 			exit 2;;
@@ -24,8 +24,8 @@ default_on_test_creation() {
 	shift $((OPTIND - 1))
 	unset OPTIND
 
-	if [ -z "${test_file-}" ]; then
-		printf $"Test \"%s\" (from file \"%s\").\\n" "${test_id}" "${test_file}"
+	if [ -z "${test_filename-}" ]; then
+		printf $"Test \"%s\" (from file \"%s\").\\n" "${test_id}" "${test_filename}"
 	else
 		printf $"Test \"%s\".\\n" "${test_id}"
 	fi
@@ -41,13 +41,13 @@ default_on_test_change() {
 		# shellcheck disable=2034
 		case $opt in
 		(n)	local test_id="$OPTARG";;
-		(f)	local test_file="$OPTARG";;
+		(f)	local test_filename="$OPTARG";;
 		(s)	local test_status="$OPTARG";;
 		(d)	local test_duration="$OPTARG";;
 		(x)	local test_exit_code="$OPTARG";;
-		(o)	local test_stdout="$OPTARG";;
-		(e)	local test_stderr="$OPTARG";;
-		(?)	printf $"Usage: %s: -n 'test id' [-f 'test file name'] -s '%s' [-d duration] [-o 'stdout'] [-e 'stderr'] [-x exit code]\\n" \
+		(o)	local test_stdout_filename="$OPTARG";;
+		(e)	local test_stderr_filename="$OPTARG";;
+		(?)	printf $"Usage: %s: -n 'test id' [-f 'test file name'] -s '%s' [-d duration] [-o 'stdout file name'] [-e 'stderr file name'] [-x exit code]\\n" \
 				"$0" "$statuses"
 			exit 2;;
 		esac
@@ -56,7 +56,7 @@ default_on_test_change() {
 		[ -z "${test_id-}" ] ||
 		[ -z "${test_status-}" ] || [[ ! "${test_status}" =~ $statuses ]]
 	then
-		printf $"Usage: %s: -n 'test id' [-f 'test file name'] -s '%s' [-d duration] [-o 'stdout'] [-e 'stderr'] [-x exit code]\\n" \
+		printf $"Usage: %s: -n 'test id' [-f 'test file name'] -s '%s' [-d duration] [-o 'stdout file name'] [-e 'stderr file name'] [-x exit code]\\n" \
 			"$0" "$statuses"
 		exit 2
 	fi
@@ -109,7 +109,6 @@ main() {
 	shift $((OPTIND - 1))
 	unset OPTIND
 
-	shopt -s execfail
 	echo '==============================================================================='
 	default_on_test_creation -n "${test_id}" \
 		${test_file:+-f "${test_file}"}
@@ -136,32 +135,35 @@ main() {
 	TEST_STDOUT_FILENAME=$(mktemp)
 	local TEST_STDERR_FILENAME
 	TEST_STDERR_FILENAME=$(mktemp)
-	. "${test_recipe_filename}" > "$TEST_STDOUT_FILENAME" 2> "$TEST_STDERR_FILENAME"
-	local TEST_EXIT_CODE=$?
+	local TEST_EXIT_CODE
+	set +o errexit
+	set -o pipefail
+	{
+		{
+			set -o errexit
+			# shellcheck disable=1090
+			. "${test_recipe_filename}"
+		} | tee "$TEST_STDOUT_FILENAME"
+	} 3>&1 1>&2 2>&3 | tee "$TEST_STDERR_FILENAME" 1>&2
+	TEST_EXIT_CODE=$?
 	local FINISH_TIME=$(($(date +%s%3N)))
 	local DURATION=$((FINISH_TIME-START_TIME))
-	local TEST_STDOUT
-	TEST_STDOUT=$(< "${TEST_STDOUT_FILENAME}")
-	rm "${TEST_STDOUT_FILENAME}"
-	local TEST_STDERR
-	TEST_STDERR=$(< "${TEST_STDERR_FILENAME}")
-	rm "${TEST_STDERR_FILENAME}"
 
 	if [[ $TEST_EXIT_CODE -eq 0 ]]; then
 		default_on_test_change -n "${test_id}" \
 			${test_file:+-f "${test_file}"} \
 			-s Passed \
 			-d $DURATION \
-#			--test_stdout "${TEST_STDOUT_QUOTED}" \
-#			--test_stderr "${TEST_STDERR_QUOTED}" \
+			-o "${TEST_STDOUT_FILENAME}" \
+			-e "${TEST_STDERR_FILENAME}"
 		if [ "${test_on_status_change:-}" ]
 		then
 			( "${test_on_status_change}" -n "${test_id}" \
 				${test_file:+-f "${test_file}"} \
 				-s Passed \
 				-d $DURATION \
-#				--test_stdout "${TEST_STDOUT_QUOTED}" \
-#				--test_stderr "${TEST_STDERR_QUOTED}" \
+				-o "${TEST_STDOUT_FILENAME}" \
+				-e "${TEST_STDERR_FILENAME}"
 			) || printf $"Error in \"%s\" event handler.\\n" 'on test status change'
 		fi
 	else
@@ -170,8 +172,8 @@ main() {
 			-s Failed \
 			-x $TEST_EXIT_CODE \
 			-d $DURATION \
-#			--test_stdout "${TEST_STDOUT_QUOTED}" \
-#			--test_stderr "${TEST_STDERR_QUOTED}" \
+			-o "${TEST_STDOUT_FILENAME}" \
+			-e "${TEST_STDERR_FILENAME}"
 		if [ "${test_on_status_change:-}" ]
 		then
 			( "${test_on_status_change}" -n "${test_id}" \
@@ -179,12 +181,14 @@ main() {
 				-s Failed \
 				-x $TEST_EXIT_CODE \
 				-d $DURATION \
-#				--test_stdout "${TEST_STDOUT_QUOTED}" \
-#				--test_stderr "${TEST_STDERR_QUOTED}" \
+				-o "${TEST_STDOUT_FILENAME}" \
+				-e "${TEST_STDERR_FILENAME}"
 			) || printf $"Error in \"%s\" event handler.\\n" 'on test status change'
 		fi
 	fi
 	echo '==============================================================================='
+	rm "${TEST_STDOUT_FILENAME}"
+	rm "${TEST_STDERR_FILENAME}"
 
 	exit $TEST_EXIT_CODE
 

@@ -8,9 +8,9 @@ on_test_creation() {
 	while getopts n:f: opt
 	do
 		case $opt in
-		n)	local test_id="$OPTARG";;
-		f)	local test_file="$OPTARG";;
-		?)	printf $"Usage: %s: -n 'test id' [-f 'test file name']\\n" \
+		(n)	local test_id="$OPTARG";;
+		(f)	local test_filename="$OPTARG";;
+		(?)	printf $"Usage: %s: -n 'test id' [-f 'test file name']\\n" \
 				"$0"
 			exit 2;;
 		esac
@@ -27,7 +27,7 @@ on_test_creation() {
 	set -o xtrace
 	appveyor AddTest "${test_id}" \
 		-Framework MSTest \
-		${test_file:+-FileName "${test_file}"}
+		${test_filename:+-FileName "${test_filename}"}
 	# set +o xtrace
 
 }
