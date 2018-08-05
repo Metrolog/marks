@@ -46,7 +46,7 @@ define defineTest
 
 $(call testRecipeFileName,$1,$2): $4 $6 | $$(TARGETDIR)
 	$$(file > $$@,#!/bin/sh)
-	$$(file >> $$@,set -o xtrace)
+	$$(file >> $$@,# set -o xtrace)
 	$$(file >> $$@,$3)
 
 .PHONY: test.$1-$2

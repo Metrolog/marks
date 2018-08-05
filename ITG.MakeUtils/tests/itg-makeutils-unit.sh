@@ -144,11 +144,11 @@ main() {
 			# set -o xtrace
 			# shellcheck disable=1090
 			. "${test_recipe_filename}"
-			set +o xtrace
+			#set +o xtrace
 		} | tee "$TEST_STDOUT_FILENAME"
 	} 3>&1 1>&2 2>&3 | tee "$TEST_STDERR_FILENAME" 1>&2
 	TEST_EXIT_CODE=$?
-	set +o xtrace
+	#set +o xtrace
 	local FINISH_TIME=$(($(date +%s%3N)))
 	local DURATION=$((FINISH_TIME-START_TIME))
 
