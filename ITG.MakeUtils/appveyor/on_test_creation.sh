@@ -24,7 +24,7 @@ on_test_creation() {
 	shift $((OPTIND - 1))
 	unset OPTIND
 
-	set -o xtrace
+	#set -o xtrace
 	appveyor AddTest "${test_id}" \
 		-Framework MSTest \
 		${test_filename:+-FileName "${test_filename}"}

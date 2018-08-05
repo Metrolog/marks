@@ -47,7 +47,7 @@ on_test_change() {
 		test_stderr=$(< "${test_stderr_filename}")
 	fi
 
-	set -o xtrace
+	#set -o xtrace
 	appveyor UpdateTest "${test_id}" \
 		-Framework MSTest \
 		${test_filename:+-FileName "${test_filename}"} \
