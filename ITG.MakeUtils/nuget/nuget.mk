@@ -3,7 +3,7 @@ $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils file
 endif
 
 ifndef MAKE_NUGET_DIR
-MAKE_NUGET_DIR = $(ITG_MAKEUTILS_DIR)
+MAKE_NUGET_DIR = $(MAKE_COMMON_DIR)nuget/
 
 NUGET ?= nuget
 NUGET_PACKAGES_DIR ?= packages/

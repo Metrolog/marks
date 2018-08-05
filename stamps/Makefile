@@ -8,9 +8,9 @@ ROOT_PROJECT_DIR ?= ../
 ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
 include $(ITG_MAKEUTILS_DIR)common.mk
 
-include $(ITG_MAKEUTILS_DIR)tests.mk
-include $(ITG_MAKEUTILS_DIR)ghostscript.mk
-include $(ITG_MAKEUTILS_DIR)appveyor.mk
+include $(ITG_MAKEUTILS_DIR)tests/tests.mk
+include $(ITG_MAKEUTILS_DIR)ghostscript/ghostscript.mk
+include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
 
 PSRESOURCEOUTPUTDIR = $(AUXDIR)Resource/
@@ -21,9 +21,9 @@ STAMPSSOURCEFILES := $(call rwildcard,$(STAMPSRCDIR),*.ps)
 STAMPLIBDIR := $(PSRESOURCESOURCEDIR)
 ENCODINGSDIR := $(STAMPLIBDIR)$(ENCODINGRESOURCEDIR)
 
-ifeq ($(filter %clean,$(MAKECMDGOALS)),)
-$(eval $(call copyfileto, $(ENCODINGSDIR), $(CP1251TARGET)))
-$(eval $(call copyfileto, $(ENCODINGSDIR), $(CP1253TARGET)))
+ifeq ($(filter %clean .GLOBAL_VARIABLES,$(MAKECMDGOALS)),)
+$(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1251TARGET)))
+$(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1253TARGET)))
 endif
 
 maintainer-clean::
@@ -35,7 +35,7 @@ GSFONTDIR := $(GSFONTDIR) $(call OSabsPath,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCED
 $(eval $(foreach f,$(STAMPFONTFILES),$(call copyfileto,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR),$f)))
 POSTSCRIPTRESOURCEFILES += $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f))
 
-$(eval $(call preparePostScriptResource))
+$(eval $(call preparePostScriptResource,,,$(call uniq,$(call getPostScriptResourceSourceFiles) $(ENCODINGSDIR)$(notdir $(CP1251TARGET)) $(ENCODINGSDIR)$(notdir $(CP1253TARGET)))))
 $(eval $(call copyPostScriptResource,$(ITG_POSTSCRIPTLIBDIR),,$(ITG_POSTSCRIPTLIBFILES)))
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCEFILES))

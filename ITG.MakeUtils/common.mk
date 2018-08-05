@@ -50,14 +50,14 @@ ROOT_PROJECT_DIR ?= ../
 ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
 #endregion calc ITG.MakeUtils relative path
 
-include $(ITG_MAKEUTILS_DIR)GMSL/gmsl
-include $(ITG_MAKEUTILS_DIR)help-system.mk
+include $(MAKE_COMMON_DIR)GMSL/gmsl
+include $(MAKE_COMMON_DIR)help-system.mk
 
 #region check make tool version and features
 
-ifeq ($(call set_is_member,oneshell,$(call set_create,$(.FEATURES))),$(false))
-$(call writeerror,Requires make version that supports .ONESHELL feature.)
-endif
+#ifeq ($(call set_is_member,oneshell,$(call set_create,$(.FEATURES))),$(false))
+#$(call writeerror,Requires make version that supports .ONESHELL feature.)
+#endif
 
 ifneq (3.82,$(firstword $(sort $(MAKE_VERSION) 3.82)))
 $(call writeerror,Requires make version 3.82 or higher.)
@@ -120,58 +120,38 @@ OSabsPath = $(call _deprecated_function,OSabsPath)$(abspath $1)
 
 #region setup shell
 
+SHELLTYPE := sh
+
 ifeq ($(OS),Windows_NT)
-
-PowerShell         := powershell
-
-# под cygwin $(MAKE) == '/usr/bin/make'. Поэтому приходится явно переназначать.
-ifeq ($(MAKE),/usr/bin/make)
-MAKE := make
-OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -w $(abspath $1))
-endif
-
+  ifeq (a,$(shell echo "a"))
+    ISCYGWIN := $(true)
+    MAKE := make
+    OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -m $(abspath $1))
+  else
+    ISCYGWIN := $(false)
+  endif
 else
-
-PowerShell         := /usr/bin/pwsh
-
+  ISCYGWIN := $(false)
 endif
 
 VERBOSE            ?= true
 
-ifeq ($(VERBOSE),true)
-  VERBOSEFLAGS := -Verbose
-else
-  VERBOSEFLAGS :=
-endif
-
-.ONESHELL::
-
-POWERSHELLMODULES  := \
-  '$(ITG_MAKEUTILS_DIR)ITG.MakeUtils/ITG.MakeUtils.psd1'
-
-SHELL              := $(PowerShell)
-
-.SHELLFLAGS        = \
-  -NoLogo \
-  -NonInteractive \
-  -ExecutionPolicy unrestricted \
-  -Command \
-    $$ConfirmPreference = 'High'; \
-    $$InformationPreference = 'Continue'; \
-    $$ErrorActionPreference = 'Stop'; \
-    $$VerbosePreference = 'SilentlyContinue'; \
-    $$DebugPreference = 'SilentlyContinue'; \
-    $(POWERSHELLMODULES) | Import-Module -ErrorAction 'Stop' -Verbose:$$False;
-
-MKDIR              := mkdir $(VERBOSEFLAGS) -p
+MKDIR              := mkdir -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
-RMDIR              := rm $(VERBOSEFLAGS) -r -f
-RM                 := rm $(VERBOSEFLAGS) -r -f
-# TODO: переписать TOUCH на PowerShell
+RMDIR              := rm -r -f
+RM                 := rm -r -f
 TOUCH              := touch
-COPY               := cp $(VERBOSEFLAGS)
-CURL               := curl $(VERBOSEFLAGS)
+COPY               := cp
+CURL               := curl
+
+DIRMARKERFILE      := ~.dirstate
+
+%/$(DIRMARKERFILE):
+	$(MAKETARGETDIR)
+	@$(TOUCH) $@
+
+TARGETDIR = $(if $1,$(dir $1)$(DIRMARKERFILE),$$(@D)/$(DIRMARKERFILE))
 
 # $(call dirname,dir)
 dirname = $(patsubst %/,%,$1)
@@ -185,9 +165,6 @@ OUTPUTDIR          ?= release/
 SOURCESDIR         ?= sources/
 CONFIGDIR          ?= config/
 
-$(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
-	$(MAKETARGETASDIR)
-
 #endregion common dirs
 
 
@@ -195,7 +172,7 @@ $(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
 # $(call reversedirpath,dirPath,pathToRootFromChild)
-reversedirpath = $(if $(strip $1),$(foreach d,$(call split,/,$1),../),./)
+reversedirpath = $(if $(strip $1),$(call merge,/,$(foreach d,$(call split,/,$1),..))/,./)
 
 # $(call setvariable, var, value)
 define setvariable
@@ -207,8 +184,7 @@ endef
 define copyfile
 $(call assert,$1,Expected file name (to))
 $(call assert,$2,Expected file name (from))
-$1: $2
-	$$(MAKETARGETDIR)
+$1: $2 | $$(TARGETDIR)
 	$(COPY) $$< $$@
 endef
 
@@ -221,14 +197,12 @@ copyfilefrom = $(call copyfile,$1,$2$(notdir $1))
 #region subprojects support
 
 SUBPROJECTS_EXPORTS_DIR := $(CONFIGDIR)subprojectExports/
-$(SUBPROJECTS_EXPORTS_DIR): | $(CONFIGDIR)
-	$(MAKETARGETASDIR)
 
 SUBPROJECT_EXPORTS_FILE ?= $(SUBPROJECTS_EXPORTS_DIR)undefined
 
 .PHONY: .GLOBAL_VARIABLES
 .GLOBAL_VARIABLES: $(SUBPROJECT_EXPORTS_FILE)
-$(SUBPROJECT_EXPORTS_FILE):: $(MAKEFILE_LIST)
+$(SUBPROJECT_EXPORTS_FILE):: $(MAKEFILE_LIST) | $(TARGETDIR)
 	$(file > $@,# subproject exported variables)
 
 # $(call exportGlobalVariablesAux, Variables, Writer)
@@ -264,14 +238,14 @@ MAKE_SUBPROJECT = \
     -C $(call getSubProjectDir,$1) \
     SUBPROJECT=$1 \
     SUBPROJECT_DIR=$(call getSubProjectDir,$1) \
-    ROOT_PROJECT_DIR=$(call reversedirpath,$1) \
+    ROOT_PROJECT_DIR=$(call reversedirpath,$(call getSubProjectDir,$1)) \
     SUBPROJECT_EXPORTS_FILE=$(call reversedirpath,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
 
 # $(call MAKE_SUBPROJECT_TARGET, Target)
 MAKE_SUBPROJECT_TARGET = \
   $(MAKE) \
     -C $(ROOT_PROJECT_DIR) \
-    ROOT_PROJECT_DIR=$(call reversedirpath,$1) \
+    ROOT_PROJECT_DIR=./ \
     $1
 
 # $(call declareProjectTargets, Project)
@@ -286,7 +260,7 @@ define useSubProject
 $(call assert,$1,Expected project slug)
 $(call assert,$2,Expected project directory path)
 $(eval $(call setSubProjectDir,$1,$2))
-$(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $(SUBPROJECTS_EXPORTS_DIR)
+$(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $$(TARGETDIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
 .PHONY: $1 $3
 ifeq ($(filter %clean,$(MAKECMDGOALS)),)
