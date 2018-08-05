@@ -151,7 +151,7 @@ DIRMARKERFILE      := ~.dirstate
 	$(MAKETARGETDIR)
 	@$(TOUCH) $@
 
-TARGETDIR = $$(@D)/$(DIRMARKERFILE)
+TARGETDIR = $(if $1,$(dir $1)$(DIRMARKERFILE),$$(@D)/$(DIRMARKERFILE))
 
 # $(call dirname,dir)
 dirname = $(patsubst %/,%,$1)
