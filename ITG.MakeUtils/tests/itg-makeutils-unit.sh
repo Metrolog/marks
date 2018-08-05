@@ -98,13 +98,6 @@ main() {
 			exit 2;;
 		esac
 	done
-	echo ------------------------------------------------------
-	echo $test_id
-	echo $test_recipe_filename
-	echo $test_file
-	echo $test_on_add
-	echo $test_on_status_change
-	echo ------------------------------------------------------
 	if
 		[ -z "${test_id-}" ] ||
 		[ -z "${test_recipe_filename-}" ]
@@ -150,23 +143,9 @@ main() {
 	local TEST_STDOUT
 	TEST_STDOUT=$(< "${TEST_STDOUT_FILENAME}")
 	rm "${TEST_STDOUT_FILENAME}"
-	local TEST_STDOUT_QUOTED="${TEST_STDOUT}"
-	if [ "${TEST_STDOUT_QUOTED}" ]; then
-		TEST_STDOUT_QUOTED="${TEST_STDOUT_QUOTED@Q}"
-		TEST_STDOUT_QUOTED="${TEST_STDOUT_QUOTED:1}"
-	else
-		TEST_STDOUT_QUOTED=\'\'
-	fi
 	local TEST_STDERR
 	TEST_STDERR=$(< "${TEST_STDERR_FILENAME}")
 	rm "${TEST_STDERR_FILENAME}"
-	local TEST_STDERR_QUOTED="${TEST_STDERR}"
-	if [ "${TEST_STDERR_QUOTED}" ]; then
-		TEST_STDERR_QUOTED="${TEST_STDERR_QUOTED@Q}"
-		TEST_STDERR_QUOTED="${TEST_STDERR_QUOTED:1}"
-	else
-		TEST_STDERR_QUOTED=\'\'
-	fi
 
 	if [[ $TEST_EXIT_CODE -eq 0 ]]; then
 		default_on_test_change -n "${test_id}" \
