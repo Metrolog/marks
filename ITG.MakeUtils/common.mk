@@ -1,6 +1,7 @@
+#!/usr/bin/make
+
 ifndef MAKE_COMMON_DIR
 MAKE_COMMON_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-ITG_MAKEUTILS_LOADED := true
 
 #region info, warning and error wrappers
 
@@ -51,6 +52,8 @@ ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_
 #endregion calc ITG.MakeUtils relative path
 
 include $(MAKE_COMMON_DIR)GMSL/gmsl
+__itg_makeutils_included:=$(true)
+
 include $(MAKE_COMMON_DIR)help-system.mk
 
 #region check make tool version and features
@@ -167,12 +170,19 @@ CONFIGDIR          ?= config/
 
 #endregion common dirs
 
+is_clean:=$(call __gmsl_make_bool,$(filter %clean,$(MAKECMDGOALS)))
 
 # $(call rwildcard,dir,filesfilter)
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
-define includemakefile
+define include_makefile
 include $1
+endef
+
+define include_makefile_if_not_clean
+ifneq ($(is_clean),$(true))
+$(call include_makefile,$1)
+endif
 endef
 
 # $(call reversedirpath,dirPath,pathToRootFromChild)
@@ -267,9 +277,7 @@ $(eval $(call setSubProjectDir,$1,$2))
 $(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $$(TARGETDIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
 .PHONY: $1 $3
-ifeq ($(filter %clean,$(MAKECMDGOALS)),)
-include $(SUBPROJECTS_EXPORTS_DIR)$1.mk
-endif
+$(call include_makefile_if_not_clean,$(SUBPROJECTS_EXPORTS_DIR)$1.mk)
 $1:
 	$(call MAKE_SUBPROJECT,$1)
 test-$1:

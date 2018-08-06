@@ -1,10 +1,13 @@
-ifndef ITG_MAKEUTILS_LOADED
+#!/usr/bin/make
+
+ifndef __itg_makeutils_included
 $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
 endif
 
 ifndef MAKE_TESTS_DIR
 
 MAKE_TESTS_DIR = $(MAKE_COMMON_DIR)tests/
+__itg_makeutils_tests_included:=$(true)
 
 TESTSDIR ?= tests/
 TESTSRECIPESDIR = $(AUXDIR)
@@ -39,25 +42,27 @@ testPlatformWrapper = $(TESTTOOL) \
 
 endif
 
-testRecipeFileName = $(TESTSRECIPESDIR)test_recipe.$1-$2.sh
-
 # $(call defineTest,id,targetId,script,deps,orderOnlyDeps,testfile,afterFinish)
 define defineTest
 
-$(call testRecipeFileName,$1,$2): $4 $6 | $$(TARGETDIR)
-	$$(file > $$@,#!/bin/sh)
-	$$(file >> $$@,# set -o xtrace)
-	$$(file >> $$@,$3)
+$(TESTSRECIPESDIR)test.$1-$2.mk: $(MAKEFILE_LIST) | $$(TARGETDIR)
+	$$(file > $$@,#!/usr/bin/make)
+	$$(file >> $$@,)
+	$$(file >> $$@,.PHONY: test.$1-$2.recipe)
+	$$(file >> $$@,test.$1-$2.recipe: $(call uniq,$6 $4) $(if $5,| $5))
+	$$(file >> $$@,	$3)
+	$$(if $7,$$(file >> $$@,	$7))
+	$$(file >> $$@,)
+	$$(file >> $$@,.PHONY: test.$1-$2)
+	$$(file >> $$@,test.$1-$2:)
+	$$(file >> $$@,	$$(call testPlatformWrapper,$$@,$$(MAKE) test.$1-$2.recipe,$(strip $6)))
+	$$(file >> $$@,)
+	$$(file >> $$@,.PHONY: test-$2)
+	$$(file >> $$@,test-$2: | test.$1-$2)
+	$$(file >> $$@,)
+	$$(file >> $$@,test: | test-$2)
 
-.PHONY: test.$1-$2
-test.$1-$2: $(call testRecipeFileName,$1,$2) $4 $(if $5,| $5)
-	$(call testPlatformWrapper,$$@,$$<,$(strip $6))
-	$7
-
-.PHONY: test-$2
-test-$2: | test.$1-$2
-
-test: | test-$2
+$(call include_makefile_if_not_clean,$(TESTSRECIPESDIR)test.$1-$2.mk)
 
 endef
 

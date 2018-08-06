@@ -89,20 +89,20 @@ main() {
 	do
 		case $opt in
 		(n)	local test_id="$OPTARG";;
-		(r)	local test_recipe_filename="$OPTARG";;
+		(r)	local test_recipe="$OPTARG";;
 		(f)	local test_file="$OPTARG";;
 		(a)	local test_on_add="$OPTARG";;
 		(s)	local test_on_status_change="$OPTARG";;
-		(?)	printf $"Usage: %s: -n 'test id' [-r 'test recipe script file name'] [-f 'test file name'] [-a 'test creation event handler'] [-s 'tests events handler']\\n" \
+		(?)	printf $"Usage: %s: -n 'test id' [-r 'test recipe'] [-f 'test file name'] [-a 'test creation event handler'] [-s 'tests events handler']\\n" \
 				"$0"
 			exit 2;;
 		esac
 	done
 	if
 		[ -z "${test_id-}" ] ||
-		[ -z "${test_recipe_filename-}" ]
+		[ -z "${test_recipe-}" ]
 	then
-		printf $"Usage: %s: -n 'test id' [-r 'test recipe script file name'] [-f 'test file name'] [-a 'test creation event handler'] [-s 'tests events handler']\\n" \
+		printf $"Usage: %s: -n 'test id' [-r 'test recipe'] [-f 'test file name'] [-a 'test creation event handler'] [-s 'tests events handler']\\n" \
 			"$0"
 		exit 2
 	fi
@@ -143,7 +143,7 @@ main() {
 			set -o errexit
 			# set -o xtrace
 			# shellcheck disable=1090
-			. "${test_recipe_filename}"
+			eval "${test_recipe}"
 			#set +o xtrace
 		} | tee "$TEST_STDOUT_FILENAME"
 	} 3>&1 1>&2 2>&3 | tee "$TEST_STDERR_FILENAME" 1>&2

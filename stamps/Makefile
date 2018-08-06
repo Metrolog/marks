@@ -1,8 +1,6 @@
 #!/usr/bin/make
 
 all:: marks-pdf marks-eps
-# TODO убрать
-###all:: pdf
 
 # ITG.MakeUtils
 
@@ -121,4 +119,4 @@ endef
 
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
-$(eval $(foreach f,$(MULTIFILEORDERFILES), $(call includemakefile, $f)))
+$(eval $(foreach f,$(MULTIFILEORDERFILES), $(call include_makefile, $f)))
