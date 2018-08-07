@@ -42,10 +42,12 @@ testPlatformWrapper = $(TESTTOOL) \
 
 endif
 
+TESTS_MAKEFILE_LIST:=$(empty_set)
+
 # $(call defineTest,id,targetId,script,deps,orderOnlyDeps,testfile,afterFinish)
 define defineTest
 
-$(TESTSRECIPESDIR)test.$1-$2.mk: $(MAKEFILE_LIST) | $$(TARGETDIR)
+$(TESTSRECIPESDIR)test.$1-$2.mk: $(call set_remove,$(TESTS_MAKEFILE_LIST),$(call set_create,$(MAKEFILE_LIST))) | $$(TARGETDIR)
 	$$(file > $$@,#!/usr/bin/make)
 	$$(file >> $$@,)
 	$$(file >> $$@,.PHONY: test.$1-$2.recipe)
@@ -63,6 +65,8 @@ $(TESTSRECIPESDIR)test.$1-$2.mk: $(MAKEFILE_LIST) | $$(TARGETDIR)
 	$$(file >> $$@,test: | test-$2)
 
 $(call include_makefile_if_not_clean,$(TESTSRECIPESDIR)test.$1-$2.mk)
+
+TESTS_MAKEFILE_LIST:=$(call set_insert,$(TESTSRECIPESDIR)test.$1-$2.mk,$(TESTS_MAKEFILE_LIST))
 
 endef
 
