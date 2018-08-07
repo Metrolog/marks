@@ -102,7 +102,7 @@ marks-eps: $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filenam
 endef
 
 # $(call create_verification_stamps, years, periods, stamp_ids, stamps_signs, stamp_size, is_for_production, srcfile)
-define create_verification_stamps
+define __create_verification_stamps_aux
 	$(foreach year,$1, \
 		$(foreach period,$2, \
 			$(foreach id,$3, \
@@ -115,6 +115,8 @@ define create_verification_stamps
 		) \
 	)
 endef
+
+create_verification_stamps=$(call call_as_makefile,$$(call __create_verification_stamps_aux,$1,$2,$3,$4,$5,$6,$7),$(call merge,_,create_verification_stamps $(call split,/,$(basename $7))).mk)
 
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
