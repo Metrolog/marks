@@ -22,6 +22,7 @@ STAMPSSOURCEFILES := $(call rwildcard,$(STAMPSRCDIR),*.ps)
 STAMPLIBDIR := $(PSRESOURCESOURCEDIR)
 ENCODINGSDIR := $(STAMPLIBDIR)$(ENCODINGRESOURCEDIR)
 
+# TODO: заменить на is_clean
 ifeq ($(filter %clean .GLOBAL_VARIABLES,$(MAKECMDGOALS)),)
 $(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1251TARGET)))
 $(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1253TARGET)))
@@ -36,11 +37,14 @@ GSFONTDIR := $(GSFONTDIR) $(call OSabsPath,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCED
 $(eval $(foreach f,$(STAMPFONTFILES),$(call copyfileto,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR),$f)))
 POSTSCRIPTRESOURCEFILES += $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f))
 
+# TODO: заменить на генерацию makefile с включением
+# TODO: проблемы с файлами кодировок после maintainer-clean...
 $(eval $(call preparePostScriptResource,,,$(call uniq,$(call getPostScriptResourceSourceFiles) $(ENCODINGSDIR)$(notdir $(CP1251TARGET)) $(ENCODINGSDIR)$(notdir $(CP1253TARGET)))))
 $(eval $(call copyPostScriptResource,$(ITG_POSTSCRIPTLIBDIR),,$(ITG_POSTSCRIPTLIBFILES)))
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCEFILES))
 
+# TODO: так же попробовать генерировать файл. Причём генерировать через макрос отдельный, а не построчно
 $(eval $(call definePostScriptTests))
 
 .PHONY: marks-pdf
