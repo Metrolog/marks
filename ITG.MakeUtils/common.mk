@@ -175,14 +175,35 @@ is_clean:=$(call __gmsl_make_bool,$(filter %clean,$(MAKECMDGOALS)))
 # $(call rwildcard,dir,filesfilter)
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
+# $(call include_makefile,makefile)
 define include_makefile
+$(call assert,$1,Expected makefile name)
 include $1
 endef
 
+# $(call include_makefile_if_not_clean,makefile)
 define include_makefile_if_not_clean
+$(call assert,$1,Expected makefile name)
 ifneq ($(is_clean),$(true))
 $(call include_makefile,$1)
 endif
+endef
+
+AUX_MAKEFILE_LIST:=$(empty_set)
+
+__itg_aux_makefile=$(if $2,$2,$(AUXDIR))$1
+
+# $(call call_as_makefile,expression,makefile,makefile_dir)
+define call_as_makefile
+$(call assert,$2,Expected makefile name)
+
+$(call __itg_aux_makefile,$2,$3): $(call set_remove,$(AUX_MAKEFILE_LIST),$(call set_create,$(MAKEFILE_LIST))) | $$(TARGETDIR)
+	$$(file > $$@,$1)
+
+$(call include_makefile_if_not_clean,$(call __itg_aux_makefile,$2,$3))
+
+AUX_MAKEFILE_LIST:=$(call set_insert,$(call __itg_aux_makefile,$2,$3),$(AUX_MAKEFILE_LIST))
+
 endef
 
 # $(call reversedirpath,dirPath,pathToRootFromChild)
