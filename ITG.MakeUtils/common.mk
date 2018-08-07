@@ -179,12 +179,13 @@ rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2
 define include_makefile
 $(call assert,$1,Expected makefile name)
 include $1
+
 endef
 
 # $(call include_makefile_if_not_clean,makefile)
 define include_makefile_if_not_clean
 $(call assert,$1,Expected makefile name)
-ifneq ($(is_clean),$(true))
+ifneq ($$(is_clean),$$(true))
 $(call include_makefile,$1)
 endif
 endef
@@ -204,7 +205,7 @@ $(call __itg_aux_makefile,$2,$3): $(call set_remove,$(AUX_MAKEFILE_LIST),$(call 
 
 $(call include_makefile_if_not_clean,$(call __itg_aux_makefile,$2,$3))
 
-AUX_MAKEFILE_LIST:=$(call set_insert,$(call __itg_aux_makefile,$2,$3),$(AUX_MAKEFILE_LIST))
+AUX_MAKEFILE_LIST:=$(call __itg_aux_makefile,$2,$3) $$(AUX_MAKEFILE_LIST)
 
 endef
 
