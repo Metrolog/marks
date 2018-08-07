@@ -57,22 +57,16 @@ MULTIFILEORDERAUXDIR = $(AUXDIR)mf/
 
 .PHONY: marks-eps
 
-ifeq (,$(filter guile,$(.FEATURES)))
-$(call writeerror,Requires make version that supports Guile feature.)
-endif
-
-#$(guile (add-to-load-path "."))
-$(guile (set! %load-path (append %load-path (list "."))))
-$(guile (use-modules (stamps)))
-
 # $(call range, from, to)
-range = $(guile (range $1 $2))
+__itg_range_aux = $(shell i=$1; while [[ $$i -le $2 ]]; do printf "%d " $$i; i=$$(( i+1 )); done )
+__itg_range_auxII = $(call __itg_range_aux,$(call first,$(call split,_,$1)),$(call last,$(call split,_,$1)))
+range = $(call memoize,__itg_range_auxII,$(call merge,_,$1 $2))
 
 # $(call months, numbers)
-months = $(foreach m, $1, $(guile (month $m)) )
+months = $1
 
 # $(call quarters, numbers)
-quarters = $(foreach q, $1, $(guile (quarter $q)) )
+quarters = $(foreach q,$1,$(call tr,1 2 3 4,I II III IV,$q))
 
 # $(call year)
 year = year
