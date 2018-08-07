@@ -90,12 +90,21 @@ define create_verification_stamp
 
 $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps: $(MARK2IMAGE) $7 $(call __itg_get_static_makefile_list)
 	$$(MAKETARGETDIR)
-	iconv -f CP1251 $$< | m4 -D StampId=$(strip $3) | iconv -t CP1251 > $$@
+	set -o pipefail; \
+    iconv -f CP1251 $$< \
+    | m4 \
+      --define=StampYear=\($(strip $1)\) \
+      --define=StampPeriod=\($(if $(call seq,$(strip $2),year),,$(strip $2))\) \
+      --define=StampId=\($(strip $3)\) \
+      --define=StampSign=$(strip $4) \
+      --define=StampSize='$(strip $5)' \
+      --define=StampForProduction=$(strip $6) \
+    | iconv -t CP1251 > $$@
 
 $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list)
 	$$(call writeinformation,Build file "$$@"...)
 	$$(MAKETARGETDIR)
-	$$(GSPSTOEPSCMDLINE) $$(MARK2IMAGEARGS) -sStampYear=$(strip $1) -sStampPeriod=$(strip $2) -sStampId=$(strip $3) -sStampSign=$(strip $4) -sStampSize='$(strip $5)' -sStampForProduction=$(strip $6) -sOutputFile='$$@' '$$<'
+	$$(GSPSTOEPSCMDLINE) $$(MARK2IMAGEARGS) -sOutputFile='$$@' '$$<'
 
 marks-eps: $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps
 
