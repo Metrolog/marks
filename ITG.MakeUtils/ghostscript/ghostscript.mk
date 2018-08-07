@@ -60,23 +60,43 @@ getPostScriptResourceSourceFiles = \
 getPostScriptResourceOutputFiles = \
   $(patsubst %.ps,%,$(patsubst $(if $1,$1,$(PSRESOURCESOURCEDIR))%,$(if $2,$2,$(PSRESOURCEOUTPUTDIR))%,$(if $3,$3,$(call getPostScriptResourceSourceFiles,$1))))
 
-# $(call preparePostScriptResource[, fromDir[, toDir[, files]]] )
-define preparePostScriptResource
+# $(call prepare_PostScript_resource[, fromDir[, toDir[, files]]] )
+define __prepare_PostScript_resource_aux
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps | $$(TARGETDIR)
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3): )$(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps | $$(TARGETDIR)
 	$$(COPY) $$< $$@
 
-POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
+POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
 
 endef
 
-# $(call copyPostScriptResource[, fromDir[, toDir[, files]]] )
-define copyPostScriptResource
+define prepare_PostScript_resource
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))% | $$(TARGETDIR)
+$(call call_as_makefile,$$(call __prepare_PostScript_resource_aux,$1,$2,$3),$(call merge,_,prepare_postscript_resources $(call split,/,$1)).mk)
+
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clear))),$(true))
+POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
+endif
+
+endef
+
+# $(call copy_PostScript_resource[, fromDir[, toDir[, files]]] )
+define __copy_PostScript_resource_aux
+
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3): )$(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))% | $$(TARGETDIR)
 	$$(COPY) $$< $$@
 
-POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
+POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
+
+endef
+
+define copy_PostScript_resource
+
+$(call call_as_makefile,$$(call __copy_PostScript_resource_aux,$1,$2,$3),$(call merge,_,copy_postscript_resources $(call split,/,$1)).mk)
+
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clear))),$(true))
+POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
+endif
 
 endef
 

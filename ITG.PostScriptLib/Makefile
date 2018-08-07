@@ -7,7 +7,7 @@ include $(ITG_MAKEUTILS_DIR)tests/tests.mk
 include $(ITG_MAKEUTILS_DIR)ghostscript/ghostscript.mk
 include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
-$(eval $(call preparePostScriptResource))
+$(eval $(call prepare_PostScript_resource))
 
 GSINCDIR := $(GSINCDIR) $(PSRESOURCEOUTPUTDIR)
 

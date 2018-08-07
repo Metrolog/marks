@@ -29,29 +29,29 @@ include $(MAKE_COMMON_DIR)appveyor/appveyor.mk
 
 # $(call defineCTANTargetRule, TargetType, source, target)
 define defineCTANTargetRule
-$(LATEX$(1)AUXINCDIR)$(2).$(1).mk: $(MAKEFILE_LIST) | $(LATEX$(1)AUXDIR)$(3)
+$(LATEX$(1)AUXINCDIR)$(2).$(1).mk: $(call __itg_get_static_makefile_list) | $(LATEX$(1)AUXDIR)$(3)
 	$$(file > $$@,$$($(1)TARGET): $$|)
 endef
 
-define copyFileToCTANTargetByRule
+define copy_file_toCTANTargetByRule
 include $(LATEX$(1)AUXINCDIR)$(notdir $(2)).$(1).mk
 endef
 
-# $(call copyFilesToTarget, targetId, sourceFiles, targetDir)
-define copyFilesToTarget
-$(foreach file,$(2),$(eval $(call copyfileto,$(LATEX$(1)AUXDIR)$(3),$(file))))
+# $(call copy_filesToTarget, targetId, sourceFiles, targetDir)
+define copy_filesToTarget
+$(foreach file,$(2),$(eval $(call copy_file_to,$(LATEX$(1)AUXDIR)$(3),$(file))))
 $($(1)TARGET): $(foreach file,$(2),$(LATEX$(1)AUXDIR)$(3)/$(notdir $(file)))
 endef
 
-# $(call copyFileToCTANTarget, TargetType, sourceFile)
-define copyFileToCTANTarget
-$(call copyfileto,$(LATEX$(1)AUXDIR)%,$(2))
-$(call copyFileToCTANTargetByRule,$(1),$(2))
+# $(call copy_file_toCTANTarget, TargetType, sourceFile)
+define copy_file_toCTANTarget
+$(call copy_file_to,$(LATEX$(1)AUXDIR)%,$(2))
+$(call copy_file_toCTANTargetByRule,$(1),$(2))
 endef
 
-# $(call copyFilesToCTANTarget, TargetType, sourceFiles)
-define copyFilesToCTANTarget
-$(foreach file,$(2),$(eval $(call copyFileToCTANTarget,$(1),$(file))))
+# $(call copy_filesToCTANTarget, TargetType, sourceFiles)
+define copy_filesToCTANTarget
+$(foreach file,$(2),$(eval $(call copy_file_toCTANTarget,$(1),$(file))))
 endef
 
 #
@@ -61,7 +61,7 @@ endef
 LATEXTDSAUXINCDIR ?= $(AUXDIR)
 
 defineTDSRule = $(call defineCTANTargetRule,TDS,$1,$2)
-copyFileToTDSByRule = $(call copyFileToCTANTargetByRule,TDS,$1)
+copy_file_toTDSByRule = $(call copy_file_toCTANTargetByRule,TDS,$1)
 
 $(eval $(call defineTDSRule,README,doc/latex/$(LATEXPKG)/README))
 $(eval $(call defineTDSRule,%.afm,fonts/afm/public/$(LATEXPKG)/%.afm))
@@ -99,8 +99,8 @@ $(eval $(call defineTDSRule,%.vf,fonts/vf/public/$(LATEXPKG)/%.vf))
 #$(LATEXTDSPHONYDIR)%:
 #	$(error Unknown TDS file extension: $@)
 
-copyFileToTDS = $(call copyFileToCTANTarget,TDS,$1)
-copyFilesToTDS = $(call copyFilesToCTANTarget,TDS,$1)
+copy_file_toTDS = $(call copy_file_toCTANTarget,TDS,$1)
+copy_filesToTDS = $(call copy_filesToCTANTarget,TDS,$1)
 
 .PHONY: tds
 tds: $(TDSTARGET)
@@ -112,7 +112,7 @@ tds: $(TDSTARGET)
 LATEXCTANAUXINCDIR ?= $(AUXDIR)
 
 defineCTANRule = $(call defineCTANTargetRule,CTAN,$1,$2)
-copyFileToCTANByRule = $(call copyFileToCTANTargetByRule,CTAN,$1)
+copy_file_toCTANByRule = $(call copy_file_toCTANTargetByRule,CTAN,$1)
 
 $(eval $(call defineCTANRule,README.md,$(LATEXPKG)/README.md))
 $(eval $(call defineCTANRule,README.txt,$(LATEXPKG)/README.txt))
@@ -149,10 +149,10 @@ $(eval $(call defineCTANRule,%.ttf,$(LATEXPKG)/fonts/%.ttf))
 $(eval $(call defineCTANRule,%.txt,$(LATEXPKG)/doc/%.txt))
 $(eval $(call defineCTANRule,%.vf,$(LATEXPKG)/fonts/%.vf))
 
-copyFileToCTAN = $(call copyFileToCTANTarget,CTAN,$1)
-copyFilesToCTAN = $(call copyFilesToCTANTarget,CTAN,$1)
+copy_file_toCTAN = $(call copy_file_toCTANTarget,CTAN,$1)
+copy_filesToCTAN = $(call copy_filesToCTANTarget,CTAN,$1)
 
-$(eval $(call copyFilesToTarget,CTAN,$(TDSTARGET)))
+$(eval $(call copy_filesToTarget,CTAN,$(TDSTARGET)))
 
 ctan: $(CTANTARGET)
 	$(pushDeploymentArtifact)
@@ -161,10 +161,10 @@ ctan: $(CTANTARGET)
 # common
 #
 
-# $(call copyFileToTDSandCTAN, sourceFile)
-define copyFileToTDSandCTAN
-$(call copyFileToTDS,$(1))
-$(call copyFileToCTAN,$(1))
+# $(call copy_file_toTDSandCTAN, sourceFile)
+define copy_file_toTDSandCTAN
+$(call copy_file_toTDS,$(1))
+$(call copy_file_toCTAN,$(1))
 endef
 
 ifndef SUBMAKE_TEX_CTAN
@@ -181,14 +181,14 @@ $(TDSTARGET) $(CTANTARGET): | .CTAN
 
 else
 
-$(CTANMAKEFILE): $(MAKEFILE_LIST) | $(TARGETDIR)
+$(CTANMAKEFILE): $(call __itg_get_static_makefile_list) | $(TARGETDIR)
 	$(call writeinformation,Building intermediate makefile for CTAN "$@"...)
 	$(file > $@,# intermediate makefile for CTAN archive)
 	$(file >> $@,SUBMAKE_TEX_CTAN := $(dir $(lastword $(MAKEFILE_LIST))))
 	$(file >> $@,include Makefile)
-	$(foreach ctanfile,$(CTANFILES),$(file >> $@,$(call copyFileToTDSandCTAN,$(ctanfile))))
-	$(file >> $@,$(call copyFilesToZIP,$(TDSTARGET),,$(LATEXTDSAUXDIR)))
-	$(file >> $@,$(call copyFilesToZIP,$(CTANTARGET),,$(LATEXCTANAUXDIR)))
+	$(foreach ctanfile,$(CTANFILES),$(file >> $@,$(call copy_file_toTDSandCTAN,$(ctanfile))))
+	$(file >> $@,$(call copy_filesToZIP,$(TDSTARGET),,$(LATEXTDSAUXDIR)))
+	$(file >> $@,$(call copy_filesToZIP,$(CTANTARGET),,$(LATEXCTANAUXDIR)))
 
 $(TDSTARGET) $(CTANTARGET): $(CTANMAKEFILE)
 	$(MAKE) --makefile $(CTANMAKEFILE) $@

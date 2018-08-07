@@ -22,10 +22,8 @@ STAMPSSOURCEFILES := $(call rwildcard,$(STAMPSRCDIR),*.ps)
 STAMPLIBDIR := $(PSRESOURCESOURCEDIR)
 ENCODINGSDIR := $(STAMPLIBDIR)$(ENCODINGRESOURCEDIR)
 
-ifeq ($(is_clean),$(false))
-$(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1251TARGET)))
-$(eval $(call copyfileto,$(ENCODINGSDIR),$(CP1253TARGET)))
-endif
+$(eval $(call copy_file_to,$(ENCODINGSDIR),$(CP1251TARGET)))
+$(eval $(call copy_file_to,$(ENCODINGSDIR),$(CP1253TARGET)))
 
 maintainer-clean::
 	$(RMDIR) $(ENCODINGSDIR)
@@ -33,17 +31,15 @@ maintainer-clean::
 GSFONTDIR := $(GSFONTDIR) $(call OSabsPath,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR))
 
 # TODO: перейти на prepare... макросы
-$(eval $(foreach f,$(STAMPFONTFILES),$(call copyfileto,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR),$f)))
+$(eval $(foreach f,$(STAMPFONTFILES),$(call copy_file_to,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR),$f)))
 POSTSCRIPTRESOURCEFILES += $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f))
 
-# TODO: заменить на генерацию makefile с включением
 # TODO: проблемы с файлами кодировок после maintainer-clean...
-$(eval $(call preparePostScriptResource,,,$(call uniq,$(call getPostScriptResourceSourceFiles) $(ENCODINGSDIR)$(notdir $(CP1251TARGET)) $(ENCODINGSDIR)$(notdir $(CP1253TARGET)))))
-$(eval $(call copyPostScriptResource,$(ITG_POSTSCRIPTLIBDIR),,$(ITG_POSTSCRIPTLIBFILES)))
+$(eval $(call prepare_PostScript_resource,,,$(call uniq,$(call getPostScriptResourceSourceFiles) $(ENCODINGSDIR)$(notdir $(CP1251TARGET)) $(ENCODINGSDIR)$(notdir $(CP1253TARGET)))))
+$(eval $(call copy_PostScript_resource,$(ITG_POSTSCRIPTLIBDIR),,$(ITG_POSTSCRIPTLIBFILES)))
 
 STAMPSPDFFILES := $(patsubst $(STAMPSRCDIR)%.ps,$(OUTPUTDIR)%.pdf,$(STAMPSSOURCEFILES))
 
-# TODO: так же попробовать генерировать файл. Причём генерировать через макрос отдельный, а не построчно
 $(eval $(call define_PostScript_tests))
 
 .PHONY: marks-pdf
@@ -92,11 +88,11 @@ MARK2IMAGEARGS ?= -dMirrorPrint -dUseTrimBox
 # $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
 define create_verification_stamp
 
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps: $(MARK2IMAGE) $7 $(MAKEFILE_LIST)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps: $(MARK2IMAGE) $7 $(call __itg_get_static_makefile_list)
 	$$(MAKETARGETDIR)
 	iconv -f CP1251 $$< | m4 -D StampId=$(strip $3) | iconv -t CP1251 > $$@
 
-$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $(POSTSCRIPTRESOURCEFILES) $(MAKEFILE_LIST)
+$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list)
 	$$(call writeinformation,Build file "$$@"...)
 	$$(MAKETARGETDIR)
 	$$(GSPSTOEPSCMDLINE) $$(MARK2IMAGEARGS) -sStampYear=$(strip $1) -sStampPeriod=$(strip $2) -sStampId=$(strip $3) -sStampSign=$(strip $4) -sStampSize='$(strip $5)' -sStampForProduction=$(strip $6) -sOutputFile='$$@' '$$<'

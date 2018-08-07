@@ -171,6 +171,8 @@ CONFIGDIR          ?= config/
 #endregion common dirs
 
 is_clean:=$(call __gmsl_make_bool,$(filter %clean,$(MAKECMDGOALS)))
+is_config_target:=$(call set_is_member,.GLOBAL_VARIABLES,$(call set_create,$(MAKECMDGOALS)))
+is_productive_target:=$(call and,$(call not,$(is_clean)),$(call not,$(is_config_target)))
 
 # $(call rwildcard,dir,filesfilter)
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
@@ -185,29 +187,36 @@ endef
 # $(call include_makefile_if_not_clean,makefile)
 define include_makefile_if_not_clean
 $(call assert,$1,Expected makefile name)
-ifneq ($$(is_clean),$$(true))
-$(call include_makefile,$1)
-endif
+$(if $(call not,$(is_clean)),$(call include_makefile,$1))
 endef
 
 AUX_MAKEFILE_LIST:=$(empty_set)
 
+__itg_get_static_makefile_list=$(call set_remove,$(AUX_MAKEFILE_LIST),$(call set_create,$(MAKEFILE_LIST)))
+
 __itg_aux_makefile=$(if $2,$2,$(AUXDIR))$1
+
+ifeq ($(is_productive_target),$(true))
 
 # $(call call_as_makefile,expression,makefile,makefile_dir)
 define call_as_makefile
 $(call assert,$2,Expected makefile name)
 
-$(call __itg_aux_makefile,$2,$3): $(call set_remove,$(AUX_MAKEFILE_LIST),$(call set_create,$(MAKEFILE_LIST))) | $$(TARGETDIR)
+$(call __itg_aux_makefile,$2,$3): $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
 	$$(file > $$@,#!/usr/bin/make)
 	$$(file >> $$@,)
 	$$(file >> $$@,$1)
-
-$(call include_makefile_if_not_clean,$(call __itg_aux_makefile,$2,$3))
+	$$(TOUCH) $$@
 
 AUX_MAKEFILE_LIST:=$(call __itg_aux_makefile,$2,$3) $$(AUX_MAKEFILE_LIST)
 
+$(call include_makefile_if_not_clean,$(call __itg_aux_makefile,$2,$3))
+
 endef
+
+else
+  call_as_makefile=
+endif
 
 # $(call reversedirpath,dirPath,pathToRootFromChild)
 reversedirpath = $(if $(strip $1),$(call merge,/,$(foreach d,$(call split,/,$1),..))/,./)
@@ -218,19 +227,25 @@ $1:=$2
 
 endef
 
-# $(call copyfile, to, from)
-define copyfile
+ifeq ($(is_productive_target),$(true))
+
+# $(call copy_file, to, from)
+define copy_file
 $(call assert,$1,Expected file name (to))
 $(call assert,$2,Expected file name (from))
 $1: $2 | $$(TARGETDIR)
 	$(COPY) $$< $$@
 endef
 
-# $(call copyfileto, todir, fromfile)
-copyfileto = $(call copyfile,$1$(notdir $2),$2)
+else
+  copy_file=
+endif
 
-# $(call copyfilefrom, tofile, fromdir)
-copyfilefrom = $(call copyfile,$1,$2$(notdir $1))
+# $(call copy_file_to, todir, fromfile)
+copy_file_to = $(call copy_file,$1$(notdir $2),$2)
+
+# $(call copy_file_from, tofile, fromdir)
+copy_file_from = $(call copy_file,$1,$2$(notdir $1))
 
 #region subprojects support
 
@@ -240,7 +255,7 @@ SUBPROJECT_EXPORTS_FILE ?= $(SUBPROJECTS_EXPORTS_DIR)undefined
 
 .PHONY: .GLOBAL_VARIABLES
 .GLOBAL_VARIABLES: $(SUBPROJECT_EXPORTS_FILE)
-$(SUBPROJECT_EXPORTS_FILE):: $(MAKEFILE_LIST) | $(TARGETDIR)
+$(SUBPROJECT_EXPORTS_FILE):: $(call __itg_get_static_makefile_list) | $(TARGETDIR)
 	$(file > $@,# subproject exported variables)
 
 # $(call exportGlobalVariablesAux, Variables, Writer)
