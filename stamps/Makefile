@@ -12,7 +12,7 @@ include $(ITG_MAKEUTILS_DIR)tests/tests.mk
 include $(ITG_MAKEUTILS_DIR)ghostscript/ghostscript.mk
 include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
-STAMPS_MAKEFILE_LOADED := true
+__itg_stamps_included:=$(true)
 
 PSRESOURCEOUTPUTDIR = $(AUXDIR)Resource/
 PSRESOURCESOURCEDIR = Resource/
@@ -61,7 +61,8 @@ ifeq (,$(filter guile,$(.FEATURES)))
 $(call writeerror,Requires make version that supports Guile feature.)
 endif
 
-$(guile (add-to-load-path "."))
+#$(guile (add-to-load-path "."))
+$(guile (set! %load-path (append %load-path (list "."))))
 $(guile (use-modules (stamps)))
 
 # $(call range, from, to)

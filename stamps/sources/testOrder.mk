@@ -1,6 +1,6 @@
 #!/usr/bin/make
 
-ifndef STAMPS_MAKEFILE_LOADED
+ifndef __itg_stamps_included
 $(error Do not run this file directly. Run 'Makefile' in root project folder.)
 endif
 
