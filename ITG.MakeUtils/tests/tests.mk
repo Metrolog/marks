@@ -42,8 +42,8 @@ testPlatformWrapper = $(TESTTOOL) \
 
 endif
 
-# $(call test_recipe_file,id,targetId,script,deps,testTargetFile,orderOnlyDeps,testfile,afterFinish)
-define test_recipe_file
+# $(call define_test,id,targetId,script,deps,testTargetFile,orderOnlyDeps,testfile,afterFinish)
+define __define_test_aux
 
 .PHONY: test.$1-$2.recipe
 test.$1-$2.recipe: $(call uniq,$5 $7 $4) $(if $6,| $6)
@@ -61,7 +61,6 @@ test: | test-$2
 
 endef
 
-# $(call define_test,id,targetId,script,deps,testTargetFile,orderOnlyDeps,testfile,afterFinish)
-define_test = $(call call_as_makefile,$$(call test_recipe_file,$1,$2,$3,$4,$5,$6,$7,$8),test.$1-$2.mk)
+define_test = $(call call_as_makefile,$$(call __define_test_aux,$1,$2,$3,$4,$5,$6,$7,$8),test.$1-$2.mk)
 
 endif

@@ -155,11 +155,14 @@ endef
 definePostScript2PDFTests = $(foreach f,$(TESTSPS2PDFSOURCEFILES),$(call definePostScript2PDFTest,$(patsubst $(TESTSPS2PDFSOURCEDIR)%.ps,$(TESTSPS2PDFOUTPUTDIR)%.pdf,$f),$f,$1))
 
 
-# $(call definePostScriptTests,dependencies)
-define definePostScriptTests
+# $(call __define_PostScript_tests_aux,dependencies)
+define __define_PostScript_tests_aux
 $(call definePostScriptClearTests,$1)
 $(call definePostScript2PDFTests,$1)
 endef
+
+define_PostScript_tests = $(call call_as_makefile,$$(call __define_PostScript_tests_aux,$1),postscript_tests.mk)
+
 
 endif
 

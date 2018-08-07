@@ -22,4 +22,4 @@ ITG_PostScriptLib: $(ITG_POSTSCRIPTLIBFILES) $(call print-help,ITG_PostScriptLib
 $(eval $(call pushArtifactTargets,ITG_POSTSCRIPTLIBFILES))
 $(eval $(call pushArtifactTargets,ITG_POSTSCRIPTLIBDIR))
 
-$(eval $(call definePostScriptTests))
+$(eval $(call define_PostScript_tests))
