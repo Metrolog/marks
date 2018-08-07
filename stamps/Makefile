@@ -98,7 +98,7 @@ $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,
     -D StampForProduction=$(strip $6) \
   | iconv -t CP1251 > $$@
 
-$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list)
+$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $$(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list)
 	$$(call writeinformation,Build file "$$@"...)
 	$$(MAKETARGETDIR)
 	$$(GSPSTOEPSCMDLINE) $$(MARK2IMAGEARGS) -sOutputFile='$$@' '$$<'
