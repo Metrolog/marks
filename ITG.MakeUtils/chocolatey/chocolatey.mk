@@ -91,7 +91,7 @@ packChocoWebPackage = $(call packChocoPackageAux,$1,$2,,$3,$4,$5)
 # $(call defineInstallTestForChocoPackage,id,packageId)
 define defineInstallTestForChocoPackage
 
-$(call defineTest,install,$1,\
+$(call define_test,install,$1,\
   $(CHOCO) install $2 --force --confirm -pre --version $$($(1)VERSION) --source "$$(<D)", \
   $$($(1)TARGETS) \
 )
@@ -101,7 +101,7 @@ endef
 # $(call defineInstallWithPowerShellTestForChocoPackage,id,packageId)
 define defineInstallWithPowerShellTestForChocoPackage
 
-$(call defineTest,install_with_powershell,$1,\
+$(call define_test,install_with_powershell,$1,\
   $(call psExecuteCommand,\
     Set-Variable -Name ErrorActionPreference -Value Stop; \
     Register-PackageSource -ProviderName Chocolatey -Name Test -Location '$$(call winPath,$$(abspath $$(<D)))' -Trusted -Verbose; \
@@ -116,7 +116,7 @@ endef
 # $(call defineUninstallTestForChocoPackage,id,packageId)
 define defineUninstallTestForChocoPackage
 
-$(call defineTest,uninstall,$1,\
+$(call define_test,uninstall,$1,\
   $(CHOCO) uninstall $2 --confirm \
 )
 
@@ -125,7 +125,7 @@ endef
 # $(call defineUninstallWithPowerShellTestForChocoPackage,id,packageId)
 define defineUninstallWithPowerShellTestForChocoPackage
 
-$(call defineTest,uninstall_with_powershell,$1,\
+$(call define_test,uninstall_with_powershell,$1,\
   $(call psExecuteCommand,\
     Set-Variable -Name ErrorActionPreference -Value Stop; \
     Uninstall-Package -Name $2 -Verbose; \

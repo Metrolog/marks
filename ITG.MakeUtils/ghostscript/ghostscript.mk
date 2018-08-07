@@ -119,9 +119,9 @@ TESTSPSSOURCEFILES = $(call rwildcard,$(TESTSPSSOURCEDIR),*.ps)
 # $(call definePostScriptClearTest,target,source,dependencies)
 define definePostScriptClearTest
 
-$(call defineTest,$(basename $(notdir $1)),ps_build,\
+$(call define_test,$(basename $(notdir $1)),ps_build,\
   $(GSCMDLINE) '$2';,\
-  $2 $3 $$(POSTSCRIPTRESOURCEFILES),,\
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES),,,\
   $2 \
 )
 
@@ -141,9 +141,9 @@ TESTSPS2PDFOUTPUTFILES = $(patsubst $(TESTSPS2PDFSOURCEDIR)%.ps,$(TESTSPS2PDFOUT
 # $(call definePostScript2PDFTest,target,source,dependencies)
 define definePostScript2PDFTest
 
-$(call defineTest,$(basename $(notdir $1)),ps_build,\
+$(call define_test,$(basename $(notdir $1)),ps_build,\
   $(GSPSTOPDFCMDLINE) -sOutputFile='$1' '$2',\
-  $2 $3 $$(POSTSCRIPTRESOURCEFILES),\
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES),,\
 	$(call TARGETDIR,$1),\
   $2,\
   $$(call pushDeploymentArtifactFile,$$(notdir $1),$1)\
