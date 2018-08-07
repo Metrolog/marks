@@ -198,7 +198,9 @@ define call_as_makefile
 $(call assert,$2,Expected makefile name)
 
 $(call __itg_aux_makefile,$2,$3): $(call set_remove,$(AUX_MAKEFILE_LIST),$(call set_create,$(MAKEFILE_LIST))) | $$(TARGETDIR)
-	$$(file > $$@,$1)
+	$$(file > $$@,#!/usr/bin/make)
+	$$(file >> $$@,)
+	$$(file >> $$@,$1)
 
 $(call include_makefile_if_not_clean,$(call __itg_aux_makefile,$2,$3))
 

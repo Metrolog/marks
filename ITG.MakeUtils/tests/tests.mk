@@ -44,7 +44,6 @@ endif
 
 # $(call test_recipe_file,id,targetId,script,deps,testTargetFile,orderOnlyDeps,testfile,afterFinish)
 define test_recipe_file
-#!/usr/bin/make
 
 .PHONY: test.$1-$2.recipe
 test.$1-$2.recipe: $(call uniq,$5 $7 $4) $(if $6,| $6)
