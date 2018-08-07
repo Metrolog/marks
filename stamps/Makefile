@@ -30,9 +30,18 @@ maintainer-clean::
 
 GSFONTDIR := $(GSFONTDIR) $(call OSabsPath,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR))
 
-# TODO: перейти на prepare... макросы
-$(eval $(foreach f,$(STAMPFONTFILES),$(call copy_file_to,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR),$f)))
-POSTSCRIPTRESOURCEFILES += $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f))
+
+define __copy_font_resources_aux
+$(foreach f,$(STAMPFONTFILES),$(call copy_file,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(basename $(notdir $f)),$f))
+POSTSCRIPTRESOURCEFILES := $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(basename $(notdir $f))) $$(POSTSCRIPTRESOURCEFILES)
+endef
+
+$(eval $(call call_as_makefile,$$(call __copy_font_resources_aux),copy_postscript_font_resources.mk))
+
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clear))),$(true))
+POSTSCRIPTRESOURCEFILES := $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f)) $$(POSTSCRIPTRESOURCEFILES)
+endif
+
 
 $(eval $(call prepare_PostScript_resource,,,$(call uniq,$(call getPostScriptResourceSourceFiles) $(ENCODINGSDIR)$(notdir $(CP1251TARGET)) $(ENCODINGSDIR)$(notdir $(CP1253TARGET)))))
 $(eval $(call copy_PostScript_resource,$(ITG_POSTSCRIPTLIBDIR),,$(ITG_POSTSCRIPTLIBFILES)))
@@ -43,12 +52,6 @@ $(eval $(call define_PostScript_tests))
 
 .PHONY: marks-pdf
 marks-pdf: $(STAMPSPDFFILES) $(call print-help,marks-pdf,Выполнить подготовку в $(SUBPROJECT_DIR)$(OUTPUTDIR) .pdf файлов с оттисками клейм (только для оттисков полимерных клейм с групповой раскладкой для изготовления полимерных клише) на основе исходных .ps файлов заказов в $(SUBPROJECT_DIR)$(STAMPSRCDIR).)
-
-# TODO: убрать
-#.PHONY: pdf
-#pdf: $(STAMPSPDFFILES) $(call print-help,pdf,Выполнить подготовку в $(SUBPROJECT_DIR)$(OUTPUTDIR) .pdf файлов с оттисками клейм (только для оттисков полимерных клейм с групповой раскладкой для изготовления полимерных клише) на основе исходных .ps файлов заказов в $(SUBPROJECT_DIR)$(STAMPSRCDIR).)
-#	$(pushDeploymentArtifact)
-
 
 # multiple output files orders support
 
