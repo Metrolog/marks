@@ -87,6 +87,8 @@ define create_verification_stamp
 $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps: $(MARK2IMAGE) $7 $(call __itg_get_static_makefile_list)
 	$$(MAKETARGETDIR)
 	set -o pipefail; \
+  export LANG=ru_RU.UTF8; \
+  locale charmap; \
   iconv -f CP1251 $$< \
   | m4 \
     -D StampYear=\($(strip $1)\) \
