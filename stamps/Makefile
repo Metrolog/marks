@@ -71,9 +71,8 @@ quarters = $(foreach q,$1,$(call tr,1 2 3 4,I II III IV,$q))
 # $(call year)
 year = year
 
-# TODO: добавить признак "для первичной поверки / для поверки в эксплуатации" в имя файла или каталог
 # $(call get_multifile_order_relative_filename, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
-get_multifile_order_relative_filename = $(MULTIFILEORDEROUTPUTDIR)$(patsubst $(SOURCESDIR)%,%,$(basename $7))/$(strip $1)/$(strip $3)/$(strip $2)/$(strip $4)
+get_multifile_order_relative_filename = $(MULTIFILEORDEROUTPUTDIR)$(patsubst $(SOURCESDIR)%,%,$(basename $7))/$(strip $1)/$(strip $3)/$(strip $2)/$(strip $4).$(if $(call seq,$(strip $6),true),1,2)
 
 PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
