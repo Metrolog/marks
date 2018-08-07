@@ -63,8 +63,7 @@ ifeq (,$(filter guile,$(.FEATURES)))
 $(call writeerror,Requires make version that supports Guile feature.)
 endif
 
-export GUILE_LOAD_PATH=.
-#$(guile (add-to-load-path "."))
+$(guile (add-to-load-path "."))
 $(guile (use-modules (stamps)))
 
 # $(call range, from, to)

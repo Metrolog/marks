@@ -47,6 +47,8 @@ TESTS_MAKEFILE_LIST:=$(empty_set)
 # $(call defineTest,id,targetId,script,deps,orderOnlyDeps,testfile,afterFinish)
 define defineTest
 
+# TODO: afterfinish $7 - не в тот рецепт вывожу сейчас
+# TODO: разделить зависимости. основную группу добавить к обеим целям, а файл сборки - только к цели-рецепту
 $(TESTSRECIPESDIR)test.$1-$2.mk: $(call set_remove,$(TESTS_MAKEFILE_LIST),$(call set_create,$(MAKEFILE_LIST))) | $$(TARGETDIR)
 	$$(file > $$@,#!/usr/bin/make)
 	$$(file >> $$@,)
@@ -57,7 +59,7 @@ $(TESTSRECIPESDIR)test.$1-$2.mk: $(call set_remove,$(TESTS_MAKEFILE_LIST),$(call
 	$$(file >> $$@,)
 	$$(file >> $$@,.PHONY: test.$1-$2)
 	$$(file >> $$@,test.$1-$2:)
-	$$(file >> $$@,	$$(call testPlatformWrapper,$$@,$$(MAKE) test.$1-$2.recipe,$(strip $6)))
+	$$(file >> $$@,	$$(call testPlatformWrapper,$$$$@,$$(MAKE) test.$1-$2.recipe,$(strip $6)))
 	$$(file >> $$@,)
 	$$(file >> $$@,.PHONY: test-$2)
 	$$(file >> $$@,test-$2: | test.$1-$2)
