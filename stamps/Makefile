@@ -88,7 +88,6 @@ $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,
 	$$(MAKETARGETDIR)
 	set -o pipefail; \
   export LANG=ru_RU.UTF8; \
-  locale charmap; \
   iconv -f CP1251 $$< \
   | m4 \
     -D StampYear=\($(strip $1)\) \
