@@ -87,12 +87,12 @@ $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,
 	set -o pipefail; \
     iconv -f CP1251 $$< \
     | m4 \
-      --define=StampYear=\($(strip $1)\) \
-      --define=StampPeriod=\($(if $(call seq,$(strip $2),year),,$(strip $2))\) \
-      --define=StampId=\($(strip $3)\) \
-      --define=StampSign=$(strip $4) \
-      --define=StampSize='$(strip $5)' \
-      --define=StampForProduction=$(strip $6) \
+      -D StampYear=\($(strip $1)\) \
+      -D StampPeriod=\($(if $(call seq,$(strip $2),year),,$(strip $2))\) \
+      -D StampId=\($(strip $3)\) \
+      -D StampSign=$(strip $4) \
+      -D StampSize='$(strip $5)' \
+      -D StampForProduction=$(strip $6) \
     | iconv -t CP1251 > $$@
 
 $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list)
