@@ -50,12 +50,12 @@ define test_recipe_file
 
 .PHONY: test.$1-$2.recipe
 test.$1-$2.recipe: $(call uniq,$5 $7 $4) $(if $6,| $6)
-	$3
+$(if $(strip $3),	$(strip $3))
 
 .PHONY: test.$1-$2
 test.$1-$2: $(call uniq,$7 $4) $(if $6,| $6)
-	$$(call testPlatformWrapper,$$$$@,$$(MAKE) test.$1-$2.recipe,$(strip $7))
-	$$(if $8,$8)
+	$$(call testPlatformWrapper,$$@,$$(MAKE) test.$1-$2.recipe,$(strip $7))
+$(if $(strip $8),	$(strip $8))
 
 .PHONY: test-$2
 test-$2: | test.$1-$2
