@@ -38,7 +38,7 @@ endef
 
 $(eval $(call call_as_makefile,$$(call __copy_font_resources_aux),copy_postscript_font_resources.mk))
 
-ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clear))),$(true))
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean))),$(true))
 POSTSCRIPTRESOURCEFILES := $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f)) $$(POSTSCRIPTRESOURCEFILES)
 endif
 

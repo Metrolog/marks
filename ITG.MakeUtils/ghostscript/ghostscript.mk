@@ -74,7 +74,7 @@ define prepare_PostScript_resource
 
 $(call call_as_makefile,$$(call __prepare_PostScript_resource_aux,$1,$2,$3),$(call merge,_,prepare_postscript_resources $(call split,/,$1)).mk)
 
-ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clear))),$(true))
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean))),$(true))
 POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
 endif
 
@@ -94,7 +94,7 @@ define copy_PostScript_resource
 
 $(call call_as_makefile,$$(call __copy_PostScript_resource_aux,$1,$2,$3),$(call merge,_,copy_postscript_resources $(call split,/,$1)).mk)
 
-ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clear))),$(true))
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean))),$(true))
 POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
 endif
 
