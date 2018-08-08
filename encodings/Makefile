@@ -15,21 +15,22 @@ AGLFNFILE ?= agl-aglfn/aglfn.txt
 # download unicode mappings
 
 MAPPINGSDIR = maps/
+ENCODINGSDIR = encodings/
 
 $(MAPPINGSDIR)MAPPINGS/%.TXT: | $(TARGETDIR)
 	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o "$@"
 
-$(OUTPUTDIR)%.ps: | $(TARGETDIR)
+$(ENCODINGSDIR)%.ps: | $(TARGETDIR)
 	$(call writeinformation,Creating PostScript encoding file "$(@F)" from "$<"...)
 	$(RUNPOWERSHELLSCRIPT) ./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath '$<' -FilePath '$@' $(VERBOSEFLAGS)
 
 # $(call mapPSEncodingFileToSource, uri, encoding)
 define mapPSEncodingFileToSource
 
-export $(2)TARGET := $(OUTPUTDIR)$(2)Encoding.ps
+export $(2)TARGET := $(ENCODINGSDIR)$(2)Encoding.ps
 $(call pushArtifactTargets,$(2)TARGET)
 
-$(OUTPUTDIR)$(2)Encoding.ps: $(MAPPINGSDIR)MAPPINGS/$(1)/$(2).TXT
+$(ENCODINGSDIR)$(2)Encoding.ps: $(MAPPINGSDIR)MAPPINGS/$(1)/$(2).TXT
 
 .PHONY: $2
 $2: $$($(2)TARGET)
@@ -52,5 +53,6 @@ $(foreach encoding, KOI8-R KOI8-U, \
   $(eval $(call mapPSEncodingFileToSource,VENDORS/MISC,$(encoding))) \
 )
 
-clean::
+maintainer-clean::
 	$(RMDIR) $(MAPPINGSDIR)
+	$(RMDIR) $(ENCODINGSDIR)
