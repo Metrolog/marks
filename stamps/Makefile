@@ -79,13 +79,12 @@ get_multifile_order_relative_filename = $(MULTIFILEORDEROUTPUTDIR)$(patsubst $(S
 
 PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
-MARK2IMAGEARGS ?= -dMirrorPrint -dUseTrimBox
+MARK2IMAGEARGS ?= -q -dMirrorPrint -dUseTrimBox
 
 # $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
 define create_verification_stamp
 
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps: $(MARK2IMAGE) $7 $(call __itg_get_static_makefile_list)
-	$$(MAKETARGETDIR)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps: $(MARK2IMAGE) $7 $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
 	set -o pipefail; \
   export LANG=ru_RU.UTF8; \
   iconv -f CP1251 $$< \
@@ -98,9 +97,7 @@ $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,
     -D StampForProduction=$(strip $6) \
   | iconv -t CP1251 > $$@
 
-$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $$(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list)
-	$$(call writeinformation,Build file "$$@"...)
-	$$(MAKETARGETDIR)
+$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $$(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
 	$$(GSPSTOEPSCMDLINE) $$(MARK2IMAGEARGS) -sOutputFile='$$@' '$$<'
 
 marks-eps: $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps
