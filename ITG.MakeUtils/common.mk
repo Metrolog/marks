@@ -174,6 +174,13 @@ is_clean:=$(call __gmsl_make_bool,$(filter %clean,$(MAKECMDGOALS)))
 is_config_target:=$(call set_is_member,.GLOBAL_VARIABLES,$(call set_create,$(MAKECMDGOALS)))
 is_productive_target:=$(call and,$(call not,$(is_clean)),$(call not,$(is_config_target)))
 
+is_root_project:=$(false)
+ifdef ROOT_PROJECT_DIR
+  ifeq ($(ROOT_PROJECT_DIR),./)
+    is_root_project:=$(true)
+  endif
+endif
+
 # $(call rwildcard,dir,filesfilter)
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 
@@ -320,7 +327,7 @@ $(call include_makefile_if_not_clean,$(SUBPROJECTS_EXPORTS_DIR)$1.mk)
 $1:
 	$(call MAKE_SUBPROJECT,$1)
 test-$1:
-	$(call MAKE_SUBPROJECT,$1) --keep-going test
+	$(call MAKE_SUBPROJECT,$1) --keep-going check
 $3:
 	$(call MAKE_SUBPROJECT,$1) $$@
 $(foreach target,$3,test-$(target)):
@@ -330,7 +337,7 @@ $(foreach target,$3,test.%-$(target)):
 $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 all:: $1
-test: test-$1
+check: test-$1
 help::
 	@$(call MAKE_SUBPROJECT,$1) -s --no-print-directory help
 ifeq ($(filter clean distclean maintainer-clean,$(MAKECMDGOALS)),)
@@ -349,12 +356,10 @@ maintainer-clean::
 	$(call MAKE_SUBPROJECT,$1) maintainer-clean
 endef
 
-ifdef ROOT_PROJECT_DIR
-ifneq ($(ROOT_PROJECT_DIR),./)
+ifneq ($(is_root_project),$(true))
 $(ROOT_PROJECT_DIR)%:
 	$(call MAKE_SUBPROJECT_TARGET, $*)
 
-endif
 endif
 
 #endregion subprojects support
@@ -365,12 +370,9 @@ endif
 .PHONY: all
 all:: $(call _itg_makeutils_print-help,all,Build all targets.)
 
-# not standard target. Use 'check'
-.PHONY: test
-test: MAKEFLAGS += --keep-going
-
 .PHONY: check
-check: test $(call _itg_makeutils_print-help,check,Perform self-tests.)
+check: $(call _itg_makeutils_print-help,check,Perform self-tests.)
+check: MAKEFLAGS += --keep-going
 
 .PHONY: mostlyclean
 mostlyclean:: $(call _itg_makeutils_print-help,mostlyclean,Like 'clean'$(COMMA) but may refrain from deleting a few files that people normally don’t want to recompile.)

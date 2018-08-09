@@ -11,6 +11,24 @@ __itg_makeutils_tests_included:=$(true)
 
 TESTSDIR ?= tests/
 TESTSRECIPESDIR = $(AUXDIR)
+export TESTSSTATUSLOG = $(ROOT_PROJECT_DIR)$(AUXDIR)tests_status.txt
+
+ifeq ($(is_root_project),$(true))
+
+$(TESTSSTATUSLOG): | $(TARGETDIR)
+	$(file > $@,Tests results at $(shell date +%c):)
+	$(TOUCH) $@
+
+check: $(TESTSSTATUSLOG)
+
+check:
+	$(file >> $(TESTSSTATUSLOG),)
+	@echo '==============================================================================='
+	@cat '$(TESTSSTATUSLOG)'
+	@echo '==============================================================================='
+	rm '$(TESTSSTATUSLOG)'
+
+endif
 
 ifeq ($(SHELLTYPE),PowerShell)
 
@@ -57,7 +75,7 @@ $(if $(strip $8),	$(strip $8))
 .PHONY: test-$2
 test-$2: | test.$1-$2
 
-test: | test-$2
+check: | test-$2
 
 endef
 

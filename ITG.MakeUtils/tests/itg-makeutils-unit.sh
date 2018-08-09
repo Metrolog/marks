@@ -24,11 +24,13 @@ default_on_test_creation() {
 	shift $((OPTIND - 1))
 	unset OPTIND
 
+	local TEST_LOG
 	if [ -z "${test_filename-}" ]; then
-		printf $"Test \"%s\" (from file \"%s\").\\n" "${test_id}" "${test_filename}"
+		printf -v TEST_LOG $"Test \"%s\" (from file \"%s\")." "${test_id}" "${test_filename}"
 	else
-		printf $"Test \"%s\".\\n" "${test_id}"
+		printf -v TEST_LOG $"Test \"%s\"." "${test_id}"
 	fi
+	echo "$TEST_LOG"
 
 }
 
@@ -63,21 +65,32 @@ default_on_test_change() {
 	shift $((OPTIND - 1))
 	unset OPTIND
 
-	if [[ ${test_duration-0} -ne 0 ]]
+	local TEST_LOG
+	local TEST_LOG2
+	if [[ ${test_exit_code-0} -eq 0 ]]
 	then
-		if [[ ${test_exit_code-0} -ne 0 ]]
+		if [[ ${test_duration-0} -ne 0 ]]
 		then
-			printf $"Test \"%s\" is %s with exit code %d in %d ms.\\n" "${test_id}" "${test_status}" "${test_exit_code}" "${test_duration}"
+			printf -v TEST_LOG $"Test \"%s\" is %s in %d ms." "${test_id}" "${test_status}" "${test_duration}"
 		else
-			printf $"Test \"%s\" is %s in %d ms.\\n" "${test_id}" "${test_status}" "${test_duration}"
+			printf -v TEST_LOG $"Test \"%s\" is %s." "${test_id}" "${test_status}"
 		fi
+		TEST_LOG2='+'
 	else
-		if [[ ${test_exit_code-0} -ne 0 ]]
+		if [[ ${test_duration-0} -ne 0 ]]
 		then
-			printf $"Test \"%s\" is %s with exit code %d.\\n" "${test_id}" "${test_status}" "${test_exit_code}"
+			printf -v TEST_LOG $"Test \"%s\" is %s with exit code %d in %d ms." "${test_id}" "${test_status}" "${test_exit_code}" "${test_duration}"
 		else
-			printf $"Test \"%s\" is %s.\\n" "${test_id}" "${test_status}"
+			printf -v TEST_LOG $"Test \"%s\" is %s with exit code %d." "${test_id}" "${test_status}" "${test_exit_code}"
 		fi
+		TEST_LOG2='-'
+	fi
+	echo "$TEST_LOG"
+
+	if
+		[ ! -z "${TESTSSTATUSLOG-}" ]
+	then
+		printf "%s" ${TEST_LOG2} >> "${TESTSSTATUSLOG}"
 	fi
 
 }
