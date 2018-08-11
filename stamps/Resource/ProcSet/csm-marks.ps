@@ -735,11 +735,13 @@ gsave
   /uK exch cvlit def
 grestore
 
-/calibration_stamp_h_size  verification_stamp_params /h_size get  def
-/calibration_stamp_thickness  verification_stamp_params /bounds_thickness get  def
-/calibration_stamp_period_h_size  verification_stamp_params /period_h_size get  def
-/calibration_stamp_sing_h_size  calibration_stamp_period_h_size  def
-/calibration_stamp_K_h_size  6 mm  1 mm  div  def
+/calibration_stamp_params <<
+  /h_size  verification_stamp_params /h_size get
+  /bounds_thickness  verification_stamp_params /bounds_thickness get
+  /period_h_size  verification_stamp_params /period_h_size get
+  /sing_h_size  verification_stamp_params /period_h_size get
+  /K_h_size  6.0
+>> readonly def
 
 % генераци€ рисунка калибровочного клейма
 /calibration_stamp_path % размер знак_поверител€ (шифр клейма) (период) год при_выпуске_из_производства --> user path
@@ -751,7 +753,7 @@ grestore
   /stamp_id exch def % шифр клейма
   /stamp_period exch def % идентификаци€ периода дл€ мес€чных и квартальных клейм
   /stamp_year exch def % год клейма
-  /scale_k size calibration_stamp_h_size div def % рассчитаем коэффициент дл€ последующего масштабировани€
+  /scale_k size calibration_stamp_params /h_size get div def % рассчитаем коэффициент дл€ последующего масштабировани€
 
   % сохран€ем на стеке текущую матрицу преобразовани€ системы координат дл€ последующего восстановлени€
   matrix currentmatrix
@@ -760,9 +762,9 @@ grestore
   9 9 translate
 
   % квадрат
-    calibration_stamp_h_size
+    calibration_stamp_params /h_size get
     dup
-    calibration_stamp_thickness
+    calibration_stamp_params /bounds_thickness get
     0
   centered_frame
 
@@ -780,7 +782,7 @@ grestore
       matrix currentmatrix
         2.5 5.5 moveto
         currentpoint translate
-        calibration_stamp_sing_h_size  dup  scale
+        calibration_stamp_params /sing_h_size get  dup  scale
         stamp_sign stamp_sign_upath uappend
       setmatrix
     }
@@ -810,7 +812,7 @@ grestore
 
   % период
   (stamp_period) findfont
-  calibration_stamp_period_h_size scalefont setfont
+  calibration_stamp_params /period_h_size get scalefont setfont
   -2.5 5.5 moveto
     stamp_period
     string_center_middle
@@ -819,7 +821,7 @@ grestore
   % знак калибровки
   0 0 moveto
   currentpoint translate
-  calibration_stamp_K_h_size dup scale
+  calibration_stamp_params /K_h_size get dup scale
   uK uappend
 
   % восстановливаем систему координат
