@@ -597,13 +597,15 @@ grestore
 
 % генерация рисунка поверительного клейма стального ударного (ромбовидного)
 
-/verification_stamp_rhombus_h_size  18.0 mm  1 mm  div  def
-/verification_stamp_rhombus_radius  verification_stamp_rhombus_h_size  4 div  def
-/verification_stamp_rhombus_thickness  verification_stamp_params /bounds_thickness get  def
-/verification_stamp_rhombus_rst_size  5.0 mm  1 mm div  def
-/verification_stamp_rhombus_id_h_size  2.5 mm  800 1000 div  div  1 mm div  def
-/verification_stamp_rhombus_sing_h_size  4.0 mm  800 1000 div  div  1 mm div  def
-/verification_stamp_rhombus_year_h_size  verification_stamp_params /year_h_size get  def
+/verification_stamp_rhombus_params <<
+  /h_size  18.0
+  /bounds_angles_radius  18.0 4 div
+  /bounds_thickness  verification_stamp_params /bounds_thickness get
+  /rst_size  5.0
+  /id_h_size  2.5  800 1000 div  div
+  /sing_h_size  4.0  800 1000 div  div
+  /year_h_size  verification_stamp_params /year_h_size get
+>> readonly def
 
 /verification_stamp_rhombus_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
@@ -614,7 +616,7 @@ grestore
   /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
   /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
   /verification_stamp_year exch def % год поверительного клейма
-  /scale_k size verification_stamp_rhombus_h_size div def % рассчитаем коэффициент для последующего масштабирования
+  /scale_k size verification_stamp_rhombus_params /h_size get div def % рассчитаем коэффициент для последующего масштабирования
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
   matrix currentmatrix
@@ -622,15 +624,15 @@ grestore
   scale_k scale_k scale
   45 rotate
 
-  verification_stamp_rhombus_h_size 2 div  dup  translate
+  verification_stamp_rhombus_params /h_size get 2 div  dup  translate
 
   % рамка
   matrix currentmatrix
     45 rotate
-      verification_stamp_rhombus_h_size
+      verification_stamp_rhombus_params /h_size get
       dup
-      verification_stamp_rhombus_thickness
-      verification_stamp_rhombus_radius
+      verification_stamp_rhombus_params /bounds_thickness get
+      verification_stamp_rhombus_params /bounds_angles_radius get
     centered_frame
   setmatrix
 
@@ -639,7 +641,7 @@ grestore
     {
       matrix currentmatrix
         0 6.0 translate
-        verification_stamp_rhombus_sing_h_size dup scale
+        verification_stamp_rhombus_params /sing_h_size get dup scale
         verification_stamp_sign stamp_sign_upath uappend
       setmatrix
     }
@@ -647,7 +649,7 @@ grestore
 
   % год
   (stamp_year) findfont
-  verification_stamp_rhombus_year_h_size scalefont setfont
+  verification_stamp_rhombus_params /year_h_size get scalefont setfont
   -6.0 0 moveto
         verification_stamp_year 4 string cvs
         dup length 2 sub
@@ -667,7 +669,7 @@ grestore
   matrix currentmatrix
     1 1 scale
     (stamp_id) findfont
-    verification_stamp_rhombus_id_h_size scalefont setfont
+    verification_stamp_rhombus_params /id_h_size get scalefont setfont
     0 0 moveto
       verification_stamp_id
       string_center_middle
@@ -677,7 +679,7 @@ grestore
   % знак СТ
   0 -6.0 moveto
   currentpoint translate
-  verification_stamp_rhombus_rst_size dup scale
+  verification_stamp_rhombus_params /rst_size get dup scale
   /image-st /ProcSet findresource /ust get  uappend
 
   % восстановливаем систему координат
