@@ -402,14 +402,16 @@ grestore
 
 % генерация рисунка поверительного клейма для юридических лиц и индивидуальных предпринимателей
 
-/verification_stamp_rect_id_h_size  2.5 mm  800 1000 div  div  1 mm div  def
-/verification_stamp_rect_sing_h_size  2.25 mm  800 1000 div  div  1 mm div  def
-/verification_stamp_rect_year_h_size  5.0 mm  800 1000 div  div  1 mm div  def
-/verification_stamp_rect_period_h_size  2 mm  800 1000 div  div  1 mm div  def
-/verification_stamp_rect_rst_size  verification_stamp_rect_period_h_size  def
-/verification_stamp_rect_h_size  18.0 mm  1 mm  div  def
-/verification_stamp_rect_v_size  12.0 mm  1 mm  div  def
-/verification_stamp_rect_thickness  verification_stamp_params /bounds_thickness get  def
+/verification_stamp_rect_params <<
+  /id_h_size  2.5  800 1000 div  div
+  /sing_h_size  2.25  800 1000 div  div
+  /year_h_size  5.0  800 1000 div  div
+  /period_h_size  2  800 1000 div  div
+  /rst_size  2  800 1000 div  div
+  /h_size  18.0
+  /v_size  12.0
+  /bounds_thickness  verification_stamp_params /bounds_thickness get
+>> readonly def
 
 /ul_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
@@ -420,7 +422,7 @@ grestore
   /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
   /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
   /verification_stamp_year exch def % год поверительного клейма
-  /scale_k size verification_stamp_rect_h_size div def % рассчитаем коэффициент для последующего масштабирования
+  /scale_k size verification_stamp_rect_params /h_size get div def % рассчитаем коэффициент для последующего масштабирования
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
   matrix currentmatrix
@@ -429,14 +431,14 @@ grestore
 
     verification_stamp_for_production
     {
-        verification_stamp_rect_h_size 2 div
-        verification_stamp_rect_v_size 2 div
+        verification_stamp_rect_params /h_size get 2 div
+        verification_stamp_rect_params /v_size get 2 div
       translate
 
       % прямоугольник
-        verification_stamp_rect_h_size
-        verification_stamp_rect_v_size
-        verification_stamp_rect_thickness
+        verification_stamp_rect_params /h_size get
+        verification_stamp_rect_params /v_size get
+        verification_stamp_rect_params /bounds_thickness get
         0
       centered_frame
 
@@ -445,7 +447,7 @@ grestore
         {
           matrix currentmatrix
             0 -3.5 translate
-            verification_stamp_rect_sing_h_size dup scale
+            verification_stamp_rect_params /sing_h_size get dup scale
             verification_stamp_sign stamp_sign_upath uappend
           setmatrix
         }
@@ -453,7 +455,7 @@ grestore
 
       % год
       (stamp_year) findfont
-      verification_stamp_rect_year_h_size scalefont setfont
+      verification_stamp_rect_params /year_h_size get scalefont setfont
       -6.0 0 moveto
             verification_stamp_year 4 string cvs
             dup length 2 sub
@@ -473,7 +475,7 @@ grestore
       matrix currentmatrix
         1 1 scale
         (stamp_id) findfont
-        verification_stamp_rect_id_h_size scalefont setfont
+        verification_stamp_rect_params /id_h_size get scalefont setfont
         0 0 moveto
           verification_stamp_id
           string_center_middle
@@ -485,13 +487,13 @@ grestore
           % знак СТ
           0 3.5 moveto
           currentpoint translate
-          verification_stamp_rect_rst_size dup scale
+          verification_stamp_rect_params /rst_size get dup scale
           /image-st /ProcSet findresource /ust get  uappend
         }
         {
           % период
           (stamp_period) findfont
-          verification_stamp_rect_period_h_size scalefont setfont
+          verification_stamp_rect_params /period_h_size get scalefont setfont
           -2.0 3.5 moveto
             verification_stamp_period
             string_center_middle
@@ -500,20 +502,20 @@ grestore
           % знак СТ
           2.5 3.5 moveto
           currentpoint translate
-          verification_stamp_rect_rst_size dup scale
+          verification_stamp_rect_params /rst_size get dup scale
           /image-st /ProcSet findresource /ust get  uappend
         }
       ifelse
     }
     {
-        verification_stamp_rect_h_size 2 div
-        verification_stamp_rect_h_size 2 div
+        verification_stamp_rect_params /h_size get 2 div
+        verification_stamp_rect_params /h_size get 2 div
       translate
 
       % прямоугольник
-        verification_stamp_rect_h_size
+        verification_stamp_rect_params /h_size get
         dup
-        verification_stamp_rect_thickness
+        verification_stamp_rect_params /bounds_thickness get
         0
       centered_frame
 
