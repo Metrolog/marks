@@ -1,0 +1,65 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: ProcSet (procs)
+%%Version: 2.3 0
+%%EndComments
+%%BeginProlog
+
+%(procs) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (procs)
+/procs <<
+
+/define_args
+{
+  readonly
+  dup  <<  exch  { null }  forall  >>  begin
+      1 index  type  /dict  eq
+      {
+        1 index
+          {
+              1 index  currentdict  exch  known  not
+              {
+                $error begin
+                  2 array  astore  /errorinfo exch def
+                  /errorname /undefinedparam def
+                  /command /define_args def
+                  /recordstacks false def
+                end
+                end
+                stop
+              }
+              {
+                def
+              }
+            ifelse
+          }
+        forall
+        pop pop
+      }
+      {
+          {
+            exch def
+          }
+        forall
+      }
+    ifelse
+    currentdict
+  end
+  1 dict begin
+  /args exch readonly def
+} bind
+
+/leave_local_scope
+{
+  end
+} bind
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog
