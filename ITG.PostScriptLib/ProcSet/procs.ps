@@ -275,6 +275,33 @@
               }
               { pop }
             ifelse
+
+            currentdict  2 index  get
+              dup /scriptcheck known
+              {
+                  {
+                      /scriptcheck get  1 index  exch  exec  not
+                      {
+                        $error begin
+                          dup /errorinfo exch def
+                          /errorname /invalidparam def
+                          /command /define_args def
+                          /recordstacks false def
+                        end
+                        stop
+                      }
+                    if
+                  } stopped
+                  {
+                    pop pop
+                    end
+                    stop
+                  }
+                if
+              }
+              { pop }
+            ifelse
+
             def
           }
           {
