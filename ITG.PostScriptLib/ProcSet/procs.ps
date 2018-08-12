@@ -45,18 +45,15 @@
 /define_args
 {
   /arrays /ProcSet findresource /areverse get exec
-  dup  <<  exch
+
+  dup [ exch
       {
         dup type
         <<
-          /nametype {
-            null
-          } bind
+          /nametype {} bind
           /dicttype {
               dup /arg known
-              {
-                dup  /arg get  exch
-              }
+              { /arg get }
               {
                 $error begin
                   /errorinfo exch def
@@ -85,7 +82,21 @@
         /procs /ProcSet findresource /switch get exec
       }
     forall
+  ]
+
+  exch
+  <<  exch
+      {
+        dup type
+        <<
+          /nametype { null } bind
+          /dicttype { dup  /arg get  exch } bind
+        >>
+        /procs /ProcSet findresource /switch get exec
+      }
+    forall
   >>  begin
+
       1 index  type  /dicttype  eq
       {
         1 index
@@ -115,6 +126,7 @@
       }
     ifelse
     currentdict
+
   end
   1 dict begin
   /args exch readonly def
