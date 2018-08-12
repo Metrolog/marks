@@ -13,15 +13,66 @@
 %%BeginResource: ProcSet (procs)
 /procs <<
 
+/switch
+{
+  exch  2 copy  known
+    { get exec }
+    {
+        exch
+        dup /default known
+        {
+          exch pop
+          /default get exec
+        }
+        {
+          pop
+          $error begin
+            /errorinfo exch def
+            /errorname /unexpectedswitchvalue def
+            /command /switch def
+            /recordstacks false def
+          end
+          stop
+        }
+      ifelse
+    }
+  ifelse
+} bind
+
 /define_args
 {
   readonly
-  dup  <<  exch  { null }  forall  >>  begin
-      1 index  type  /dict  eq
+  dup  <<  exch
+      {
+        dup type
+        <<
+          /nametype {
+            null
+          } bind
+          /dicttype {
+
+          } bind
+          /default {
+            $error begin
+              /errorinfo exch def
+              /errorname /unexpectedparamdefinition def
+              /command /define_args def
+              /recordstacks false def
+            end
+            cleartomark
+            pop
+            stop
+          } bind
+        >>
+        /procs /ProcSet findresource /switch get exec
+      }
+    forall
+  >>  begin
+      1 index  type  /dicttype  eq
       {
         1 index
           {
-              1 index  currentdict  exch  known  not
+              currentdict  2 index  known  not
               {
                 $error begin
                   2 array  astore  /errorinfo exch def
@@ -32,20 +83,13 @@
                 end
                 stop
               }
-              {
-                def
-              }
+              { def }
             ifelse
           }
         forall
         pop pop
       }
-      {
-          {
-            exch def
-          }
-        forall
-      }
+      { { exch def } forall }
     ifelse
     currentdict
   end
