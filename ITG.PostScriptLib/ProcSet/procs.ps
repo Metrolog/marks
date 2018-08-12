@@ -3,10 +3,13 @@
 %%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (arrays) 2.2 0
 %%DocumentSuppliedResources: ProcSet (procs)
 %%Version: 2.3 0
 %%EndComments
 %%BeginProlog
+
+%%IncludeResource: ProcSet arrays 2.2 0
 
 %(procs) /ProcSet resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-ProcSet
@@ -41,7 +44,7 @@
 
 /define_args
 {
-  readonly
+  /arrays /ProcSet findresource /areverse get exec
   dup  <<  exch
       {
         dup type
@@ -50,7 +53,22 @@
             null
           } bind
           /dicttype {
-
+              dup /arg known
+              {
+                dup  /arg get  exch
+              }
+              {
+                $error begin
+                  /errorinfo exch def
+                  /errorname /unexpectedparamdefinition def
+                  /command /define_args def
+                  /recordstacks false def
+                end
+                cleartomark
+                pop
+                stop
+              }
+            ifelse
           } bind
           /default {
             $error begin
@@ -89,7 +107,12 @@
         forall
         pop pop
       }
-      { { exch def } forall }
+      {
+          {
+            exch def
+          }
+        forall
+      }
     ifelse
     currentdict
   end

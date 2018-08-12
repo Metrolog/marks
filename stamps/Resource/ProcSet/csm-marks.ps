@@ -202,12 +202,16 @@ grestore
 /csm_verification_stamp_path % диаметр знак_поверител€ (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
   [
-    /is_for_production
-    /size
-    /sign
-    /id
-    /period
+%    <<
+%      /arg /year
+%      /type /stringtype
+%    >>
     /year
+    /period
+    /id
+    /sign
+    /size
+    /is_for_production
    ] /procs /define_args eexec
 
   % сохран€ем на стеке текущую матрицу преобразовани€ системы координат дл€ последующего восстановлени€
