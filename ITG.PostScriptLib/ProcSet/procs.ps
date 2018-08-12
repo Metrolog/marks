@@ -98,38 +98,38 @@
   >>  begin
 
       1 index  type  /dicttype  eq
+      { pop }
       {
-        1 index
-          {
-              currentdict  2 index  known  not
-              {
-                $error begin
-                  2 array  astore  /errorinfo exch def
-                  /errorname /undefinedparam def
-                  /command /define_args def
-                  /recordstacks false def
-                end
-                end
-                stop
-              }
-              { def }
-            ifelse
-          }
-        forall
-        pop pop
-      }
-      {
-          {
-            exch def
-          }
-        forall
+        dup length dict begin
+          { exch def } forall
+          currentdict
+        end
       }
     ifelse
+
+      {
+          currentdict  2 index  known
+          { def }
+          {
+            $error begin
+              2 array  astore  /errorinfo exch def
+              /errorname /unknownparam def
+              /command /define_args def
+              /recordstacks false def
+            end
+            end
+            stop
+          }
+        ifelse
+      }
+    forall
+
     currentdict
 
   end
+  readonly
   1 dict begin
-  /args exch readonly def
+  /args exch def
 } bind
 
 /leave_local_scope
