@@ -89,7 +89,7 @@
       {
         dup type
         <<
-          /nametype { null } bind
+          /nametype { << >> } bind
           /dicttype { dup  /arg get  exch } bind
         >>
         /procs /ProcSet findresource /switch get exec
@@ -110,6 +110,171 @@
       {
           currentdict  2 index  known
           {
+            currentdict  2 index  get
+              dup /type known
+              {
+                  {
+                    /type get
+                    <<
+                      /arraytype {
+                        dup type
+                            dup /arraytype eq
+                            /packedarraytype eq
+                          or not
+                          { 1 array  astore }
+                        if
+                      } bind
+                      /booleantype {
+                          dup type  /booleantype  eq  not
+                          {
+                            $error begin
+                              dup /errorinfo exch def
+                              /errorname /typecheck def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            stop
+                          }
+                        if
+                      } bind
+                      /dicttype {
+                          dup type  /dicttype  eq  not
+                          {
+                            $error begin
+                              dup /errorinfo exch def
+                              /errorname /typecheck def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            stop
+                          }
+                        if
+                      } bind
+                      /filetype {
+                          dup type  /filetype  eq  not
+                          {
+                            $error begin
+                              dup /errorinfo exch def
+                              /errorname /typecheck def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            stop
+                          }
+                        if
+                      } bind
+                      /fonttype {
+                          dup type  /fonttype  eq  not
+                          {
+                            $error begin
+                              dup /errorinfo exch def
+                              /errorname /typecheck def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            stop
+                          }
+                        if
+                      } bind
+                      /gstatetype {
+                          dup type  /gstatetype  eq  not
+                          {
+                            $error begin
+                              dup /errorinfo exch def
+                              /errorname /typecheck def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            stop
+                          }
+                        if
+                      } bind
+                      /integertype {
+                        cvi
+                      } bind
+                      /marktype { } bind
+                      /nametype {
+                        dup type
+                        <<
+                          /stringtype { cvn } bind
+                          /nametype { } bind
+                          /default {
+                            $error begin
+                              2 copy  2 array  astore  /errorinfo exch def
+                              /errorname /typecheck def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            stop
+                          } bind
+                        >>
+                        /procs /ProcSet findresource /switch get exec
+                      } bind
+                      /nulltype { } bind
+                      /operatortype {
+                          dup type  /operatortype  eq  not
+                          {
+                            $error begin
+                              dup /errorinfo exch def
+                              /errorname /typecheck def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            stop
+                          }
+                        if
+                      } bind
+                      /packedarraytype {
+                        dup type
+                            dup /arraytype eq
+                            /packedarraytype eq
+                          or not
+                          { 1 array  astore }
+                        if
+                          dup type  /packedarraytype  eq  not
+                          { aload length packedarray }
+                        if
+                      } bind
+                      /realtype {
+                        cvr
+                      } bind
+                      /savetype { } bind
+                      /stringtype {
+                        dup type
+                        <<
+                          /stringtype { } bind
+                          /nametype { dup length string  cvs } bind
+                          /booleantype { 10 string  cvs } bind
+                          /realtype { 31 string  cvs } bind
+                          /integertype { 31 string  cvs } bind
+                          /default { 255 string  cvs } bind
+                        >>
+                        /procs /ProcSet findresource /switch get exec
+                      } bind
+                      /scripttype { % itg custom type for script block
+                        cvx
+                      } bind
+                      /default {
+                        $error begin
+                          2 copy  2 array  astore  /errorinfo exch def
+                          /errorname /typecheck def
+                          /command /define_args def
+                          /recordstacks false def
+                        end
+                        stop
+                      }
+                    >>
+                    /procs /ProcSet findresource /switch get exec
+                  } stopped
+                  {
+                    pop pop
+                    end
+                    stop
+                  }
+                if
+              }
+              { pop }
+            ifelse
             def
           }
           {
