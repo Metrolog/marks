@@ -110,9 +110,9 @@
       {
           currentdict  2 index  known
           {
-            currentdict  2 index  get
-              dup /type known
               {
+                currentdict  2 index  get
+                  dup /type known
                   {
                     /type get
                     <<
@@ -265,20 +265,12 @@
                       }
                     >>
                     /procs /ProcSet findresource /switch get exec
-                  } stopped
-                  {
-                    pop pop
-                    end
-                    stop
                   }
-                if
-              }
-              { pop }
-            ifelse
+                  { pop }
+                ifelse
 
-            currentdict  2 index  get
-              dup /scriptcheck known
-              {
+                currentdict  2 index  get
+                  dup /scriptcheck known
                   {
                       /scriptcheck get  1 index  exch  exec  not
                       {
@@ -291,16 +283,17 @@
                         stop
                       }
                     if
-                  } stopped
-                  {
-                    pop pop
-                    end
-                    stop
                   }
-                if
+                  { pop }
+                ifelse
+
+              } stopped
+              {
+                pop pop
+                end
+                stop
               }
-              { pop }
-            ifelse
+            if
 
             def
           }
