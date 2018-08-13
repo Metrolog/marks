@@ -613,19 +613,19 @@ grestore
 
 /verification_stamp_rhombus_path % диаметр знак_поверител€ (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
-  7 dict begin
-  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
-  /size exch def % размер клейма
-  /verification_stamp_sign exch def % индивидуальный знак поверител€
-  /verification_stamp_id exch def % шифр поверительного клейма, хот€ он и не требуетс€
-  /verification_stamp_period exch def % идентификаци€ периода дл€ мес€чных и квартальных клейм
-  /verification_stamp_year exch def % год поверительного клейма
-  /scale_k size verification_stamp_rhombus_params /h_size get div def % рассчитаем коэффициент дл€ последующего масштабировани€
+  [
+    << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
+    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters year ] >>
+    << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
+    << /arg /sign  /type /integertype  /rangecheck [ 0 256 ] >>
+    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ] >>
+    << /arg /is_for_production  /type /booleantype >>
+  ] /procs /define_args eexec
 
   % сохран€ем на стеке текущую матрицу преобразовани€ системы координат дл€ последующего восстановлени€
   matrix currentmatrix
   currentpoint translate
-  scale_k scale_k scale
+  args /size get  verification_stamp_rhombus_params /h_size get  div  dup  scale
   45 rotate
 
   verification_stamp_rhombus_params /h_size get 2 div  dup  translate
@@ -641,12 +641,12 @@ grestore
   setmatrix
 
   % индивидуальный знак поверител€
-    verification_stamp_sign 0 ne
+    args /sign get 0 ne
     {
       matrix currentmatrix
         0 6.0 translate
         verification_stamp_rhombus_params /sing_h_size get dup scale
-        verification_stamp_sign stamp_sign_upath uappend
+        args /sign get stamp_sign_upath uappend
       setmatrix
     }
   if
@@ -655,14 +655,14 @@ grestore
   (stamp_year) findfont
   verification_stamp_rhombus_params /year_h_size get scalefont setfont
   -6.0 0 moveto
-        verification_stamp_year 4 string cvs
+        args /year get 4 string cvs
         dup length 2 sub
         1
       getinterval
     string_center_middle
   true charpath
   6.0 0 moveto
-        verification_stamp_year 4 string cvs
+        args /year get 4 string cvs
         dup length 1 sub
         1
       getinterval
@@ -675,7 +675,7 @@ grestore
     (stamp_id) findfont
     verification_stamp_rhombus_params /id_h_size get scalefont setfont
     0 0 moveto
-      verification_stamp_id
+      args /id get
       string_center_middle
     true charpath
   setmatrix
@@ -689,7 +689,7 @@ grestore
   % восстановливаем систему координат
   setmatrix
 
-  end
+  /procs /leave_local_scope eexec
 } bind def
 
 /verification_stamp_rhombus_upath % диаметр знак_поверител€ (шифр клейма) (период) год при_выпуске_из_производства --> user path
@@ -702,7 +702,7 @@ grestore
 % генераци€ рисунка поверительного клейма
 /verification_stamp_path % диаметр знак_поверител€ (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
-  3 index length  % verification_stamp_id length
+  3 index length  % args /id get length
     dup  1 eq
     { pop  gmc_verification_stamp_path }
     {
