@@ -702,26 +702,24 @@ grestore
 % генерация рисунка поверительного клейма
 /verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
-  3 index length  % args /id get length
-    dup  1 eq
-    { pop  gmc_verification_stamp_path }
-    {
-        dup  2 eq
-        { pop  csm_verification_stamp_path }
-        {
-            dup  3 eq
-            { pop  ul_verification_stamp_path }
-            {
-              pop
-              pop pop pop pop pop pop
-              (Error: stamp Id length must be less than or equal to 3.) =
-              stop
-            }
-          ifelse
-        }
-      ifelse
-    }
-  ifelse
+  [
+    << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
+    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters year ] >>
+    << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
+    << /arg /sign  /type /integertype  /rangecheck [ 0 256 ] >>
+    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ] >>
+    << /arg /is_for_production  /type /booleantype >>
+  ] /procs /define_args eexec
+
+  args /id get  length
+  <<
+    1 { args gmc_verification_stamp_path } bind
+    2 { args csm_verification_stamp_path } bind
+    3 { args ul_verification_stamp_path } bind
+  >>
+  /procs /ProcSet findresource /switch get exec
+
+  /procs /leave_local_scope eexec
 } def
 
 /verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
