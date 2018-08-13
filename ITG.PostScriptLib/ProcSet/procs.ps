@@ -269,23 +269,39 @@
                   { pop }
                 ifelse
 
-                currentdict  2 index  get
-                  dup /scriptcheck known
+                  currentdict  2 index  get  begin
+                    currentdict /arg undef
+                    currentdict /type undef
+                    currentdict
+                  end
                   {
-                      /scriptcheck get  1 index  exch  exec  not
+                    /procs /ProcSet findresource  /params_attributes get
+                      dup  3 index  known
                       {
+                        3 -1 roll
                         $error begin
-                          dup /errorinfo exch def
-                          /errorname /invalidparam def
+                          dup [ exch ] /errorinfo exch def
+                          /errorname /invalidparamattribute def
+                          /command /define_args def
+                          /recordstacks false def
+                        end
+                        get
+                        exec
+                      }
+                      {
+                        pop
+                        pop
+                        $error begin
+                          2 index  exch  2 array  astore  /errorinfo exch def
+                          /errorname /unknownparamattribute def
                           /command /define_args def
                           /recordstacks false def
                         end
                         stop
                       }
-                    if
+                    ifelse
                   }
-                  { pop }
-                ifelse
+                forall
 
               } stopped
               {
@@ -323,6 +339,27 @@
 {
   end
 } bind
+
+/params_attributes <<
+
+/scriptcheck % param_name param_value script_block --> param_name param_value (assert)
+{
+    dup xcheck
+    {
+      $error begin
+        3 copy pop  /scriptcheck  3 array  astore  /errorinfo exch def
+        /errorname /invalidparam def
+        /command /define_args def
+        /recordstacks false def
+      end
+      1 index  exch
+      exec
+    }
+    { pop stop }
+  ifelse
+} bind
+
+>>
 
 >> /ProcSet defineresource pop
 %%EndResource:

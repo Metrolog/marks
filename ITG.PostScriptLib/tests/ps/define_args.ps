@@ -29,7 +29,7 @@
     <<
       /arg /arg2
       /type /stringtype
-      /scriptcheck { /two eq }
+      /scriptcheck { /two eq (arg2 must be two)  /assert /assert eexec }
     >>
   ] /procs /define_args eexec
 
