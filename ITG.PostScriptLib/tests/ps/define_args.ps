@@ -55,6 +55,11 @@
       /type /stringtype
       /lengthcheck [ 3 4 ]
     >>
+    <<
+      /arg /arg6
+      /type /nametype
+      /enumcheck [ /six /seven ]
+    >>
   ] /procs /define_args eexec
 
   args
@@ -64,11 +69,11 @@
 
 /testmark
   {
-    /one /two 15 /four /five test1
+    /one /two 15 /four /five /six test1
   } stopped not
   (define_args must not throw exception with correct params on the stack)
 /assert /assert eexec
-  dup length  5  eq
+  dup length  6  eq
   (define_args must define args dictionary with correct length)
 /assert /assert eexec
     dup /arg1 known
@@ -112,11 +117,12 @@
       /arg3 15
       /arg4 /four
       /arg5 /five
+      /arg6 /six
     >> test1
   } stopped not
   (define_args must not throw exception with correct params in dictionary on the stack)
 /assert /assert eexec
-  dup length  5  eq
+  dup length  6  eq
   (define_args with params in dictionary on the stack must define args dictionary with correct length)
 /assert /assert eexec
     dup /arg1 known
@@ -163,7 +169,8 @@
       /arg3 15
       /arg4 /four
       /arg5 /five
-      /arg6 (extra parameter)
+      /arg6 /six
+      /arg7 (extra parameter)
     >> test1
   } stopped
   (define_args must throw exception with unknown params in dictionary on the stack)
@@ -180,6 +187,7 @@
       /arg3 15
       /arg4 /four
       /arg5 /five
+      /arg6 /six
     >> test1
   } stopped
   (define_args must throw exception on scriptcheck)
@@ -196,6 +204,7 @@
       /arg3 21
       /arg4 /four
       /arg5 /five
+      /arg6 /six
     >> test1
   } stopped
   (define_args must throw exception on rangecheck)
@@ -212,6 +221,7 @@
       /arg3 9
       /arg4 /four
       /arg5 /five
+      /arg6 /six
     >> test1
   } stopped
   (define_args must throw exception on rangecheck)
@@ -228,6 +238,7 @@
       /arg3 15
       /arg4 /not_four
       /arg5 /five
+      /arg6 /six
     >> test1
   } stopped
   (define_args must throw exception on lengthcheck)
@@ -244,12 +255,30 @@
       /arg3 15
       /arg4 /four
       /arg5 /not_five
+      /arg6 /six
     >> test1
   } stopped
   (define_args must throw exception on lengthcheck)
 /assert /assert eexec
   /testmark eq
   (define_args and leave_local_scope must restore the stack after lengthcheck failure)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 15
+      /arg4 /four
+      /arg5 /five
+      /arg6 /not_six
+    >> test1
+  } stopped
+  (define_args must throw exception on enumcheck)
+/assert /assert eexec
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack after enumcheck failure)
 /assert /assert eexec
 
 %%EOF

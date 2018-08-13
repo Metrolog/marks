@@ -399,6 +399,19 @@
   pop pop
 } bind
 
+/enumcheck % param_name param_value [ enum_items ] --> param_name param_value (assert)
+{
+  dup type /arraytype eq not  { pop stop } if
+  $error begin
+    [ 4 copy pop  /enumcheck ] /errorinfo exch def
+    /errorname /invalidparam def
+    /command /define_args def
+    /recordstacks false def
+  end
+    false  exch  { 2 index  eq  { pop true  exit } if } forall
+  not  { stop } if
+} bind
+
 >>
 
 >> /ProcSet defineresource pop
