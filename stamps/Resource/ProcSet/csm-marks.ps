@@ -202,15 +202,12 @@ grestore
 /csm_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
   [
-    <<
-      /arg /year
-      /type /stringtype
-    >>
-    /period
-    /id
-    /sign
-    /size
-    /is_for_production
+    << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
+    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters year ] >>
+    << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
+    << /arg /sign  /type /integertype  /rangecheck [ 0 256 ] >>
+    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ] >>
+    << /arg /is_for_production  /type /booleantype >>
   ] /procs /define_args eexec
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
@@ -303,19 +300,19 @@ grestore
 
 /gmc_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
-  7 dict begin
-  /verification_stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
-  /size exch def % размер клейма
-  /verification_stamp_sign exch def % индивидуальный знак поверителя
-  /verification_stamp_id exch def % шифр поверительного клейма, хотя он и не требуется
-  /verification_stamp_period exch def % идентификация периода для месячных и квартальных клейм
-  /verification_stamp_year exch def % год поверительного клейма
-  /scale_k size 18 div def % рассчитаем коэффициент для последующего масштабирования
+  [
+    << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
+    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters year ] >>
+    << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
+    << /arg /sign  /type /integertype  /rangecheck [ 0 256 ] >>
+    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ] >>
+    << /arg /is_for_production  /type /booleantype >>
+  ] /procs /define_args eexec
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
   matrix currentmatrix
   currentpoint translate
-  scale_k scale_k scale
+  args /size get  18 div  dup  scale
   9 9 translate
 
   % окружность
@@ -336,7 +333,7 @@ grestore
   (stamp_year) findfont
   verification_stamp_params /year_h_size get scalefont setfont
   -5.5 0 moveto
-        verification_stamp_year 4 string cvs
+        args /year get 4 string cvs
         dup length 2 sub
         1
       getinterval
@@ -345,7 +342,7 @@ grestore
   true charpath
   string_BBox size_of_BBox pop
   5.5 0 moveto
-        verification_stamp_year 4 string cvs
+        args /year get 4 string cvs
         dup length 1 sub
         1
       getinterval
@@ -364,12 +361,12 @@ grestore
     (stamp_id) findfont
     verification_stamp_params /id_h_size get scalefont setfont
     0 0 moveto
-      verification_stamp_id
+      args /id get
       string_center_middle
     true charpath
   setmatrix
 
-    verification_stamp_period () eq
+    args /period get () eq
     {
       % знак СТ
       0 5.5 moveto
@@ -382,7 +379,7 @@ grestore
       (stamp_period) findfont
       verification_stamp_params /period_h_size get scalefont setfont
       -2.0 5.5 moveto
-        verification_stamp_period
+        args /period get
         string_center_middle
       true charpath
 
@@ -397,7 +394,7 @@ grestore
   % восстановливаем систему координат
   setmatrix
 
-  end
+  /procs /leave_local_scope eexec
 } bind def
 
 /gmc_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
