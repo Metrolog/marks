@@ -29,7 +29,21 @@
     <<
       /arg /arg2
       /type /stringtype
-      /scriptcheck { /two eq (arg2 must be two)  /assert /assert eexec }
+      /scriptcheck {
+          /two eq  not
+          {
+            $error begin
+              [ 3 copy pop (arg2 must be two) ] /errorinfo exch def
+            end
+            stop
+          }
+        if
+      }
+    >>
+    <<
+      /arg /arg3
+      /type /integertype
+      /rangecheck [ 10 20 ]
     >>
   ] /procs /define_args eexec
 
@@ -40,11 +54,11 @@
 
 /testmark
   {
-    /one /two test1
+    /one /two 15 test1
   } stopped not
   (define_args must not throw exception with correct params on the stack)
 /assert /assert eexec
-  dup length  2  eq
+  dup length  3  eq
   (define_args must define args dictionary with correct length)
 /assert /assert eexec
     dup /arg1 known
@@ -53,7 +67,17 @@
         {
             dup /arg2 known
             {
-              dup /arg2 get  /two  eq
+                dup /arg2 get  /two  eq
+                {
+                    dup /arg3 known
+                    {
+                      dup /arg3 get  15  eq
+                    }
+                    { false }
+                  ifelse
+                }
+                { false }
+              ifelse
             }
             { false }
           ifelse
@@ -75,11 +99,12 @@
     <<
       /arg1 /one
       /arg2 /two
+      /arg3 15
     >> test1
   } stopped not
   (define_args must not throw exception with correct params in dictionary on the stack)
 /assert /assert eexec
-  dup length  2  eq
+  dup length  3  eq
   (define_args with params in dictionary on the stack must define args dictionary with correct length)
 /assert /assert eexec
     dup /arg1 known
@@ -88,7 +113,17 @@
         {
             dup /arg2 known
             {
-              dup /arg2 get  /two  eq
+                dup /arg2 get  /two  eq
+                {
+                    dup /arg3 known
+                    {
+                      dup /arg3 get  15  eq
+                    }
+                    { false }
+                  ifelse
+                }
+                { false }
+              ifelse
             }
             { false }
           ifelse
@@ -113,7 +148,8 @@
     <<
       /arg1 /one
       /arg2 /two
-      /arg3 /three
+      /arg3 15
+      /arg4 (extra parameter)
     >> test1
   } stopped
   (define_args must throw exception with unknown params in dictionary on the stack)
@@ -127,12 +163,41 @@
     <<
       /arg1 /one
       /arg2 /three
+      /arg3 15
     >> test1
   } stopped
   (define_args must throw exception on scriptcheck)
 /assert /assert eexec
   /testmark eq
   (define_args and leave_local_scope must restore the stack after scriptcheck failure)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 21
+    >> test1
+  } stopped
+  (define_args must throw exception on rangecheck)
+/assert /assert eexec
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack after rangecheck failure)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 9
+    >> test1
+  } stopped
+  (define_args must throw exception on rangecheck)
+/assert /assert eexec
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack after rangecheck failure)
 /assert /assert eexec
 
 %%EOF

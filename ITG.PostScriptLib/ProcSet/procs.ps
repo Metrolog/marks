@@ -342,7 +342,7 @@
     } bind
     /default {
       $error begin
-        2 copy  2 array  astore  /errorinfo exch def
+        [ 3 copy pop ] /errorinfo exch def
         /errorname /typecheck def
         /command /define_args def
         /recordstacks false def
@@ -355,19 +355,30 @@
 
 /scriptcheck % param_name param_value script_block --> param_name param_value (assert)
 {
-    dup xcheck
-    {
-      $error begin
-        3 copy pop  /scriptcheck  3 array  astore  /errorinfo exch def
-        /errorname /invalidparam def
-        /command /define_args def
-        /recordstacks false def
-      end
-      1 index  exch
-      exec
-    }
-    { pop stop }
-  ifelse
+  dup xcheck not  { pop stop } if
+  $error begin
+    % [ 4 copy pop pop  /scriptcheck ] /errorinfo exch def
+    /errorname /invalidparam def
+    /command /define_args def
+    /recordstacks false def
+  end
+  1 index  exch
+  exec
+} bind
+
+/rangecheck % param_name param_value [ min max ] --> param_name param_value (assert)
+{
+  dup type /arraytype eq not  { pop stop } if
+  dup length  2 eq not  { pop stop } if
+  $error begin
+    [ 4 copy pop  /rangecheck ] /errorinfo exch def
+    /errorname /invalidparam def
+    /command /define_args def
+    /recordstacks false def
+  end
+  2 copy  0 get  ge not  { pop stop } if
+  2 copy  1 get  le not  { pop stop } if
+  pop
 } bind
 
 >>
