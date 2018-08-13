@@ -408,7 +408,7 @@
     /command /define_args def
     /recordstacks false def
   end
-    false  exch  { 2 index  eq  { pop true  exit } if } forall
+    1 index  exch  /arrays /aexists eexec
   not  { stop } if
 } bind
 
