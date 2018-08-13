@@ -381,6 +381,24 @@
   pop
 } bind
 
+/lengthcheck % param_name param_value [ min_length max_length ] / length --> param_name param_value (assert)
+{
+  dup type /integertype eq { dup  2 array astore } if
+  dup type /arraytype eq not  { pop stop } if
+  dup length  2 eq not  { pop stop } if
+  $error begin
+    [ 4 copy pop  /lengthcheck ] /errorinfo exch def
+    /errorname /invalidparam def
+    /command /define_args def
+    /recordstacks false def
+  end
+  { 1 index  length } stopped { pop stop } if
+  exch
+  2 copy  0 get  ge not  { pop pop stop } if
+  2 copy  1 get  le not  { pop pop stop } if
+  pop pop
+} bind
+
 >>
 
 >> /ProcSet defineresource pop
