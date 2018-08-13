@@ -748,19 +748,19 @@ grestore
 % генераци€ рисунка калибровочного клейма
 /calibration_stamp_path % размер знак_поверител€ (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
-  6 dict begin
-  /stamp_for_production exch def % true - при выпуске из производства, false - в эксплуатации или после ремонта
-  /size exch def % размер клейма
-  /stamp_sign exch def % индивидуальный знак поверител€
-  /stamp_id exch def % шифр клейма
-  /stamp_period exch def % идентификаци€ периода дл€ мес€чных и квартальных клейм
-  /stamp_year exch def % год клейма
-  /scale_k size calibration_stamp_params /h_size get div def % рассчитаем коэффициент дл€ последующего масштабировани€
+  [
+    << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
+    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters year ] >>
+    << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
+    << /arg /sign  /type /integertype  /rangecheck [ 0 256 ] >>
+    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ] >>
+    << /arg /is_for_production  /type /booleantype >>
+  ] /procs /define_args eexec
 
   % сохран€ем на стеке текущую матрицу преобразовани€ системы координат дл€ последующего восстановлени€
   matrix currentmatrix
   currentpoint translate
-  scale_k scale_k scale
+  args /size get  calibration_stamp_params /h_size get  div  dup  scale
   9 9 translate
 
   % квадрат
@@ -774,18 +774,18 @@ grestore
   (stamp_id) findfont
   4 scalefont setfont
   0 -5.5 moveto
-    stamp_id
+    args /id get
     string_center_middle
   true charpath
 
   % индивидуальный знак поверител€
-    stamp_sign 0 ne
+    args /sign get 0 ne
     {
       matrix currentmatrix
         2.5 5.5 moveto
         currentpoint translate
         calibration_stamp_params /sing_h_size get  dup  scale
-        stamp_sign stamp_sign_upath uappend
+        args /sign get stamp_sign_upath uappend
       setmatrix
     }
   if
@@ -795,7 +795,7 @@ grestore
   6 scalefont setfont
   % -4 0 moveto
   -5.5 0 moveto
-        stamp_year 4 string cvs
+        args /year get 4 string cvs
         dup length 2 sub
         1
       getinterval
@@ -804,7 +804,7 @@ grestore
   true charpath
   % 4 0 moveto
   5.5 0 moveto
-        stamp_year 4 string cvs
+        args /year get 4 string cvs
         dup length 1 sub
         1
       getinterval
@@ -816,7 +816,7 @@ grestore
   (stamp_period) findfont
   calibration_stamp_params /period_h_size get scalefont setfont
   -2.5 5.5 moveto
-    stamp_period
+    args /period get
     string_center_middle
   true charpath
 
@@ -829,7 +829,9 @@ grestore
   % восстановливаем систему координат
   setmatrix
 
-  end
+  /procs /leave_local_scope eexec
+
+
 } bind def
 
 /calibration_stamp_upath % размер знак_поверител€ (шифр клейма) (период) год при_выпуске_из_производства --> user path
