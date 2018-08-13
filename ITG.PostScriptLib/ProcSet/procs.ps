@@ -90,7 +90,13 @@
         dup type
         <<
           /nametype { << >> } bind
-          /dicttype { dup  /arg get  exch } bind
+          /dicttype {
+            dup  /arg get  exch
+            begin
+              currentdict /arg undef
+              currentdict
+            end
+          } bind
         >>
         /procs /ProcSet findresource /switch get exec
       }
@@ -270,7 +276,6 @@
                 ifelse
 
                   currentdict  2 index  get  begin
-                    currentdict /arg undef
                     currentdict /type undef
                     currentdict
                   end

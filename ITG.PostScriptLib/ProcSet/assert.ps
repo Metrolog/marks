@@ -15,6 +15,7 @@
 
 /assert % bool string --> -
 {
+  $error /newerror false put
   dup type  /booleantype  eq  { (untitled) } if
     exch not
     {
