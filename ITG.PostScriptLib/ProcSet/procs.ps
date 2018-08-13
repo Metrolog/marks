@@ -117,20 +117,21 @@
           currentdict  2 index  known
           {
               {
-                currentdict  2 index  get
-                  dup /type known
-                  {
-                    /type get
-                    /procs /ProcSet findresource  /params_attributes get  /type get  exec
-                  }
-                  { pop }
-                ifelse
-
-                  currentdict  2 index  get  begin
-                    currentdict /type undef
-                    currentdict
+                  currentdict  2 index  get  dup length dict  copy  begin
+                    [
+                        [ /type ]
+                        {
+                            dup currentdict exch known
+                            { dup currentdict exch undef }
+                            { pop }
+                          ifelse
+                        }
+                      forall
+                      currentdict { pop } forall
+                    ]
                   end
                   {
+                    dup  currentdict  4 index  get  exch get
                     /procs /ProcSet findresource  /params_attributes get
                       dup  3 index  known
                       {
