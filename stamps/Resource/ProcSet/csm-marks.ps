@@ -8,6 +8,7 @@
 %%+: ProcSet (csm-marks-params) 2.3 0
 %%+: ProcSet (csm-marks-cyr-signs) 2.2 0
 %%+: ProcSet (csm-marks-greek-signs) 2.2 0
+%%+: ProcSet (operators) 2.3 0
 %%+: ProcSet (procs) 2.3 0
 %%+: ProcSet (arrays) 2.2 0
 %%+: ProcSet (boxes) 2.2 0
@@ -32,6 +33,7 @@
 
 %%IncludeResource: ProcSet csm-marks-params 2.3 0
 
+%%IncludeResource: ProcSet operators 2.3 0
 %%IncludeResource: ProcSet procs 2.3 0
 %%IncludeResource: ProcSet arrays 2.2 0
 %%IncludeResource: ProcSet boxes 2.2 0
@@ -719,7 +721,7 @@ grestore
     2 { args csm_verification_stamp_path } bind
     3 { args ul_verification_stamp_path } bind
   >>
-  /procs /ProcSet findresource /switch get exec
+  /operators /ProcSet findresource /switch get exec
 
   /procs /leave_local_scope eexec
 } def

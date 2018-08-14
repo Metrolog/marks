@@ -4,43 +4,19 @@
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%DocumentData: Clean7Bit
 %%DocumentNeededResources: ProcSet (arrays) 2.2 0
+%%+: ProcSet (operators) 2.3 0
 %%DocumentSuppliedResources: ProcSet (procs)
 %%Version: 2.3 0
 %%EndComments
 %%BeginProlog
 
 %%IncludeResource: ProcSet arrays 2.2 0
+%%IncludeResource: ProcSet operators 2.3 0
 
 %(procs) /ProcSet resourcestatus { pop pop } {
 %!PS-Adobe-3.0 Resource-ProcSet
 %%BeginResource: ProcSet (procs)
 /procs <<
-
-/switch
-{
-  exch  2 copy  known
-    { get exec }
-    {
-        exch
-        dup /default known
-        {
-          exch pop
-          /default get exec
-        }
-        {
-          pop
-          $error begin
-            /errorinfo exch def
-            /errorname /unexpectedswitchvalue def
-            /command /switch def
-            /recordstacks false def
-          end
-          stop
-        }
-      ifelse
-    }
-  ifelse
-} bind
 
 /define_args
 {
@@ -79,7 +55,7 @@
             stop
           } bind
         >>
-        /procs /ProcSet findresource /switch get exec
+        /operators /ProcSet findresource /switch get exec
       }
     forall
   ]
@@ -98,7 +74,7 @@
             end
           } bind
         >>
-        /procs /ProcSet findresource /switch get exec
+        /operators /ProcSet findresource /switch get exec
       }
     forall
   >>  begin
@@ -294,7 +270,7 @@
           stop
         } bind
       >>
-      /procs /ProcSet findresource /switch get exec
+      /operators /ProcSet findresource /switch get exec
     } bind
     /nulltype { } bind
     /operatortype {
@@ -335,7 +311,7 @@
         /integertype { 31 string  cvs } bind
         /default { 255 string  cvs } bind
       >>
-      /procs /ProcSet findresource /switch get exec
+      /operators /ProcSet findresource /switch get exec
     } bind
     /scripttype { % itg custom type for script block
       cvx
@@ -350,7 +326,7 @@
       stop
     }
   >>
-  /procs /ProcSet findresource /switch get exec
+  /operators /ProcSet findresource /switch get exec
 } bind
 
 /scriptcheck % param_name param_value script_block --> param_name param_value (assert)
