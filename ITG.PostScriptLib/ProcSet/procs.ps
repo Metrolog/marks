@@ -18,19 +18,45 @@
 %%BeginResource: ProcSet (procs)
 /procs <<
 
+/dont_process_define_args
+{
+  dup length  1 add  dict  copy
+  dup /_dont_process_define_args true put
+} bind
+
 /define_args
 {
-  /arrays /ProcSet findresource /areverse get exec
+        1 index  type  /dicttype  eq
+        { 1 index  /_dont_process_define_args known }
+        { false }
+      ifelse
+    { pop }
+    {
 
-  dup [ exch
-      {
-        dup type
-        <<
-          /nametype {} bind
-          /dicttype {
-              dup /arg known
-              { /arg get }
-              {
+      /arrays /ProcSet findresource /areverse get exec
+
+      dup [ exch
+          {
+            dup type
+            <<
+              /nametype {} bind
+              /dicttype {
+                  dup /arg known
+                  { /arg get }
+                  {
+                    $error begin
+                      /errorinfo exch def
+                      /errorname /unexpectedparamdefinition def
+                      /command /define_args def
+                      /recordstacks false def
+                    end
+                    cleartomark
+                    pop
+                    stop
+                  }
+                ifelse
+              } bind
+              /default {
                 $error begin
                   /errorinfo exch def
                   /errorname /unexpectedparamdefinition def
@@ -40,68 +66,126 @@
                 cleartomark
                 pop
                 stop
-              }
-            ifelse
-          } bind
-          /default {
-            $error begin
-              /errorinfo exch def
-              /errorname /unexpectedparamdefinition def
-              /command /define_args def
-              /recordstacks false def
-            end
-            cleartomark
-            pop
-            stop
-          } bind
-        >>
-        /operators /ProcSet findresource /switch get exec
-      }
-    forall
-  ]
+              } bind
+            >>
+            /operators /ProcSet findresource /switch get exec
+          }
+        forall
+      ]
 
-  exch
-  <<  exch
-      {
-        dup type
-        <<
-          /nametype { 0 dict } bind
-          /dicttype {
-            % # TODO: Проверить на отсутствие /arg
-            dup  /arg get  exch
-            begin
-              currentdict /arg undef
+      exch
+      <<  exch
+          {
+            dup type
+            <<
+              /nametype { 0 dict } bind
+              /dicttype {
+                % # TODO: Проверить на отсутствие /arg
+                dup  /arg get  exch
+                begin
+                  currentdict /arg undef
+                  currentdict
+                end
+              } bind
+            >>
+            /operators /ProcSet findresource /switch get exec
+          }
+        forall
+      >>  begin {
+
+          1 index  type  /dicttype  eq
+          { pop }
+          {
+            dup length dict begin
+              { exch def } forall
               currentdict
             end
-          } bind
-        >>
-        /operators /ProcSet findresource /switch get exec
-      }
-    forall
-  >>  begin {
+          }
+        ifelse
 
-      1 index  type  /dicttype  eq
-      { pop }
-      {
-        dup length dict begin
-          { exch def } forall
-          currentdict
-        end
-      }
-    ifelse
-
-      currentdict % params definitions
-      {
-          1 index  3 index  exch  known
-          { pop pop }
+          currentdict % params definitions
           {
-              dup /default known
-              { /default get  def }
+              1 index  3 index  exch  known
+              { pop pop }
               {
-                pop
+                  dup /default known
+                  { /default get  def }
+                  {
+                    pop
+                    $error begin
+                      [ exch ]  /errorinfo exch def
+                      /errorname /expectednparam def
+                      /command /define_args def
+                      /recordstacks false def
+                    end
+                    stop
+                  }
+                ifelse
+              }
+            ifelse
+          }
+        forall
+
+          {
+              currentdict  2 index  known
+              {
+                  {
+                      currentdict  2 index  get  dup length dict  copy  begin
+                        [
+                            [ /type ]
+                            {
+                                dup currentdict exch known
+                                { dup currentdict exch undef }
+                                { pop }
+                              ifelse
+                            }
+                          forall
+                          currentdict { pop } forall
+                        ]
+                      end
+                      {
+                        dup  currentdict  4 index  get  exch get
+                        /procs /ProcSet findresource  /params_attributes get
+                          dup  3 index  known
+                          {
+                            3 -1 roll
+                            $error begin
+                              dup [ exch ] /errorinfo exch def
+                              /errorname /invalidparamattributevalue def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            get
+                            exec
+                          }
+                          {
+                            pop
+                            pop
+                            $error begin
+                              2 index  exch  2 array  astore  /errorinfo exch def
+                              /errorname /unknownparamattribute def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            stop
+                          }
+                        ifelse
+                      }
+                    forall
+
+                  } stopped
+                  {
+                    pop pop
+                    stop
+                  }
+                if
+
+                def
+              }
+              {
                 $error begin
-                  [ exch ]  /errorinfo exch def
-                  /errorname /expectednparam def
+                  2 array  astore  /errorinfo exch def
+                  /errorname /unknownparam def
                   /command /define_args def
                   /recordstacks false def
                 end
@@ -109,83 +193,17 @@
               }
             ifelse
           }
-        ifelse
-      }
-    forall
+        forall
 
-      {
-          currentdict  2 index  known
-          {
-              {
-                  currentdict  2 index  get  dup length dict  copy  begin
-                    [
-                        [ /type ]
-                        {
-                            dup currentdict exch known
-                            { dup currentdict exch undef }
-                            { pop }
-                          ifelse
-                        }
-                      forall
-                      currentdict { pop } forall
-                    ]
-                  end
-                  {
-                    dup  currentdict  4 index  get  exch get
-                    /procs /ProcSet findresource  /params_attributes get
-                      dup  3 index  known
-                      {
-                        3 -1 roll
-                        $error begin
-                          dup [ exch ] /errorinfo exch def
-                          /errorname /invalidparamattributevalue def
-                          /command /define_args def
-                          /recordstacks false def
-                        end
-                        get
-                        exec
-                      }
-                      {
-                        pop
-                        pop
-                        $error begin
-                          2 index  exch  2 array  astore  /errorinfo exch def
-                          /errorname /unknownparamattribute def
-                          /command /define_args def
-                          /recordstacks false def
-                        end
-                        stop
-                      }
-                    ifelse
-                  }
-                forall
+        currentdict
 
-              } stopped
-              {
-                pop pop
-                stop
-              }
-            if
+      } stopped  end  { stop } if
 
-            def
-          }
-          {
-            $error begin
-              2 array  astore  /errorinfo exch def
-              /errorname /unknownparam def
-              /command /define_args def
-              /recordstacks false def
-            end
-            stop
-          }
-        ifelse
-      }
-    forall
+      readonly
 
-    currentdict
+    }
+  ifelse
 
-  } stopped  end  { stop } if
-  readonly
   1 dict begin
   /args exch def
 } bind

@@ -854,7 +854,7 @@ grestore
     << /arg /functor  /type /nametype  /enumcheck [ /verification_stamp_upath /verification_stamp_rhombus_upath /calibration_stamp_upath ]  /default /verification_stamp_upath >>
   ] /procs /define_args eexec
 
-  args  dup length dict  copy begin
+  args  /procs /dont_process_define_args eexec  begin
     {
       currentdict /functor undef
       args /period get {
