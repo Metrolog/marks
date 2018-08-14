@@ -78,7 +78,7 @@
         /operators /ProcSet findresource /switch get exec
       }
     forall
-  >>  begin
+  >>  begin {
 
       1 index  type  /dicttype  eq
       { pop }
@@ -104,7 +104,6 @@
                   /errorname /expectednparam def
                   /command /define_args def
                   /recordstacks false def
-                end
                 end
                 stop
               }
@@ -164,7 +163,6 @@
               } stopped
               {
                 pop pop
-                end
                 stop
               }
             if
@@ -178,7 +176,6 @@
               /command /define_args def
               /recordstacks false def
             end
-            end
             stop
           }
         ifelse
@@ -187,7 +184,7 @@
 
     currentdict
 
-  end
+  } stopped  end  { stop } if
   readonly
   1 dict begin
   /args exch def
