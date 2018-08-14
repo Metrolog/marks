@@ -1,0 +1,61 @@
+%!PS-Adobe-3.0
+%%Title: Test: signalerror (#74)
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%LanguageLevel: 3
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (assert) 2.2 0
+%%+: ProcSet (except) 2.3 0
+%%EndComments
+%%BeginProlog
+%!
+
+%%BeginProlog
+
+%%IncludeResource: ProcSet (assert) 2.2 0
+%%IncludeResource: ProcSet (except) 2.3 0
+
+/eexec { exch /ProcSet findresource exch get exec } bind def
+
+%%EndProlog
+
+/testmark
+  {
+      {
+        /test /test
+        (!!!!!!!!!!!!!!!!!! try script block) ==
+        stop
+      }
+      {
+        pop pop
+        (!!!!!!!!!!!!!!!!!! finish script block) ==
+      }
+    /except /try_finally eexec
+  } stopped
+  (try_finally must throw exception if exception in try script block)
+/assert /assert eexec
+  /testmark eq
+  (try_finally must restore the stack after exception)
+/assert /assert eexec
+
+/testmark
+  {
+      {
+        /test /test
+        (!!!!!!!!!!!!!!!!!! try script block) ==
+        % stop
+      }
+      {
+        pop pop
+        (!!!!!!!!!!!!!!!!!! finish script block) ==
+      }
+    /except /try_finally eexec
+  } stopped not
+  (try_finally must do not throw exception if try script block finished without exception)
+/assert /assert eexec
+  /testmark eq
+  (try_finally must restore the stack)
+/assert /assert eexec
+
+%%EOF

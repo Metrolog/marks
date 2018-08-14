@@ -1,0 +1,37 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: ProcSet (except)
+%%Version: 2.3 0
+%%EndComments
+%%BeginProlog
+
+%(except) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (except)
+/except <<
+
+% http://riptutorial.com/postscript/example/21484/signalling--throwing--an-error
+/.error where { pop /signalerror /.error load } if
+
+/try_finally % { danger script block } { finally script block } try_finally --> -
+{
+  2 dict begin {
+    /finally_script_block exch def
+    /try_script_block exch def
+
+      { try_script_block exec } stopped
+      { finally_script_block exec  stop }
+      { finally_script_block exec }
+    ifelse
+
+  } stopped  end  { stop } if
+} bind
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog
