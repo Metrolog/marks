@@ -65,7 +65,7 @@
       {
         dup type
         <<
-          /nametype { << >> } bind
+          /nametype { 0 dict } bind
           /dicttype {
             dup  /arg get  exch
             begin
@@ -88,6 +88,25 @@
         end
       }
     ifelse
+
+      currentdict % params definitions
+      {
+          pop
+          dup  2 index  exch  known
+          { pop }
+          {
+            $error begin
+              [ exch ]  /errorinfo exch def
+              /errorname /expectednparam def
+              /command /define_args def
+              /recordstacks false def
+            end
+            end
+            stop
+          }
+        ifelse
+      }
+    forall
 
       {
           currentdict  2 index  known
