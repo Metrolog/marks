@@ -67,6 +67,7 @@
         <<
           /nametype { 0 dict } bind
           /dicttype {
+            % # TODO: Проверить на отсутствие /arg
             dup  /arg get  exch
             begin
               currentdict /arg undef
@@ -91,18 +92,23 @@
 
       currentdict % params definitions
       {
-          pop
-          dup  2 index  exch  known
-          { pop }
+          1 index  3 index  exch  known
+          { pop pop }
           {
-            $error begin
-              [ exch ]  /errorinfo exch def
-              /errorname /expectednparam def
-              /command /define_args def
-              /recordstacks false def
-            end
-            end
-            stop
+              dup /default known
+              { /default get  def }
+              {
+                pop
+                $error begin
+                  [ exch ]  /errorinfo exch def
+                  /errorname /expectednparam def
+                  /command /define_args def
+                  /recordstacks false def
+                end
+                end
+                stop
+              }
+            ifelse
           }
         ifelse
       }
@@ -193,6 +199,11 @@
 } bind
 
 /params_attributes <<
+
+/default % param_name param_value default_value --> param_name param_value
+{ % just plug
+  pop
+}
 
 /type % param_name param_value type_name --> param_name param_value
 {
