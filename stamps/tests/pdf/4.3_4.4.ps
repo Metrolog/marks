@@ -92,13 +92,15 @@ gsave
 % для подготовки оттисков править код ниже !!!
 %------------------------------------------------------------------------------
   [
-      2018                                                      % год
-      [ [ 1 12 range ] months  [ 1 4 range ] quarters  year ]   % периоды
-      (ААВ)                                                     % шифр поверительного клейма
-      [ 1 256 range ]                                           % диапазон знаков поверителей
-      18.0 mm                                                   % размер клейма
-      true                                                      % поверка при выпуске из производства
-      /verification_stamp_upath
+      <<
+        /year 2018
+        /period [ [ 1 12 range ] months  [ 1 4 range ] quarters year ]
+        /id (ААВ)
+        /sign [ 1 256 range ]
+        /size 18.0 mm
+        /is_for_production true
+        /functor /verification_stamp_upath
+      >>
     create_stamps
       2018                                                      % год
       [ [ 1 12 range ] months  [ 1 4 range ] quarters  year ]   % периоды
