@@ -16,6 +16,14 @@
 % http://riptutorial.com/postscript/example/21484/signalling--throwing--an-error
 /.error where { pop /signalerror /.error load } if
 
+/signalerrorwithinfo
+{
+  $error begin
+    3 -1 roll  /errorinfo exch def
+  end
+  signalerror
+} bind
+
 >> /ProcSet defineresource pop
 %%EndResource:
 %} ifelse

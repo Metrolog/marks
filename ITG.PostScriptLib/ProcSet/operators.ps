@@ -26,13 +26,7 @@
         }
         {
           pop
-          $error begin
-            /errorinfo exch def
-            /errorname /unexpectedswitchvalue def
-            /command /switch def
-            /recordstacks false def
-          end
-          stop
+          /switch /rangecheck signalerror
         }
       ifelse
     }

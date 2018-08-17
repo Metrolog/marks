@@ -18,6 +18,17 @@
 
 /eexec { exch /ProcSet findresource exch get exec } bind def
 
+mark
+{
+  /test_command /configurationerror  signalerror
+} stopped
+  (signalerror must throw exception)
+/assert /assert eexec
+  counttomark 0 eq
+  (signalerror must restore the stack)
+/assert /assert eexec
+pop
+
 %%EndProlog
 
 %%EOF
