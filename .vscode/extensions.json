@@ -12,6 +12,7 @@
 		"DavidAnson.vscode-markdownlint",
 		"bierner.markdown-preview-github-styles",
 		"ms-vscode.PowerShell",
+		"sjhuangx.vscode-scheme",
 		"mxschmitt.postscript",
 		"timonwong.shellcheck"
 	]

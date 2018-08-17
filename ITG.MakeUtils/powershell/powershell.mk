@@ -1,4 +1,6 @@
-ifndef ITG_MAKEUTILS_LOADED
+#!/usr/bin/make
+
+ifndef __itg_makeutils_included
 $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
 endif
 

@@ -1,6 +1,7 @@
+#!/usr/bin/make
+
 ifndef MAKE_COMMON_DIR
 MAKE_COMMON_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-ITG_MAKEUTILS_LOADED := true
 
 #region info, warning and error wrappers
 
@@ -51,6 +52,8 @@ ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_
 #endregion calc ITG.MakeUtils relative path
 
 include $(MAKE_COMMON_DIR)GMSL/gmsl
+__itg_makeutils_included:=$(true)
+
 include $(MAKE_COMMON_DIR)help-system.mk
 
 #region check make tool version and features
@@ -167,9 +170,60 @@ CONFIGDIR          ?= config/
 
 #endregion common dirs
 
+is_clean:=$(call __gmsl_make_bool,$(filter %clean,$(MAKECMDGOALS)))
+is_config_target:=$(call set_is_member,.GLOBAL_VARIABLES,$(call set_create,$(MAKECMDGOALS)))
+is_productive_target:=$(call and,$(call not,$(is_clean)),$(call not,$(is_config_target)))
+
+is_root_project:=$(false)
+ifdef ROOT_PROJECT_DIR
+  ifeq ($(ROOT_PROJECT_DIR),./)
+    is_root_project:=$(true)
+  endif
+endif
 
 # $(call rwildcard,dir,filesfilter)
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
+
+# $(call include_makefile,makefile)
+define include_makefile
+$(call assert,$1,Expected makefile name)
+include $1
+
+endef
+
+# $(call include_makefile_if_not_clean,makefile)
+define include_makefile_if_not_clean
+$(call assert,$1,Expected makefile name)
+$(if $(call not,$(is_clean)),$(call include_makefile,$1))
+endef
+
+AUX_MAKEFILE_LIST:=$(empty_set)
+
+__itg_get_static_makefile_list=$(call set_remove,$(AUX_MAKEFILE_LIST),$(call set_create,$(MAKEFILE_LIST)))
+
+__itg_aux_makefile=$(if $2,$2,$(AUXDIR))$1
+
+ifeq ($(is_productive_target),$(true))
+
+# $(call call_as_makefile,expression,makefile,makefile_dir)
+define call_as_makefile
+$(call assert,$2,Expected makefile name)
+
+$(call __itg_aux_makefile,$2,$3): $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
+	$$(file > $$@,#!/usr/bin/make)
+	$$(file >> $$@,)
+	$$(file >> $$@,$1)
+	$$(TOUCH) $$@
+
+AUX_MAKEFILE_LIST:=$(call __itg_aux_makefile,$2,$3) $$(AUX_MAKEFILE_LIST)
+
+$(call include_makefile_if_not_clean,$(call __itg_aux_makefile,$2,$3))
+
+endef
+
+else
+  call_as_makefile=
+endif
 
 # $(call reversedirpath,dirPath,pathToRootFromChild)
 reversedirpath = $(if $(strip $1),$(call merge,/,$(foreach d,$(call split,/,$1),..))/,./)
@@ -180,19 +234,25 @@ $1:=$2
 
 endef
 
-# $(call copyfile, to, from)
-define copyfile
+ifeq ($(is_productive_target),$(true))
+
+# $(call copy_file, to, from)
+define copy_file
 $(call assert,$1,Expected file name (to))
 $(call assert,$2,Expected file name (from))
 $1: $2 | $$(TARGETDIR)
 	$(COPY) $$< $$@
 endef
 
-# $(call copyfileto, todir, fromfile)
-copyfileto = $(call copyfile,$1$(notdir $2),$2)
+else
+  copy_file=
+endif
 
-# $(call copyfilefrom, tofile, fromdir)
-copyfilefrom = $(call copyfile,$1,$2$(notdir $1))
+# $(call copy_file_to, todir, fromfile)
+copy_file_to = $(call copy_file,$1$(notdir $2),$2)
+
+# $(call copy_file_from, tofile, fromdir)
+copy_file_from = $(call copy_file,$1,$2$(notdir $1))
 
 #region subprojects support
 
@@ -202,7 +262,7 @@ SUBPROJECT_EXPORTS_FILE ?= $(SUBPROJECTS_EXPORTS_DIR)undefined
 
 .PHONY: .GLOBAL_VARIABLES
 .GLOBAL_VARIABLES: $(SUBPROJECT_EXPORTS_FILE)
-$(SUBPROJECT_EXPORTS_FILE):: $(MAKEFILE_LIST) | $(TARGETDIR)
+$(SUBPROJECT_EXPORTS_FILE):: $(call __itg_get_static_makefile_list) | $(TARGETDIR)
 	$(file > $@,# subproject exported variables)
 
 # $(call exportGlobalVariablesAux, Variables, Writer)
@@ -263,13 +323,11 @@ $(eval $(call setSubProjectDir,$1,$2))
 $(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $$(TARGETDIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
 .PHONY: $1 $3
-ifeq ($(filter %clean,$(MAKECMDGOALS)),)
-include $(SUBPROJECTS_EXPORTS_DIR)$1.mk
-endif
+$(call include_makefile_if_not_clean,$(SUBPROJECTS_EXPORTS_DIR)$1.mk)
 $1:
 	$(call MAKE_SUBPROJECT,$1)
 test-$1:
-	$(call MAKE_SUBPROJECT,$1) --keep-going test
+	$(call MAKE_SUBPROJECT,$1) --keep-going check
 $3:
 	$(call MAKE_SUBPROJECT,$1) $$@
 $(foreach target,$3,test-$(target)):
@@ -279,7 +337,7 @@ $(foreach target,$3,test.%-$(target)):
 $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 all:: $1
-test: test-$1
+check: test-$1
 help::
 	@$(call MAKE_SUBPROJECT,$1) -s --no-print-directory help
 ifeq ($(filter clean distclean maintainer-clean,$(MAKECMDGOALS)),)
@@ -298,12 +356,10 @@ maintainer-clean::
 	$(call MAKE_SUBPROJECT,$1) maintainer-clean
 endef
 
-ifdef ROOT_PROJECT_DIR
-ifneq ($(ROOT_PROJECT_DIR),./)
+ifneq ($(is_root_project),$(true))
 $(ROOT_PROJECT_DIR)%:
 	$(call MAKE_SUBPROJECT_TARGET, $*)
 
-endif
 endif
 
 #endregion subprojects support
@@ -314,12 +370,9 @@ endif
 .PHONY: all
 all:: $(call _itg_makeutils_print-help,all,Build all targets.)
 
-# not standard target. Use 'check'
-.PHONY: test
-test: MAKEFLAGS += --keep-going
-
 .PHONY: check
-check: test $(call _itg_makeutils_print-help,check,Perform self-tests.)
+check: $(call _itg_makeutils_print-help,check,Perform self-tests.)
+check: MAKEFLAGS += --keep-going
 
 .PHONY: mostlyclean
 mostlyclean:: $(call _itg_makeutils_print-help,mostlyclean,Like 'clean'$(COMMA) but may refrain from deleting a few files that people normally don’t want to recompile.)

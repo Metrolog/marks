@@ -20,12 +20,16 @@
 Под Windows:
 
 - [make][] версии 3.82 или старше (под [CygWin][], [MSYS2][])
+- [m4][]
+- [iconv][]
 - [GhostScript][]
 - текстовый редактор, настоятельно рекомендую [VSCode][]
 
 Под Linux:
 
 - [make][] версии 3.82 или старше
+- [m4][]
+- [iconv][]
 - [PowerShellCore][]
 - [GhostScript][]
 - [VSCode][]
@@ -324,7 +328,9 @@ stamps/sources (папку sources необходимо создать) и на�
 [CygWin]: http://cygwin.com/install.html
 [MinGW]: http://mingw-w64.org
 [MSYS2]: http://www.msys2.org
-[make]: https://ru.wikipedia.org/wiki/Make
+[make]: https://www.gnu.org/software/make
+[m4]: https://www.gnu.org/software/m4
+[iconv]: https://ru.wikipedia.org/wiki/Iconv
 [GhostScript]: https://www.ghostscript.com/
 [VSCode]: https://code.visualstudio.com/ "Visual Studio Code"
 [PowerShellCore]: https://github.com/PowerShell/PowerShell "PowerShell Core"

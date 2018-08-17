@@ -7,7 +7,7 @@ include $(ITG_MAKEUTILS_DIR)tests/tests.mk
 include $(ITG_MAKEUTILS_DIR)ghostscript/ghostscript.mk
 include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
-$(eval $(call preparePostScriptResource))
+$(eval $(call prepare_PostScript_resource))
 
 GSINCDIR := $(GSINCDIR) $(PSRESOURCEOUTPUTDIR)
 
@@ -22,4 +22,4 @@ ITG_PostScriptLib: $(ITG_POSTSCRIPTLIBFILES) $(call print-help,ITG_PostScriptLib
 $(eval $(call pushArtifactTargets,ITG_POSTSCRIPTLIBFILES))
 $(eval $(call pushArtifactTargets,ITG_POSTSCRIPTLIBDIR))
 
-$(eval $(call definePostScriptTests))
+$(eval $(call define_PostScript_tests))

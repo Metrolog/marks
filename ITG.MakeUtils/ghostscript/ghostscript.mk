@@ -1,4 +1,6 @@
-ifndef ITG_MAKEUTILS_LOADED
+#!/usr/bin/make
+
+ifndef __itg_makeutils_included
 $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
 endif
 
@@ -58,23 +60,43 @@ getPostScriptResourceSourceFiles = \
 getPostScriptResourceOutputFiles = \
   $(patsubst %.ps,%,$(patsubst $(if $1,$1,$(PSRESOURCESOURCEDIR))%,$(if $2,$2,$(PSRESOURCEOUTPUTDIR))%,$(if $3,$3,$(call getPostScriptResourceSourceFiles,$1))))
 
-# $(call preparePostScriptResource[, fromDir[, toDir[, files]]] )
-define preparePostScriptResource
+# $(call prepare_PostScript_resource[, fromDir[, toDir[, files]]] )
+define __prepare_PostScript_resource_aux
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps | $$(TARGETDIR)
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3): )$(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps | $$(TARGETDIR)
 	$$(COPY) $$< $$@
 
-POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
+POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
 
 endef
 
-# $(call copyPostScriptResource[, fromDir[, toDir[, files]]] )
-define copyPostScriptResource
+define prepare_PostScript_resource
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3):) $(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))% | $$(TARGETDIR)
+$(call call_as_makefile,$$(call __prepare_PostScript_resource_aux,$1,$2,$3),$(call merge,_,prepare_postscript_resources $(call split,/,$1)).mk)
+
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean))),$(true))
+POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
+endif
+
+endef
+
+# $(call copy_PostScript_resource[, fromDir[, toDir[, files]]] )
+define __copy_PostScript_resource_aux
+
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3): )$(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))% | $$(TARGETDIR)
 	$$(COPY) $$< $$@
 
-POSTSCRIPTRESOURCEFILES += $(call getPostScriptResourceOutputFiles,$1,$2,$3)
+POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
+
+endef
+
+define copy_PostScript_resource
+
+$(call call_as_makefile,$$(call __copy_PostScript_resource_aux,$1,$2,$3),$(call merge,_,copy_postscript_resources $(call split,/,$1)).mk)
+
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean))),$(true))
+POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
+endif
 
 endef
 
@@ -117,9 +139,9 @@ TESTSPSSOURCEFILES = $(call rwildcard,$(TESTSPSSOURCEDIR),*.ps)
 # $(call definePostScriptClearTest,target,source,dependencies)
 define definePostScriptClearTest
 
-$(call defineTest,$(basename $(notdir $1)),ps_build,\
+$(call define_test,$(basename $(notdir $1)),ps_build,\
   $(GSCMDLINE) '$2';,\
-  $2 $3 $$(POSTSCRIPTRESOURCEFILES),,\
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES),,,\
   $2 \
 )
 
@@ -139,9 +161,9 @@ TESTSPS2PDFOUTPUTFILES = $(patsubst $(TESTSPS2PDFSOURCEDIR)%.ps,$(TESTSPS2PDFOUT
 # $(call definePostScript2PDFTest,target,source,dependencies)
 define definePostScript2PDFTest
 
-$(call defineTest,$(basename $(notdir $1)),ps_build,\
+$(call define_test,$(basename $(notdir $1)),ps_build,\
   $(GSPSTOPDFCMDLINE) -sOutputFile='$1' '$2',\
-  $2 $3 $$(POSTSCRIPTRESOURCEFILES),\
+  $2 $3 $$(POSTSCRIPTRESOURCEFILES),,\
 	$(call TARGETDIR,$1),\
   $2,\
   $$(call pushDeploymentArtifactFile,$$(notdir $1),$1)\
@@ -153,11 +175,14 @@ endef
 definePostScript2PDFTests = $(foreach f,$(TESTSPS2PDFSOURCEFILES),$(call definePostScript2PDFTest,$(patsubst $(TESTSPS2PDFSOURCEDIR)%.ps,$(TESTSPS2PDFOUTPUTDIR)%.pdf,$f),$f,$1))
 
 
-# $(call definePostScriptTests,dependencies)
-define definePostScriptTests
+# $(call __define_PostScript_tests_aux,dependencies)
+define __define_PostScript_tests_aux
 $(call definePostScriptClearTests,$1)
 $(call definePostScript2PDFTests,$1)
 endef
+
+define_PostScript_tests = $(call call_as_makefile,$$(call __define_PostScript_tests_aux,$1),postscript_tests.mk)
+
 
 endif
 
