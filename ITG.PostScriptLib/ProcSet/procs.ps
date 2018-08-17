@@ -46,26 +46,20 @@
                   {
                     $error begin
                       /errorinfo exch def
-                      /errorname /unexpectedparamdefinition def
-                      /command /define_args def
-                      /recordstacks false def
                     end
                     cleartomark
                     pop
-                    stop
+                    /define_args /undefined signalerror
                   }
                 ifelse
               } bind
               /default {
                 $error begin
                   /errorinfo exch def
-                  /errorname /unexpectedparamdefinition def
-                  /command /define_args def
-                  /recordstacks false def
                 end
                 cleartomark
                 pop
-                stop
+                /define_args /undefined signalerror
               } bind
             >>
             /operators /ProcSet findresource /switch get exec
@@ -112,13 +106,10 @@
                   { /default get  def }
                   {
                     pop
-                    $error begin
-                      [ exch ]  /errorinfo exch def
-                      /errorname /expectednparam def
-                      /command /define_args def
-                      /recordstacks false def
-                    end
-                    stop
+                      [ exch ]
+                      /define_args
+                      /undefined
+                    /except /ProcSet findresource /signalerrorwithinfo get exec
                   }
                 ifelse
               }
@@ -161,13 +152,10 @@
                           {
                             pop
                             pop
-                            $error begin
-                              2 index  exch  2 array  astore  /errorinfo exch def
-                              /errorname /unknownparamattribute def
-                              /command /define_args def
-                              /recordstacks false def
-                            end
-                            stop
+                              2 index  exch  2 array  astore
+                              /define_args
+                              /undefined
+                            /except /ProcSet findresource /signalerrorwithinfo get exec
                           }
                         ifelse
                       }
@@ -183,13 +171,10 @@
                 def
               }
               {
-                $error begin
-                  2 array  astore  /errorinfo exch def
-                  /errorname /unknownparam def
-                  /command /define_args def
-                  /recordstacks false def
-                end
-                stop
+                  2 array  astore
+                  /define_args
+                  /undefined
+                /except /ProcSet findresource /signalerrorwithinfo get exec
               }
             ifelse
           }
@@ -233,67 +218,27 @@
     } bind
     /booleantype {
         dup type  /booleantype  eq  not
-        {
-          $error begin
-            dup /errorinfo exch def
-            /errorname /typecheck def
-            /command /define_args def
-            /recordstacks false def
-          end
-          stop
-        }
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
       if
     } bind
     /dicttype {
         dup type  /dicttype  eq  not
-        {
-          $error begin
-            dup /errorinfo exch def
-            /errorname /typecheck def
-            /command /define_args def
-            /recordstacks false def
-          end
-          stop
-        }
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
       if
     } bind
     /filetype {
         dup type  /filetype  eq  not
-        {
-          $error begin
-            dup /errorinfo exch def
-            /errorname /typecheck def
-            /command /define_args def
-            /recordstacks false def
-          end
-          stop
-        }
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
       if
     } bind
     /fonttype {
         dup type  /fonttype  eq  not
-        {
-          $error begin
-            dup /errorinfo exch def
-            /errorname /typecheck def
-            /command /define_args def
-            /recordstacks false def
-          end
-          stop
-        }
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
       if
     } bind
     /gstatetype {
         dup type  /gstatetype  eq  not
-        {
-          $error begin
-            dup /errorinfo exch def
-            /errorname /typecheck def
-            /command /define_args def
-            /recordstacks false def
-          end
-          stop
-        }
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
       if
     } bind
     /integertype {
@@ -305,30 +250,14 @@
       <<
         /stringtype { cvn } bind
         /nametype { } bind
-        /default {
-          $error begin
-            2 copy  2 array  astore  /errorinfo exch def
-            /errorname /typecheck def
-            /command /define_args def
-            /recordstacks false def
-          end
-          stop
-        } bind
+        /default { 2 copy 2 array astore  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec } bind
       >>
       /operators /ProcSet findresource /switch get exec
     } bind
     /nulltype { } bind
     /operatortype {
         dup type  /operatortype  eq  not
-        {
-          $error begin
-            dup /errorinfo exch def
-            /errorname /typecheck def
-            /command /define_args def
-            /recordstacks false def
-          end
-          stop
-        }
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
       if
     } bind
     /packedarraytype {
@@ -361,15 +290,7 @@
     /scripttype { % itg custom type for script block
       cvx
     } bind
-    /default {
-      $error begin
-        [ 3 copy pop ] /errorinfo exch def
-        /errorname /typecheck def
-        /command /define_args def
-        /recordstacks false def
-      end
-      stop
-    }
+    /default { [ 3 copy pop ]  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
   >>
   /operators /ProcSet findresource /switch get exec
 } bind
@@ -423,14 +344,9 @@
 /enumcheck % param_name param_value [ enum_items ] --> param_name param_value (assert)
 {
   dup type /arraytype eq not  { pop stop } if
-  $error begin
-    [ 4 copy pop  /enumcheck ] /errorinfo exch def
-    /errorname /invalidparam def
-    /command /define_args def
-    /recordstacks false def
-  end
-    1 index  exch  /arrays /aexists eexec
-  not  { stop } if
+    1 index  exch  /arrays /aexists eexec  not
+    { [ 4 copy pop  /enumcheck ]  /define_args /undefined  /except /ProcSet findresource /signalerrorwithinfo get exec }
+  if
 } bind
 
 >>

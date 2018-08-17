@@ -1,0 +1,34 @@
+%!PS-Adobe-3.0
+%%Title: Test: signalerror (#74)
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%LanguageLevel: 3
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (assert) 2.2 0
+%%+: ProcSet (except) 2.3 0
+%%EndComments
+%%BeginProlog
+%!
+
+%%BeginProlog
+
+%%IncludeResource: ProcSet (assert) 2.2 0
+%%IncludeResource: ProcSet (except) 2.3 0
+
+/eexec { exch /ProcSet findresource exch get exec } bind def
+
+mark
+{
+  /test_command /configurationerror  signalerror
+} stopped
+  (signalerror must throw exception)
+/assert /assert eexec
+  counttomark 0 eq
+  (signalerror must restore the stack)
+/assert /assert eexec
+pop
+
+%%EndProlog
+
+%%EOF
