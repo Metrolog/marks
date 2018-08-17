@@ -88,12 +88,14 @@ userdict begin
 gsave
 
 0 0 moveto
-  StampYear
-  StampPeriod
-  StampId
-  StampSign
-  StampSize
-  StampForProduction
+  <<
+    /year StampYear
+    /period StampPeriod
+    /id StampId
+    /sign StampSign
+    /size StampSize
+    /is_for_production StampForProduction
+  >>
 verification_stamp_path
 fill
 
