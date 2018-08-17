@@ -1,0 +1,328 @@
+%!PS-Adobe-3.0
+%%Title: Test: define_args
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%LanguageLevel: 3
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (assert) 2.2 0
+%%+: ProcSet (procs) 2.3 0
+%%+: ProcSet (arrays) 2.2 0
+%%EndComments
+%%BeginProlog
+%!
+
+%%BeginProlog
+
+%%IncludeResource: ProcSet (assert) 2.2 0
+%%IncludeResource: ProcSet (procs) 2.3 0
+%%IncludeResource: ProcSet (arrays) 2.2 0
+
+/eexec { exch /ProcSet findresource exch get exec } bind def
+
+%%EndProlog
+
+/test1
+{
+  [
+    /arg1
+    <<
+      /arg /arg2
+      /type /stringtype
+      /scriptcheck {
+          /two eq  not
+          {
+            $error begin
+              [ 3 copy pop (arg2 must be two) ] /errorinfo exch def
+            end
+            stop
+          }
+        if
+      }
+    >>
+    <<
+      /arg /arg3
+      /type /integertype
+      /rangecheck [ 10 20 ]
+    >>
+    <<
+      /arg /arg4
+      /type /stringtype
+      /lengthcheck 4
+    >>
+    <<
+      /arg /arg5
+      /type /stringtype
+      /lengthcheck [ 3 4 ]
+      /default /five
+    >>
+    <<
+      /arg /arg6
+      /type /nametype
+      /enumcheck [ /six /seven ]
+    >>
+  ] /procs /define_args eexec
+
+  args
+
+  /procs /leave_local_scope eexec
+} bind def
+
+/testmark
+  {
+    /one /two 15 /four /five /six test1
+  } stopped not
+  (define_args must not throw exception with correct params on the stack)
+/assert /assert eexec
+  dup length  6  eq
+  (define_args must define args dictionary with correct length)
+/assert /assert eexec
+    dup /arg1 known
+    {
+        dup /arg1 get  /one  eq
+        {
+            dup /arg2 known
+            {
+                dup /arg2 get  /two  eq
+                {
+                    dup /arg3 known
+                    {
+                      dup /arg3 get  15  eq
+                    }
+                    { false }
+                  ifelse
+                }
+                { false }
+              ifelse
+            }
+            { false }
+          ifelse
+        }
+        { false }
+      ifelse
+    }
+    { false }
+  ifelse
+  (define_args must define args dictionary with correct content)
+/assert /assert eexec
+  pop
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 15
+      /arg4 /four
+      /arg5 /five
+      /arg6 /six
+    >> test1
+  } stopped not
+  (define_args must not throw exception with correct params in dictionary on the stack)
+/assert /assert eexec
+  dup length  6  eq
+  (define_args with params in dictionary on the stack must define args dictionary with correct length)
+/assert /assert eexec
+    dup /arg1 known
+    {
+        dup /arg1 get  /one  eq
+        {
+            dup /arg2 known
+            {
+                dup /arg2 get  /two  eq
+                {
+                    dup /arg3 known
+                    {
+                      dup /arg3 get  15  eq
+                    }
+                    { false }
+                  ifelse
+                }
+                { false }
+              ifelse
+            }
+            { false }
+          ifelse
+        }
+        { false }
+      ifelse
+    }
+    { false }
+  ifelse
+  (define_args with params in dictionary on the stack must define args dictionary with correct content)
+/assert /assert eexec
+  dup /arg2 get  type  /stringtype  eq
+  (define_args must convert parameter value to type of parameter)
+/assert /assert eexec
+  pop
+  /testmark eq
+  (define_args with params in dictionary on the stack and leave_local_scope must restore the stack)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 15
+      /arg4 /four
+      /arg5 /five
+      /arg6 /six
+      /arg7 (extra parameter)
+    >> test1
+  } stopped
+  (define_args must throw exception with unknown params in dictionary on the stack)
+/assert /assert eexec
+  /testmark eq
+  (define_args with unknown params in dictionary on the stack and leave_local_scope must restore the stack)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /three
+      /arg3 15
+      /arg4 /four
+      /arg5 /five
+      /arg6 /six
+    >> test1
+  } stopped
+  (define_args must throw exception on scriptcheck)
+/assert /assert eexec
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack after scriptcheck failure)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 21
+      /arg4 /four
+      /arg5 /five
+      /arg6 /six
+    >> test1
+  } stopped
+  (define_args must throw exception on rangecheck)
+/assert /assert eexec
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack after rangecheck failure)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 9
+      /arg4 /four
+      /arg5 /five
+      /arg6 /six
+    >> test1
+  } stopped
+  (define_args must throw exception on rangecheck)
+/assert /assert eexec
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack after rangecheck failure)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 15
+      /arg4 /not_four
+      /arg5 /five
+      /arg6 /six
+    >> test1
+  } stopped
+  (define_args must throw exception on lengthcheck)
+/assert /assert eexec
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack after lengthcheck failure)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 15
+      /arg4 /four
+      /arg5 /not_five
+      /arg6 /six
+    >> test1
+  } stopped
+  (define_args must throw exception on lengthcheck)
+/assert /assert eexec
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack after lengthcheck failure)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 15
+      /arg4 /four
+      /arg5 /five
+      /arg6 /not_six
+    >> test1
+  } stopped
+  (define_args must throw exception on enumcheck)
+/assert /assert eexec
+  /testmark eq
+  (define_args and leave_local_scope must restore the stack after enumcheck failure)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 15
+      /arg4 /four
+      /arg5 /five
+    >> test1
+  } stopped
+  (define_args must throw exception with missing params in dictionary without default values)
+/assert /assert eexec
+  pop
+  /testmark eq
+  (define_args after /expectedparam exception must restore the stack)
+/assert /assert eexec
+
+/testmark
+  {
+    <<
+      /arg1 /one
+      /arg2 /two
+      /arg3 15
+      /arg4 /four
+      /arg6 /six
+    >> test1
+  } stopped not
+  (define_args must not throw exception with missing params in dictionary with default values)
+/assert /assert eexec
+  dup length  6  eq
+  (define_args with missing params with default values must define args dictionary with correct length)
+/assert /assert eexec
+    dup /arg5 known
+    { dup /arg5 get  /five  eq }
+    { false }
+  ifelse
+  (define_args with missing param with default values must define args dictionary with correct content)
+/assert /assert eexec
+  pop
+  /testmark eq
+  (define_args with missing params with default values must restore the stack)
+/assert /assert eexec
+
+%%EOF

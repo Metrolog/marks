@@ -1,0 +1,40 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentSuppliedResources: ProcSet (operators)
+%%Version: 2.3 0
+%%EndComments
+%%BeginProlog
+
+%(operators) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (operators)
+/operators <<
+
+/switch
+{
+  exch  2 copy  known
+    { get exec }
+    {
+        exch
+        dup /default known
+        {
+          exch pop
+          /default get exec
+        }
+        {
+          pop
+          /switch /rangecheck signalerror
+        }
+      ifelse
+    }
+  ifelse
+} bind
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog

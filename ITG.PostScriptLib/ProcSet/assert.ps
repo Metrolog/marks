@@ -15,6 +15,7 @@
 
 /assert % bool string --> -
 {
+  $error /newerror false put
   dup type  /booleantype  eq  { (untitled) } if
     exch not
     {
@@ -22,6 +23,7 @@
       dup (Assertion ') writestring
       dup  3 -1 roll  writestring
       (' failed!\n) writestring
+      $error /newerror true put
       stop
     }
     {
