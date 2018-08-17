@@ -20,42 +20,4 @@
 
 %%EndProlog
 
-/testmark
-  {
-      {
-        /test /test
-        (!!!!!!!!!!!!!!!!!! try script block) ==
-        stop
-      }
-      {
-        pop pop
-        (!!!!!!!!!!!!!!!!!! finish script block) ==
-      }
-    /except /try_finally eexec
-  } stopped
-  (try_finally must throw exception if exception in try script block)
-/assert /assert eexec
-  /testmark eq
-  (try_finally must restore the stack after exception)
-/assert /assert eexec
-
-/testmark
-  {
-      {
-        /test /test
-        (!!!!!!!!!!!!!!!!!! try script block) ==
-        % stop
-      }
-      {
-        pop pop
-        (!!!!!!!!!!!!!!!!!! finish script block) ==
-      }
-    /except /try_finally eexec
-  } stopped not
-  (try_finally must do not throw exception if try script block finished without exception)
-/assert /assert eexec
-  /testmark eq
-  (try_finally must restore the stack)
-/assert /assert eexec
-
 %%EOF

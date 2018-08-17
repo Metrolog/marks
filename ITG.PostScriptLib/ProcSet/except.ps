@@ -16,20 +16,6 @@
 % http://riptutorial.com/postscript/example/21484/signalling--throwing--an-error
 /.error where { pop /signalerror /.error load } if
 
-/try_finally % { danger script block } { finally script block } try_finally --> -
-{
-  2 dict begin {
-    /finally_script_block exch def
-    /try_script_block exch def
-
-      { try_script_block exec } stopped
-      { finally_script_block exec  stop }
-      { finally_script_block exec }
-    ifelse
-
-  } stopped  end  { stop } if
-} bind
-
 >> /ProcSet defineresource pop
 %%EndResource:
 %} ifelse
