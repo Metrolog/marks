@@ -175,7 +175,7 @@
                 null ItemSize eq
                 { /ItemSize current_stamp_Size def }
                 {
-                    ItemSize current_stamp_Size aeq not
+                    ItemSize current_stamp_Size   /arrays /ProcSet findresource /aeq get exec   not
                     {
                       % (Вывод в шахматном порядке невозможен: ) ==  ItemSize ==  current_stamp_Size ==
                       /possible_staggered_align_for_next_line false def
@@ -183,7 +183,7 @@
                       /is_odd_line false def
                     }
                   if
-                  % todo: здесь добавить сравнение формы оттиска с кругом
+                  % # TODO: здесь добавить сравнение формы оттиска с кругом
                     gsave
                         current_stamp
                           newpath
@@ -222,7 +222,7 @@
           if
             possible_staggered_align
             {
-                ItemSize  prev_line_props /ItemSize get  aeq not
+                ItemSize  prev_line_props /ItemSize get  /arrays /ProcSet findresource /aeq get exec   not
                 {
                   % (Вывод в шахматном порядке невозможен (размеры элемента с предыщей строкой не совпадают): ) ==  ItemSize ==  prev_line_props /ItemSize get ==
                   /possible_staggered_align false def

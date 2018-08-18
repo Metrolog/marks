@@ -44,8 +44,9 @@
 /sizes_almost_equal % sx1 sy1 sx2 sy2 --> bool
 {
       3 -1 roll exch  % sx1 sx2 sy1 sy2
-    almost_equal
-    3 1 roll  almost_equal
+    /assert /ProcSet findresource /almost_equal get exec
+      3 1 roll
+    /assert /ProcSet findresource /almost_equal get exec
   and
 } bind
 

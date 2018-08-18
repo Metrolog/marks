@@ -344,7 +344,7 @@
 /enumcheck % param_name param_value [ enum_items ] --> param_name param_value (assert)
 {
   dup type /arraytype eq not  { pop stop } if
-    1 index  exch  /arrays /aexists eexec  not
+    1 index  exch  /arrays /ProcSet findresource /aexists get exec  not
     { [ 4 copy pop  /enumcheck ]  /define_args /undefined  /except /ProcSet findresource /signalerrorwithinfo get exec }
   if
 } bind

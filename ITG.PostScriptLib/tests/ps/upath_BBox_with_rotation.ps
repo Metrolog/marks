@@ -4,15 +4,18 @@
 %%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%LanguageLevel: 3
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (assert) 2.2 0
+%%+: ProcSet (boxes) 2.2 0
+%%+: ProcSet (graphics) 2.2 0
 %%EndComments
 %!
 
 %%BeginProlog
 
-/assert /ProcSet findresource begin
-/boxes /ProcSet findresource begin
-/graphics /ProcSet findresource begin
-userdict begin
+%%IncludeResource: ProcSet assert 2.2 0
+%%IncludeResource: ProcSet boxes 2.2 0
+%%IncludeResource: ProcSet graphics 2.2 0
 
 %%EndProlog
 
@@ -45,26 +48,29 @@ gsave
 grestore
 setmatrix
 
-    testupath1 upath_BBox size_of_BBox
+        testupath1
+      /boxes /ProcSet findresource /upath_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec
     (size of testupath1: ) print  1 index 20 string cvs print  ( x ) print  dup =
-    testupath2 upath_BBox size_of_BBox
+        testupath2
+      /boxes /ProcSet findresource /upath_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec
     (size of testupath2: ) print  1 index 20 string cvs print  ( x ) print  dup =
-  sizes_almost_equal
+  /assert /ProcSet findresource /sizes_almost_equal get exec % sx1 sy1
   (upath_BBox must return the same box size for upaths with rotated canvas in upath)
-assert
+/assert /ProcSet findresource /assert get exec
 
-    testupath1 upath_BBox size_of_BBox
+        testupath1
+      /boxes /ProcSet findresource /upath_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec
     (size of testupath1: ) print  1 index 20 string cvs print  ( x ) print  dup =
     30 rotate
-    testupath1 upath_BBox size_of_BBox
+        testupath1
+      /boxes /ProcSet findresource /upath_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec
     (size of testupath2: ) print  1 index 20 string cvs print  ( x ) print  dup =
-  sizes_almost_equal
+  /assert /ProcSet findresource /sizes_almost_equal get exec % sx1 sy1
   (upath_BBox must return the same box size for upaths with rotated canvas)
-assert
-
-end % userdict
-end % /graphics /ProcSet findresource begin
-end % /boxes /ProcSet findresource begin
-end % /assert /ProcSet findresource begin
+/assert /ProcSet findresource /assert get exec
 
 %%EOF

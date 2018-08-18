@@ -32,25 +32,16 @@
 %%BeginProlog
 
 %%IncludeResource: ProcSet csm-marks-params 2.3 0
-
 %%IncludeResource: ProcSet operators 2.3 0
 %%IncludeResource: ProcSet procs 2.3 0
 %%IncludeResource: ProcSet arrays 2.2 0
 %%IncludeResource: ProcSet boxes 2.2 0
-/boxes /ProcSet findresource begin
-
 %%IncludeResource: ProcSet fonts 2.2 0
 %%IncludeResource: ProcSet graphics 2.2 0
-/graphics /ProcSet findresource begin
-
 %%IncludeResource: ProcSet math 2.2 0
 %%IncludeResource: ProcSet roman 2.2 0
 %%IncludeResource: ProcSet si 2.2 0
-/si /ProcSet findresource begin
-
 %%IncludeResource: ProcSet graphics-alignments 2.2 0
-/graphics-alignments /ProcSet findresource begin
-
 %%IncludeResource: ProcSet image-st 2.2 0
 
 /stamp_sign_cyr /Font resourcestatus { pop pop } {
@@ -105,31 +96,27 @@
 %%IncludeResource: ProcSet csm-marks-cyr-signs 2.2 0
 %%IncludeResource: ProcSet csm-marks-greek-signs 2.2 0
 
-%(csm-marks) /ProcSet resourcestatus { pop pop } {
+(csm-marks) /ProcSet resourcestatus  { pop  2 eq } { true } ifelse  {
 %!PS-Adobe-3.0 Resource-ProcSet
 %%BeginResource: ProcSet (csm-marks)
 /csm-marks  100 dict begin
-
-/eexec { exch /ProcSet findresource exch get exec } bind def
 
 /months % [ 1 2 3 ] --> (1) (2) (3)
 {
   { 2 string  cvs } forall
 } bind def
-% [ 1 12 range ]  months ==
+% [ 1 12  /arrays /ProcSet findresource /range get exec ]  months ==
 
 /quarters % [ 1 2 3 4 ] --> (I) (II) (III) (IV)
 {
   /roman /ProcSet findresource /int_to_roman get  forall
 } bind def
-% [ 1 4 range ]  quarters ==
+% [ 1 4  /arrays /ProcSet findresource /range get exec ]  quarters ==
 
 /year % --> ()
 {
   ()
 } bind def
-
-/_year year def
 
 /stamp_sign_path_helper % (sign) angle --> - (добавляем к текущему пути путь знака поверителя)
 {
@@ -151,8 +138,9 @@
 
 /stamp_sign_upath_helper % (sign) angle --> upath
 {
-  /stamp_sign_path_helper
-  true path_as_upath
+    /stamp_sign_path_helper
+    true
+  /graphics /ProcSet findresource /path_as_upath get exec
 } def
 
 gsave
@@ -166,7 +154,7 @@ gsave
 
       (stamp_sign_cyr) findfont
       sign_scale scalefont setfont
-        /csm-marks-cyr-signs /stamp_signs_cyr eexec
+        /csm-marks-cyr-signs /ProcSet findresource /stamp_signs_cyr get exec
         {
           angle stamp_sign_upath_helper
         }
@@ -174,7 +162,7 @@ gsave
 
       (stamp_sign_greek) findfont
       sign_scale scalefont setfont
-        /csm-marks-greek-signs /stamp_signs_greek eexec
+        /csm-marks-greek-signs /ProcSet findresource /stamp_signs_greek get exec
         {
           angle stamp_sign_upath_helper
         }
@@ -188,9 +176,10 @@ grestore
 
 /stamp_sign_upath % sign_N --> upath
 {
-  stamp_signs_upaths  exch 1 sub  get
+    /csm-marks /ProcSet findresource /stamp_signs_upaths get
+    exch 1 sub
+  get
 } def
-
 
 /verification_stamp_params <<
   /id_h_size  3.8  800 1000 div  div
@@ -202,62 +191,76 @@ grestore
   /bounds_thickness  0.5
 >> readonly def
 
+
 % генерация рисунка поверительного клейма
 /csm_verification_stamp_path % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> -
 {
   [
     << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
-    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters //_year ]  /default //_year >>
+    << /arg /period  /type /stringtype
+      /enumcheck [
+        [ 1 12  /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /months get exec
+        [ 1 4   /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /quarters get exec
+        /csm-marks /ProcSet findresource /year get exec
+      ]
+      /default  /csm-marks /ProcSet findresource /year get exec
+    >>
     << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
     << /arg /sign  /type /integertype  /rangecheck [ 0 256 ]  /default 0 >>
-    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ]  /default 18 mm >>
+    << /arg /size  /type /realtype
+      /rangecheck [
+        3   /si /ProcSet findresource /mm get exec
+        18  /si /ProcSet findresource /mm get exec
+      ]
+      /default  18  /si /ProcSet findresource /mm get exec
+    >>
     << /arg /is_for_production  /type /booleantype  /default true >>
-  ] /procs /define_args eexec
+  ] /procs /ProcSet findresource /define_args get exec
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
   matrix currentmatrix
   currentpoint translate
-  args /size get  verification_stamp_params /h_size get  div  dup  scale
+  args /size get   /csm-marks /ProcSet findresource /verification_stamp_params get  /h_size get  div  dup  scale
   9 9 translate
 
   % окружность
-  verification_stamp_params /h_size get 2 div  0  moveto
-  0 0  verification_stamp_params /h_size get 2 div  0 360 arc  closepath
-  verification_stamp_params /h_size get 2 div verification_stamp_params /bounds_thickness get sub  0  moveto
-  0 0  verification_stamp_params /h_size get 2 div verification_stamp_params /bounds_thickness get sub  360 0 arcn  closepath
+  /csm-marks /ProcSet findresource /verification_stamp_params get  /h_size get 2 div  0  moveto
+  0 0  /csm-marks /ProcSet findresource /verification_stamp_params get  /h_size get 2 div  0 360 arc  closepath
+  /csm-marks /ProcSet findresource /verification_stamp_params get  /h_size get 2 div  /csm-marks /ProcSet findresource /verification_stamp_params get  /bounds_thickness get sub  0  moveto
+  0 0   /csm-marks /ProcSet findresource /verification_stamp_params get  /h_size get 2 div  /csm-marks /ProcSet findresource /verification_stamp_params get  /bounds_thickness get sub  360 0 arcn  closepath
 
   % шифр поверительного клейма организации
   (stamp_id) findfont
-  verification_stamp_params /id_h_size get scalefont setfont
+  /csm-marks /ProcSet findresource /verification_stamp_params get  /id_h_size get scalefont setfont
   0 -7.5 moveto
     args /id get
-    string_center_bottom
+    /graphics /ProcSet findresource /string_center_bottom get exec
   true charpath
 
   % год
   (stamp_year) findfont
-  verification_stamp_params /year_h_size get scalefont setfont
+  /csm-marks /ProcSet findresource /verification_stamp_params get  /year_h_size get scalefont setfont
   -5.5 0 moveto
         args /year get 4 string cvs
         dup length 2 sub
         1
       getinterval
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
   5.5 0 moveto
         args /year get 4 string cvs
         dup length 1 sub
         1
       getinterval
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
 
   % индивидуальный знак поверителя
     args /sign get 0 ne
     {
       matrix currentmatrix
-        verification_stamp_params /sing_h_size get dup scale
-        args /sign get stamp_sign_upath uappend
+        /csm-marks /ProcSet findresource /verification_stamp_params get  /sing_h_size get dup scale
+        args /sign get  /csm-marks /ProcSet findresource /stamp_sign_upath get exec  uappend
       setmatrix
     }
   if
@@ -267,22 +270,22 @@ grestore
       % знак СТ
       0 5.5 moveto
       currentpoint translate
-      verification_stamp_params /rst_size get dup scale
+      /csm-marks /ProcSet findresource /verification_stamp_params get  /rst_size get dup scale
       /image-st /ProcSet findresource /ust get  uappend
     }
     {
       % период
       (stamp_period) findfont
-      verification_stamp_params /period_h_size get scalefont setfont
+      /csm-marks /ProcSet findresource /verification_stamp_params get  /period_h_size get scalefont setfont
       -2.0 5.5 moveto
         args /period get
-        string_center_middle
+        /graphics /ProcSet findresource /string_center_middle get exec
       true charpath
 
       % знак СТ
       2.5 5.5 moveto
       currentpoint translate
-      verification_stamp_params /rst_size get dup scale
+      /csm-marks /ProcSet findresource /verification_stamp_params get  /rst_size get dup scale
       /image-st /ProcSet findresource /ust get  uappend
     }
   ifelse
@@ -290,13 +293,14 @@ grestore
   % восстановливаем систему координат
   setmatrix
 
-  /procs /leave_local_scope eexec
+  /procs /ProcSet findresource /leave_local_scope get exec
 } bind def
 
 /csm_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
-  /csm_verification_stamp_path
-  false path_as_upath
+    /csm-marks /ProcSet findresource /csm_verification_stamp_path get
+    false
+  /graphics /ProcSet findresource /path_as_upath get exec
 } def
 
 % генерация рисунка поверительного клейма для государственных научных метрологических
@@ -306,17 +310,30 @@ grestore
 {
   [
     << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
-    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters //_year ]  /default //_year >>
+    << /arg /period  /type /stringtype
+      /enumcheck [
+        [ 1 12  /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /months get exec
+        [ 1 4   /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /quarters get exec
+        /csm-marks /ProcSet findresource /year get exec
+      ]
+      /default  /csm-marks /ProcSet findresource /year get exec
+    >>
     << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
     << /arg /sign  /type /integertype  /rangecheck [ 0 256 ]  /default 0 >>
-    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ]  /default 18 mm >>
+    << /arg /size  /type /realtype
+      /rangecheck [
+        3   /si /ProcSet findresource /mm get exec
+        18  /si /ProcSet findresource /mm get exec
+      ]
+      /default  18  /si /ProcSet findresource /mm get exec
+    >>
     << /arg /is_for_production  /type /booleantype >>
-  ] /procs /define_args eexec
+  ] /procs /ProcSet findresource /define_args get exec
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
   matrix currentmatrix
   currentpoint translate
-  args /size get  verification_stamp_params /h_size get  div  dup  scale
+  args /size get  /csm-marks /ProcSet findresource /verification_stamp_params get  /h_size get  div  dup  scale
   9 9 translate
 
   % окружность
@@ -327,33 +344,37 @@ grestore
 
   % знак Гмц
   (stamp_gmc) findfont
-  verification_stamp_params /id_h_size get scalefont setfont
+  /csm-marks /ProcSet findresource /verification_stamp_params get  /id_h_size get scalefont setfont
   0 -7.5 moveto
     (Гмц)
-    string_center_bottom
+    /graphics /ProcSet findresource /string_center_bottom get exec
   true charpath
 
   % год
   (stamp_year) findfont
-  verification_stamp_params /year_h_size get scalefont setfont
+  /csm-marks /ProcSet findresource /verification_stamp_params get  /year_h_size get scalefont setfont
   -5.5 0 moveto
         args /year get 4 string cvs
         dup length 2 sub
         1
       getinterval
       dup
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
-  string_BBox size_of_BBox pop
+    /boxes /ProcSet findresource /string_BBox get exec
+  /boxes /ProcSet findresource /size_of_BBox get exec
+  pop
   5.5 0 moveto
         args /year get 4 string cvs
         dup length 1 sub
         1
       getinterval
       dup
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
-  string_BBox size_of_BBox pop  neg
+    /boxes /ProcSet findresource /string_BBox get exec
+  /boxes /ProcSet findresource /size_of_BBox get exec
+  pop  neg
 
     add  2 div
   % шифр поверительного клейма
@@ -363,10 +384,10 @@ grestore
     pop pop % translate
     1 1 scale
     (stamp_id) findfont
-    verification_stamp_params /id_h_size get scalefont setfont
+    /csm-marks /ProcSet findresource /verification_stamp_params get  /id_h_size get scalefont setfont
     0 0 moveto
       args /id get
-      string_center_middle
+      /graphics /ProcSet findresource /string_center_middle get exec
     true charpath
   setmatrix
 
@@ -375,22 +396,22 @@ grestore
       % знак СТ
       0 5.5 moveto
       currentpoint translate
-      verification_stamp_params /rst_size get dup scale
+      /csm-marks /ProcSet findresource /verification_stamp_params get  /rst_size get dup scale
       /image-st /ProcSet findresource /ust get  uappend
     }
     {
       % период
       (stamp_period) findfont
-      verification_stamp_params /period_h_size get scalefont setfont
+      /csm-marks /ProcSet findresource /verification_stamp_params get  /period_h_size get scalefont setfont
       -2.0 5.5 moveto
         args /period get
-        string_center_middle
+        /graphics /ProcSet findresource /string_center_middle get exec
       true charpath
 
       % знак СТ
       2.5 5.5 moveto
       currentpoint translate
-      verification_stamp_params /rst_size get dup scale
+      /csm-marks /ProcSet findresource /verification_stamp_params get  /rst_size get dup scale
       /image-st /ProcSet findresource /ust get  uappend
     }
   ifelse
@@ -398,13 +419,14 @@ grestore
   % восстановливаем систему координат
   setmatrix
 
-  /procs /leave_local_scope eexec
+  /procs /ProcSet findresource /leave_local_scope get exec
 } bind def
 
 /gmc_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
-  /gmc_verification_stamp_path
-  false path_as_upath
+    /csm-marks /ProcSet findresource /gmc_verification_stamp_path get
+    false
+  /graphics /ProcSet findresource /path_as_upath get exec
 } def
 
 
@@ -425,68 +447,81 @@ grestore
 {
   [
     << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
-    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters //_year ]  /default //_year >>
+    << /arg /period  /type /stringtype
+      /enumcheck [
+        [ 1 12  /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /months get exec
+        [ 1 4   /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /quarters get exec
+        /csm-marks /ProcSet findresource /year get exec
+      ]
+      /default  /csm-marks /ProcSet findresource /year get exec
+    >>
     << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
     << /arg /sign  /type /integertype  /rangecheck [ 0 256 ]  /default 0 >>
-    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ]  /default 18 mm >>
+    << /arg /size  /type /realtype
+      /rangecheck [
+        3   /si /ProcSet findresource /mm get exec
+        18  /si /ProcSet findresource /mm get exec
+      ]
+      /default  18  /si /ProcSet findresource /mm get exec
+    >>
     << /arg /is_for_production  /type /booleantype  /default true >>
-  ] /procs /define_args eexec
+  ] /procs /ProcSet findresource /define_args get exec
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
   matrix currentmatrix
   currentpoint translate
-  args /size get  verification_stamp_rect_params /h_size get  div  dup  scale
+  args /size get  /csm-marks /ProcSet findresource /verification_stamp_rect_params get /h_size get  div  dup  scale
 
     args /is_for_production get
     {
-        verification_stamp_rect_params /h_size get 2 div
-        verification_stamp_rect_params /v_size get 2 div
+        /csm-marks /ProcSet findresource /verification_stamp_rect_params get /h_size get 2 div
+        /csm-marks /ProcSet findresource /verification_stamp_rect_params get /v_size get 2 div
       translate
 
       % прямоугольник
-        verification_stamp_rect_params /h_size get
-        verification_stamp_rect_params /v_size get
-        verification_stamp_rect_params /bounds_thickness get
+        /csm-marks /ProcSet findresource /verification_stamp_rect_params get /h_size get
+        /csm-marks /ProcSet findresource /verification_stamp_rect_params get /v_size get
+        /csm-marks /ProcSet findresource /verification_stamp_rect_params get /bounds_thickness get
         0
-      centered_frame
+      /graphics /ProcSet findresource /centered_frame get exec
 
       % индивидуальный знак поверителя
         args /sign get 0 ne
         {
           matrix currentmatrix
             0 -3.5 translate
-            verification_stamp_rect_params /sing_h_size get dup scale
-            args /sign get stamp_sign_upath uappend
+            /csm-marks /ProcSet findresource /verification_stamp_rect_params get /sing_h_size get dup scale
+            args /sign get  /csm-marks /ProcSet findresource /stamp_sign_upath get exec  uappend
           setmatrix
         }
       if
 
       % год
       (stamp_year) findfont
-      verification_stamp_rect_params /year_h_size get scalefont setfont
+      /csm-marks /ProcSet findresource /verification_stamp_rect_params get /year_h_size get scalefont setfont
       -6.0 0 moveto
             args /year get 4 string cvs
             dup length 2 sub
             1
           getinterval
-        string_center_middle
+        /graphics /ProcSet findresource /string_center_middle get exec
       true charpath
       6.0 0 moveto
             args /year get 4 string cvs
             dup length 1 sub
             1
           getinterval
-        string_center_middle
+        /graphics /ProcSet findresource /string_center_middle get exec
       true charpath
 
       % шифр поверительного клейма
       matrix currentmatrix
         1 1 scale
         (stamp_id) findfont
-        verification_stamp_rect_params /id_h_size get scalefont setfont
+        /csm-marks /ProcSet findresource /verification_stamp_rect_params get /id_h_size get scalefont setfont
         0 0 moveto
           args /id get
-          string_center_middle
+          /graphics /ProcSet findresource /string_center_middle get exec
         true charpath
       setmatrix
 
@@ -495,70 +530,70 @@ grestore
           % знак СТ
           0 3.5 moveto
           currentpoint translate
-          verification_stamp_rect_params /rst_size get dup scale
+          /csm-marks /ProcSet findresource /verification_stamp_rect_params get /rst_size get dup scale
           /image-st /ProcSet findresource /ust get  uappend
         }
         {
           % период
           (stamp_period) findfont
-          verification_stamp_rect_params /period_h_size get scalefont setfont
+          /csm-marks /ProcSet findresource /verification_stamp_rect_params get /period_h_size get scalefont setfont
           -2.0 3.5 moveto
             args /period get
-            string_center_middle
+            /graphics /ProcSet findresource /string_center_middle get exec
           true charpath
 
           % знак СТ
           2.5 3.5 moveto
           currentpoint translate
-          verification_stamp_rect_params /rst_size get dup scale
+          /csm-marks /ProcSet findresource /verification_stamp_rect_params get /rst_size get dup scale
           /image-st /ProcSet findresource /ust get  uappend
         }
       ifelse
     }
     {
-        verification_stamp_rect_params /h_size get 2 div
+        /csm-marks /ProcSet findresource /verification_stamp_rect_params get /h_size get 2 div
         dup
       translate
 
       % прямоугольник
-        verification_stamp_rect_params /h_size get
+        /csm-marks /ProcSet findresource /verification_stamp_rect_params get /h_size get
         dup
-        verification_stamp_rect_params /bounds_thickness get
+        /csm-marks /ProcSet findresource /verification_stamp_rect_params get /bounds_thickness get
         0
-      centered_frame
+      /graphics /ProcSet findresource /centered_frame get exec
 
       % шифр поверительного клейма организации
       (stamp_id) findfont
-      verification_stamp_params /id_h_size get scalefont setfont
+      /csm-marks /ProcSet findresource /verification_stamp_params get  /id_h_size get scalefont setfont
       0 -7.5 moveto
         args /id get
-        string_center_bottom
+        /graphics /ProcSet findresource /string_center_bottom get exec
       true charpath
 
       % год
       (stamp_year) findfont
-      verification_stamp_params /year_h_size get scalefont setfont
+      /csm-marks /ProcSet findresource /verification_stamp_params get  /year_h_size get scalefont setfont
       -5.5 0 moveto
             args /year get 4 string cvs
             dup length 2 sub
             1
           getinterval
-        string_center_middle
+        /graphics /ProcSet findresource /string_center_middle get exec
       true charpath
       5.5 0 moveto
             args /year get 4 string cvs
             dup length 1 sub
             1
           getinterval
-        string_center_middle
+        /graphics /ProcSet findresource /string_center_middle get exec
       true charpath
 
       % индивидуальный знак поверителя
         args /sign get 0 ne
         {
           matrix currentmatrix
-            verification_stamp_params /sing_h_size get dup scale
-            args /sign get stamp_sign_upath uappend
+            /csm-marks /ProcSet findresource /verification_stamp_params get  /sing_h_size get dup scale
+            args /sign get  /csm-marks /ProcSet findresource /stamp_sign_upath get exec  uappend
           setmatrix
         }
       if
@@ -574,10 +609,10 @@ grestore
         {
           % период
           (stamp_period) findfont
-          verification_stamp_params /period_h_size get scalefont setfont
+          /csm-marks /ProcSet findresource /verification_stamp_params get  /period_h_size get scalefont setfont
           -2.0 5.5 moveto
             args /period get
-            string_center_middle
+            /graphics /ProcSet findresource /string_center_middle get exec
           true charpath
 
           % знак СТ
@@ -593,13 +628,14 @@ grestore
   % восстановливаем систему координат
   setmatrix
 
-  /procs /leave_local_scope eexec
+  /procs /ProcSet findresource /leave_local_scope get exec
 } bind def
 
 /ul_verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
-  /ul_verification_stamp_path
-  false path_as_upath
+    /csm-marks /ProcSet findresource /ul_verification_stamp_path get
+    false
+  /graphics /ProcSet findresource /path_as_upath get exec
 } def
 
 
@@ -619,29 +655,42 @@ grestore
 {
   [
     << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
-    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters //_year ]  /default //_year >>
+    << /arg /period  /type /stringtype
+      /enumcheck [
+        [ 1 12  /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /months get exec
+        [ 1 4   /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /quarters get exec
+        /csm-marks /ProcSet findresource /year get exec
+      ]
+      /default  /csm-marks /ProcSet findresource /year get exec
+    >>
     << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
     << /arg /sign  /type /integertype  /rangecheck [ 0 256 ]  /default 0 >>
-    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ]  /default 6 mm >>
+    << /arg /size  /type /realtype
+      /rangecheck [
+        3   /si /ProcSet findresource /mm get exec
+        18  /si /ProcSet findresource /mm get exec
+      ]
+      /default  18  /si /ProcSet findresource /mm get exec
+    >>
     << /arg /is_for_production  /type /booleantype  /default true >>
-  ] /procs /define_args eexec
+  ] /procs /ProcSet findresource /define_args get exec
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
   matrix currentmatrix
   currentpoint translate
-  args /size get  verification_stamp_rhombus_params /h_size get  div  dup  scale
+  args /size get  /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /h_size get  div  dup  scale
   45 rotate
 
-  verification_stamp_rhombus_params /h_size get 2 div  dup  translate
+  /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /h_size get 2 div  dup  translate
 
   % рамка
   matrix currentmatrix
     45 rotate
-      verification_stamp_rhombus_params /h_size get
+      /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /h_size get
       dup
-      verification_stamp_rhombus_params /bounds_thickness get
-      verification_stamp_rhombus_params /bounds_angles_radius get
-    centered_frame
+      /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /bounds_thickness get
+      /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /bounds_angles_radius get
+    /graphics /ProcSet findresource /centered_frame get exec
   setmatrix
 
   % индивидуальный знак поверителя
@@ -649,57 +698,58 @@ grestore
     {
       matrix currentmatrix
         0 6.0 translate
-        verification_stamp_rhombus_params /sing_h_size get dup scale
-        args /sign get stamp_sign_upath uappend
+        /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /sing_h_size get dup scale
+        args /sign get  /csm-marks /ProcSet findresource /stamp_sign_upath get exec  uappend
       setmatrix
     }
   if
 
   % год
   (stamp_year) findfont
-  verification_stamp_rhombus_params /year_h_size get scalefont setfont
+  /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /year_h_size get scalefont setfont
   -6.0 0 moveto
         args /year get 4 string cvs
         dup length 2 sub
         1
       getinterval
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
   6.0 0 moveto
         args /year get 4 string cvs
         dup length 1 sub
         1
       getinterval
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
 
   % шифр поверительного клейма
   matrix currentmatrix
     1 1 scale
     (stamp_id) findfont
-    verification_stamp_rhombus_params /id_h_size get scalefont setfont
+    /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /id_h_size get scalefont setfont
     0 0 moveto
       args /id get
-      string_center_middle
+      /graphics /ProcSet findresource /string_center_middle get exec
     true charpath
   setmatrix
 
   % знак СТ
   0 -6.0 moveto
   currentpoint translate
-  verification_stamp_rhombus_params /rst_size get dup scale
+  /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /rst_size get dup scale
   /image-st /ProcSet findresource /ust get  uappend
 
   % восстановливаем систему координат
   setmatrix
 
-  /procs /leave_local_scope eexec
+  /procs /ProcSet findresource /leave_local_scope get exec
 } bind def
 
 /verification_stamp_rhombus_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
-  /verification_stamp_rhombus_path
-  false path_as_upath
+    /csm-marks /ProcSet findresource /verification_stamp_rhombus_path get
+    false
+  /graphics /ProcSet findresource /path_as_upath get exec
 } def
 
 
@@ -708,28 +758,42 @@ grestore
 {
   [
     << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
-    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters //_year ]  /default //_year >>
+    << /arg /period  /type /stringtype
+      /enumcheck [
+        [ 1 12  /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /months get exec
+        [ 1 4   /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /quarters get exec
+        /csm-marks /ProcSet findresource /year get exec
+      ]
+      /default  /csm-marks /ProcSet findresource /year get exec
+    >>
     << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
     << /arg /sign  /type /integertype  /rangecheck [ 0 256 ]  /default 0 >>
-    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ]  /default 18 mm >>
+    << /arg /size  /type /realtype
+      /rangecheck [
+        3   /si /ProcSet findresource /mm get exec
+        18  /si /ProcSet findresource /mm get exec
+      ]
+      /default  18  /si /ProcSet findresource /mm get exec
+    >>
     << /arg /is_for_production  /type /booleantype  /default true >>
-  ] /procs /define_args eexec
+  ] /procs /ProcSet findresource /define_args get exec
 
   args /id get  length
   <<
-    1 { args gmc_verification_stamp_path } bind
-    2 { args csm_verification_stamp_path } bind
-    3 { args ul_verification_stamp_path } bind
+    1 { args /csm-marks /ProcSet findresource /gmc_verification_stamp_path get exec } bind
+    2 { args /csm-marks /ProcSet findresource /csm_verification_stamp_path get exec } bind
+    3 { args /csm-marks /ProcSet findresource /ul_verification_stamp_path  get exec } bind
   >>
   /operators /ProcSet findresource /switch get exec
 
-  /procs /leave_local_scope eexec
+  /procs /ProcSet findresource /leave_local_scope get exec
 } def
 
 /verification_stamp_upath % диаметр знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
-  /verification_stamp_path
-  false path_as_upath
+    /csm-marks /ProcSet findresource /verification_stamp_path get
+    false
+  /graphics /ProcSet findresource /path_as_upath get exec
 } def
 
 
@@ -754,32 +818,45 @@ grestore
 {
   [
     << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
-    << /arg /period  /type /stringtype  /enumcheck [ [ 1 12  range ] months  [ 1 4 range ] quarters //_year ]  /default //_year >>
+    << /arg /period  /type /stringtype
+      /enumcheck [
+        [ 1 12  /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /months get exec
+        [ 1 4   /arrays /ProcSet findresource /range get exec ] /csm-marks /ProcSet findresource /quarters get exec
+        /csm-marks /ProcSet findresource /year get exec
+      ]
+      /default  /csm-marks /ProcSet findresource /year get exec
+    >>
     << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
     << /arg /sign  /type /integertype  /rangecheck [ 0 256 ]  /default 0 >>
-    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ]  /default 18 mm >>
+    << /arg /size  /type /realtype
+      /rangecheck [
+        3   /si /ProcSet findresource /mm get exec
+        18  /si /ProcSet findresource /mm get exec
+      ]
+      /default  18  /si /ProcSet findresource /mm get exec
+    >>
     << /arg /is_for_production  /type /booleantype  /default true >>
-  ] /procs /define_args eexec
+  ] /procs /ProcSet findresource /define_args get exec
 
   % сохраняем на стеке текущую матрицу преобразования системы координат для последующего восстановления
   matrix currentmatrix
   currentpoint translate
-  args /size get  calibration_stamp_params /h_size get  div  dup  scale
+  args /size get  /csm-marks /ProcSet findresource /calibration_stamp_params get /h_size get  div  dup  scale
   9 9 translate
 
   % квадрат
-    calibration_stamp_params /h_size get
+    /csm-marks /ProcSet findresource /calibration_stamp_params get /h_size get
     dup
-    calibration_stamp_params /bounds_thickness get
+    /csm-marks /ProcSet findresource /calibration_stamp_params get /bounds_thickness get
     0
-  centered_frame
+  /graphics /ProcSet findresource /centered_frame get exec
 
   % шифр клейма организации
   (stamp_id) findfont
   4 scalefont setfont
   0 -5.5 moveto
     args /id get
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
 
   % индивидуальный знак поверителя
@@ -788,8 +865,8 @@ grestore
       matrix currentmatrix
         2.5 5.5 moveto
         currentpoint translate
-        calibration_stamp_params /sing_h_size get  dup  scale
-        args /sign get stamp_sign_upath uappend
+        /csm-marks /ProcSet findresource /calibration_stamp_params get /sing_h_size get  dup  scale
+        args /sign get  /csm-marks /ProcSet findresource /stamp_sign_upath get exec  uappend
       setmatrix
     }
   if
@@ -804,7 +881,7 @@ grestore
         1
       getinterval
     % string_right_middle
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
   % 4 0 moveto
   5.5 0 moveto
@@ -813,72 +890,75 @@ grestore
         1
       getinterval
     % string_left_middle
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
 
   % период
   (stamp_period) findfont
-  calibration_stamp_params /period_h_size get scalefont setfont
+  /csm-marks /ProcSet findresource /calibration_stamp_params get /period_h_size get scalefont setfont
   -2.5 5.5 moveto
     args /period get
-    string_center_middle
+    /graphics /ProcSet findresource /string_center_middle get exec
   true charpath
 
   % знак калибровки
   0 0 moveto
   currentpoint translate
-  calibration_stamp_params /K_h_size get dup scale
-  uK uappend
+  /csm-marks /ProcSet findresource /calibration_stamp_params get /K_h_size get dup scale
+  /csm-marks /ProcSet findresource /uK get  uappend
 
   % восстановливаем систему координат
   setmatrix
 
-  /procs /leave_local_scope eexec
+  /procs /ProcSet findresource /leave_local_scope get exec
 } bind def
 
 /calibration_stamp_upath % размер знак_поверителя (шифр клейма) (период) год при_выпуске_из_производства --> user path
 {
-  /calibration_stamp_path
-  false path_as_upath
+    /csm-marks /ProcSet findresource /calibration_stamp_path get
+    false
+  /graphics /ProcSet findresource /path_as_upath get exec
 } def
 
 /create_stamps % год [массив периодов] (шифр клейма) [массив знаков поверителей] размер при_выпуске_из_производства функция_генерации  --> выполнение функции генерации для всех заданных клейм
 {
   [
     << /arg /year  /type /integertype  /rangecheck [ 2000 2099 ] >>
-    << /arg /period  /type /arraytype  /default [ //_year ] >>
+    << /arg /period  /type /arraytype  /default [ /csm-marks /ProcSet findresource /year get exec ] >>
     << /arg /id  /type /stringtype  /lengthcheck [ 1 3 ] >>
     << /arg /sign  /type /arraytype  /default [ 0 ] >>
-    << /arg /size  /type /realtype  /rangecheck [ 3 mm  18 mm ]  /default 18 mm >>
+    << /arg /size  /type /realtype
+      /rangecheck [
+        3   /si /ProcSet findresource /mm get exec
+        18  /si /ProcSet findresource /mm get exec
+      ]
+      /default  18  /si /ProcSet findresource /mm get exec
+    >>
     << /arg /is_for_production  /type /booleantype  /default true >>
     << /arg /functor  /type /nametype  /enumcheck [ /verification_stamp_upath /verification_stamp_rhombus_upath /calibration_stamp_upath ]  /default /verification_stamp_upath >>
-  ] /procs /define_args eexec
+  ] /procs /ProcSet findresource /define_args get exec
 
-  args  /procs /dont_process_define_args eexec  begin
+  args  /procs /ProcSet findresource /dont_process_define_args get exec  begin
     {
       currentdict /functor undef
       args /period get {
         /period exch def
         args /sign get {
           /sign exch def
-          currentdict  args /functor get load  exec
+            currentdict
+          /csm-marks /ProcSet findresource  args /functor get  get exec
         } forall
       } forall
     } stopped
   end
 
-  /procs /leave_local_scope eexec
+  /procs /ProcSet findresource /leave_local_scope get exec
 
   { stop } if
 } def
 
-currentdict end  dup length dict copy  /ProcSet defineresource pop
+currentdict end  dup length dict copy readonly  /ProcSet defineresource pop
 %%EndResource:
-%} ifelse
-
-end % /graphics-alignments /ProcSet findresource begin
-end % /si /ProcSet findresource begin
-end % /graphics /ProcSet findresource begin
-end % /boxes /ProcSet findresource begin
+} if
 
 %%EndProlog
