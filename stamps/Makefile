@@ -1,6 +1,9 @@
 #!/usr/bin/make
 
-all:: marks-pdf marks-eps
+all:: marks-pdf
+# all:: marks-eps
+all:: marks-pcx
+all:: marks-tiff
 
 # ITG.MakeUtils
 
@@ -58,8 +61,6 @@ marks-pdf: $(STAMPSPDFFILES) $(call print-help,marks-pdf,Выполнить по
 MULTIFILEORDEROUTPUTDIR = $(OUTPUTDIR)
 MULTIFILEORDERAUXDIR = $(AUXDIR)mf/
 
-.PHONY: marks-eps
-
 # $(call range, from, to)
 __itg_range_aux = $(shell i=$1; while [[ $$i -le $2 ]]; do printf "%d " $$i; i=$$(( i+1 )); done )
 __itg_range_auxII = $(call __itg_range_aux,$(call first,$(call split,_,$1)),$(call last,$(call split,_,$1)))
@@ -77,9 +78,30 @@ year = year
 # $(call get_multifile_order_relative_filename, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
 get_multifile_order_relative_filename = $(MULTIFILEORDEROUTPUTDIR)$(patsubst $(SOURCESDIR)%,%,$(basename $7))/$(strip $1)/$(strip $3)/$(strip $2)/$(strip $4).$(if $(call seq,$(strip $6),true),1,2)
 
+
+GSPSTOPCXFLAGS =
+GSPSTOPCXCMDLINE = $(GSCMDLINE) $(GSPSTOPCXFLAGS) \
+  -sDEVICE=pcxmono
+
+$(OUTPUTDIR)%.pcx: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
+	$(GSPSTOPCXCMDLINE) -sOutputFile='$@' '$<'
+
+
+GSPSTOTIFFFLAGS =
+GSPSTOTIFFCMDLINE = $(GSCMDLINE) $(GSPSTOTIFFFLAGS) \
+  -sDEVICE=tiffpack
+
+$(OUTPUTDIR)%.tif: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
+	$(GSPSTOTIFFCMDLINE) -sOutputFile='$@' '$<'
+
+
 PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
 MARK2IMAGEARGS ?= -q -dMirrorPrint -dUseTrimBox
+
+.PHONY: marks-eps
+.PHONY: marks-pcx
+.PHONY: marks-tiff
 
 # $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
 define create_verification_stamp
@@ -101,6 +123,16 @@ $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,
 	$$(GSPSTOEPSCMDLINE) $$(MARK2IMAGEARGS) -sOutputFile='$$@' '$$<'
 
 marks-eps: $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).eps
+
+$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).pcx: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $$(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
+	$$(GSPSTOPCXCMDLINE) $$(MARK2IMAGEARGS) -sOutputFile='$$@' '$$<'
+
+marks-pcx: $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).pcx
+
+$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).tif: $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps $$(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
+	$$(GSPSTOTIFFCMDLINE) $$(MARK2IMAGEARGS) -sOutputFile='$$@' '$$<'
+
+marks-tiff: $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).tif
 
 endef
 
