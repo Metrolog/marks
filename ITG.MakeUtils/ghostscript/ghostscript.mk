@@ -109,23 +109,19 @@ GSCMDLINE = $(GS) \
 
 
 GSPSTOPDFFLAGS =
-
 GSPSTOPDFCMDLINE = $(GSCMDLINE) $(GSPSTOPDFFLAGS) \
   -sDEVICE=pdfwrite
 
 $(OUTPUTDIR)%.pdf: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
-	$(call writeinformation,Build file "$@" from "$<"...)
 	$(GSPSTOPDFCMDLINE) -sOutputFile='$@' '$<'
 	$(OPENTARGETPDF)
 
 
 GSPSTOEPSFLAGS =
-
 GSPSTOEPSCMDLINE = $(GSCMDLINE) $(GSPSTOEPSFLAGS) \
   -sDEVICE=eps2write
 
 $(OUTPUTDIR)%.eps: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
-	$(call writeinformation,Build file "$@" from "$<"...)
 	$(GSPSTOEPSCMDLINE) -sOutputFile='$@' '$<'
 
 

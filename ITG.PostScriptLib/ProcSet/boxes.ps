@@ -48,7 +48,7 @@
 
 /size_of_BBox_def % /sizeX /sizeY [ x1 y1 x2 y2 ] --> - ; /sizeX = x2-x1; /sizeY = y2-y1;
 {
-  size_of_BBox
+  /boxes /ProcSet findresource /size_of_BBox get exec
   3 -1 roll exch def
   def
 } bind
@@ -56,7 +56,7 @@
 /upath_BBox % upath --> x1 y1 x2 y2
 {
   matrix currentmatrix
-    rotate_to_zero
+    /boxes /ProcSet findresource /rotate_to_zero get exec
     exch % upath
     gsave
       newpath
@@ -70,7 +70,7 @@
 /string_BBox % string --> x1 y1 x2 y2
 {
   matrix currentmatrix
-    rotate_to_zero
+    /boxes /ProcSet findresource /rotate_to_zero get exec
     exch % string
     gsave
       newpath

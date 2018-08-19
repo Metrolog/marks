@@ -4,14 +4,16 @@
 %%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
 %%+ See LICENSE at https://github.com/Metrolog/marks
 %%LanguageLevel: 3
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (assert) 2.2 0
+%%+: ProcSet (boxes) 2.2 0
 %%EndComments
 %!
 
 %%BeginProlog
 
-/assert /ProcSet findresource begin
-/boxes /ProcSet findresource begin
-userdict begin
+%%IncludeResource: ProcSet assert 2.2 0
+%%IncludeResource: ProcSet boxes 2.2 0
 
 %%EndProlog
 
@@ -19,17 +21,17 @@ userdict begin
 12 scalefont setfont
 
 /teststring (Test string) def
-    teststring string_BBox size_of_BBox % sx1 sy1
+        teststring
+      /boxes /ProcSet findresource /string_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec % sx1 sy1
     (size of test string:) print  1 index 20 string cvs print  ( x ) print  dup =
     45 rotate
-    teststring string_BBox size_of_BBox % sx1 sy1 sx2 sy2
+        teststring
+      /boxes /ProcSet findresource /string_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec % sx1 sy1
     (size of test string after rotating:) print  1 index 20 string cvs print  ( x ) print  dup =
-  sizes_almost_equal
+  /assert /ProcSet findresource /sizes_almost_equal get exec % sx1 sy1
   (string_BBox must return the same string size and for rotated canvas)
-assert
-
-end % userdict
-end % /boxes /ProcSet findresource begin
-end % /assert /ProcSet findresource begin
+/assert /ProcSet findresource /assert get exec
 
 %%EOF
