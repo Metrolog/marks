@@ -1,10 +1,5 @@
 #!/usr/bin/make
 
-all:: marks-pdf
-# all:: marks-eps
-all:: marks-pcx
-all:: marks-tiff
-
 # ITG.MakeUtils
 
 ROOT_PROJECT_DIR ?= ../
@@ -16,6 +11,15 @@ include $(ITG_MAKEUTILS_DIR)ghostscript/ghostscript.mk
 include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
 __itg_stamps_included:=$(true)
+
+MFSUPPORTEDFORMATS = pdf pcx tiff eps
+MFSTAMPSFORMATS ?= pdf pcx tiff # eps
+
+ifeq ($(call set_is_subset,$(call set_create,$(MFSTAMPSFORMATS)),$(call set_create,$(MFSUPPORTEDFORMATS))),$(false))
+$(call writeerror,MFSTAMPSFORMATS contains unsupported file types. Must contains any from: $(MFSUPPORTEDFORMATS))
+endif
+
+all:: $(foreach f,$(MFSTAMPSFORMATS),marks-$(strip $f))
 
 PSRESOURCEOUTPUTDIR = $(AUXDIR)Resource/
 PSRESOURCESOURCEDIR = Resource/
