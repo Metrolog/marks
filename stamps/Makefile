@@ -87,16 +87,22 @@ GSPSTOPCXFLAGS =
 GSPSTOPCXCMDLINE = $(GSCMDLINE) $(GSPSTOPCXFLAGS) \
   -sDEVICE=pcxmono
 
-$(OUTPUTDIR)%.pcx: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
-	$(GSPSTOPCXCMDLINE) -sOutputFile='$@' '$<'
-
-
 GSPSTOTIFFFLAGS =
 GSPSTOTIFFCMDLINE = $(GSCMDLINE) $(GSPSTOTIFFFLAGS) \
   -sDEVICE=tiffpack
 
-$(OUTPUTDIR)%.tif: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
-	$(GSPSTOTIFFCMDLINE) -sOutputFile='$@' '$<'
+
+# $(call define_multifile_stamps_images_rule, file_type)
+define __define_multifile_stamps_images_rule_aux
+
+$(OUTPUTDIR)%.$(strip $1): $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
+	$(GSPSTO$(call uc,$(strip $1))CMDLINE) -sOutputFile='$$@' '$$<'
+
+endef
+
+define_multifile_stamps_images_rule=$(call call_as_makefile,$$(call __define_multifile_stamps_images_rule_aux,$1),$(call merge,_,define_multifile_stamps_images_rule $(call strip,$1)).mk)
+
+$(eval $(foreach f,$(MFSUPPORTEDFORMATS),$(call define_multifile_stamps_images_rule,$f)))
 
 
 PSTOOLSDIR =
