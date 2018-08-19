@@ -117,11 +117,11 @@ stamps/sources (папку sources необходимо создать) и на�
           18.0 mm
           false                  % поверка в эксплуатации или после ремонта
           /verification_stamp_upath
-        create_stamps
+        /csm-marks /ProcSet findresource /create_stamps get exec
       ]
-      GetPageBBox
+      /boxes /ProcSet findresource /GetPageBBox get exec
       2 mm
-    draw_stamps
+    /graphics-alignments /ProcSet findresource /align_upaths_in_BBox get exec
     %------------------------------------------------------------------------------
     % конец области для кода генерации оттисков
     %------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ stamps/sources (папку sources необходимо создать) и на�
           18.0 mm
           false                  % поверка в эксплуатации или после ремонта
           /verification_stamp_upath
-        create_stamps
+        /csm-marks /ProcSet findresource /create_stamps get exec
           2017
           [ [ 1 12  range ] months  [ 1 4 range ] quarters year ]
           (СП)
@@ -145,11 +145,11 @@ stamps/sources (папку sources необходимо создать) и на�
           18.0 mm
           true                   % при выпуске из производства
           /calibration_stamp_upath
-        create_stamps
+        /csm-marks /ProcSet findresource /create_stamps get exec
       ]
-      GetPageBBox
+      /boxes /ProcSet findresource /GetPageBBox get exec
       2 mm
-    draw_stamps
+    /graphics-alignments /ProcSet findresource /align_upaths_in_BBox get exec
 
 Выше приведён пример, генерирующий поверительные клейма
 на 3ий квартал 2017 года, с шифром поверительного клейма "СП",
@@ -169,11 +169,11 @@ stamps/sources (папку sources необходимо создать) и на�
             /sign [ 1 256 range ]
             /functor /verification_stamp_upath
           >>
-        create_stamps
+        /csm-marks /ProcSet findresource /create_stamps get exec
       ]
-      GetPageBBox
+      /boxes /ProcSet findresource /GetPageBBox get exec
       2 mm
-    draw_stamps
+    /graphics-alignments /ProcSet findresource /align_upaths_in_BBox get exec
 
 Примеры для подготовки оттисков калибровочных клейм, фигурных клейм,
 можно найти в [других тестовых файлах](stamps/tests/).
