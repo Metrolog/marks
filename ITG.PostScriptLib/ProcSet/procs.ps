@@ -346,7 +346,7 @@
   dup type /arraytype eq not  { pop stop } if
     2 copy  /arrays /ProcSet findresource /aexists get exec
     { pop }
-    { [ 4 copy pop  /enumcheck ]  /define_args /undefined  /except /ProcSet findresource /signalerrorwithinfo get exec }
+    { [ 4 copy pop  /enumcheck ]  exch pop  /define_args /undefined  /except /ProcSet findresource /signalerrorwithinfo get exec }
   ifelse
 } bind
 
