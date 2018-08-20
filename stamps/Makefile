@@ -75,8 +75,8 @@ quarters = $(foreach q,$1,$(call tr,1 2 3 4,I II III IV,$q))
 # $(call year)
 year = year
 
-# $(call get_multifile_order_relative_filename, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
-get_multifile_order_relative_filename = $(patsubst $(SOURCESDIR)%,%,$(basename $7))/$(strip $1)/$(strip $3)/$(strip $2)/$(strip $4).$(if $(call seq,$(strip $6),true),1,2)
+# $(call get_multifile_order_relative_filename, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, stamp_type, srcfile)
+get_multifile_order_relative_filename = $(patsubst $(SOURCESDIR)%,%,$(basename $8))/$(strip $1)/$(strip $3)/$(strip $2)/$(strip $7)/$(if $(call seq,$(strip $6),true),1,2)/$(strip $4)
 
 
 define __include_stamps_output_format_support_makefiles_auxII
@@ -144,16 +144,16 @@ $(eval $(foreach f,$(MFSUPPORTEDFORMATS),$(call define_multifile_stamps_images_r
 PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
 
-# $(call create_verification_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, srcfile)
+# $(call create_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, stamp_type, srcfile)
 
-define __create_verification_stamp_aux
+define __create_stamp_aux
 marks-$(strip $1): $2
 
 endef
 
-define create_verification_stamp
+define create_stamp
 
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).ps: $(MARK2IMAGE) $7 $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: $(MARK2IMAGE) $8 $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
 	set -o pipefail; \
   export LANG=ru_RU.UTF8; \
   iconv -f CP1251 $$< \
@@ -164,20 +164,21 @@ $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,
     -D StampSign=$(strip $4) \
     -D StampSize='$(strip $5)' \
     -D StampForProduction=$(strip $6) \
+    -D StampFunctor=$(if $(call __gmsl_make_bool,$7),/$(strip $7)_upath,/verification_stamp_upath) \
   | iconv -t CP1251 > $$@
 
-$(foreach f,$(MFSUPPORTEDFORMATS),$(call __create_verification_stamp_aux,$f,$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7).$(call lc,$(strip $f))))
+$(foreach f,$(MFSUPPORTEDFORMATS),$(call __create_stamp_aux,$f,$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).$(call lc,$(strip $f))))
 
 endef
 
-# $(call create_verification_stamps, years, periods, stamp_ids, stamps_signs, stamp_size, is_for_production, srcfile)
-define __create_verification_stamps_aux
+# $(call create_stamps, years, periods, stamp_ids, stamps_signs, stamp_size, is_for_production, stamp_type, srcfile)
+define __create_stamps_aux
 	$(foreach year,$1, \
 		$(foreach period,$2, \
 			$(foreach id,$3, \
 				$(foreach sign,$4, \
 					$(foreach is_for_production,$6, \
-						$(call create_verification_stamp, $(year), $(period), $(id), $(sign), $5, $(is_for_production), $7) \
+						$(call create_stamp,$(year),$(period),$(id),$(sign),$5,$(is_for_production),$7,$8) \
 					) \
 				) \
 			) \
@@ -185,7 +186,14 @@ define __create_verification_stamps_aux
 	)
 endef
 
-create_verification_stamps=$(call call_as_makefile,$$(call __create_verification_stamps_aux,$1,$2,$3,$4,$5,$6,$7),$(call merge,_,create_verification_stamps $(call split,/,$(patsubst $(SOURCESDIR)%.mk,%,$7))).mk)
+create_stamps=$(call call_as_makefile,\
+  $$(call __create_stamps_aux,$1,$2,$3,$4,$5,$6,$7,$8),\
+  $(call merge,_,\
+    create_stamps \
+    $(if $(call __gmsl_make_bool,$7),$(strip $7),verification_stamp)\
+    $(call split,/,$(patsubst $(SOURCESDIR)%.mk,%,$8))\
+  ).mk\
+)
 
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
