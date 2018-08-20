@@ -399,6 +399,8 @@ stamps/sources (папку sources необходимо создать) и на�
 
 - .pcx ([PCX](https://ru.wikipedia.org/wiki/PCX "PCExchange"))
 - .tif ([TIFF](https://ru.wikipedia.org/wiki/TIFF "Tagged Image File Format"))
+- .png ([PNG](https://ru.wikipedia.org/wiki/PNG "Portable Network Graphics"))
+- .bmp ([BMP](https://ru.wikipedia.org/wiki/BMP "Bitmap Picture"))
 
 По умолчанию генерируются файлы всех типов. Можно указать необходимые типы файлов:
 
