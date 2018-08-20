@@ -6,6 +6,8 @@ endif
 
 THIS_MAKEFILE := $(lastword $(MAKEFILE_LIST))
 
+MFSTAMPSDPI := 1200
+
 $(eval $(call create_stamps, \
   2018, \
   $(call months,$(call range,1,12)) $(call quarters,$(call range,1,4)) $(call year), \

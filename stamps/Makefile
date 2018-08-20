@@ -165,6 +165,7 @@ $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,
     -D StampSize='$(strip $5)' \
     -D StampForProduction=$(strip $6) \
     -D StampFunctor=$(if $(call __gmsl_make_bool,$7),/$(strip $7)_upath,/verification_stamp_upath) \
+    -D StampDPI=$$(MFSTAMPSDPI) \
   | iconv -t CP1251 > $$@
 
 $(foreach f,$(MFSUPPORTEDFORMATS),$(call __create_stamp_aux,$f,$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).$(call lc,$(strip $f))))
@@ -194,6 +195,9 @@ create_stamps=$(call call_as_makefile,\
     $(call split,/,$(patsubst $(SOURCESDIR)%.mk,%,$8))\
   ).mk\
 )
+
+
+MFSTAMPSDPI := 2400
 
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
