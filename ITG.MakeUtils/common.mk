@@ -201,7 +201,7 @@ AUX_MAKEFILE_LIST:=$(empty_set)
 
 __itg_get_static_makefile_list=$(call set_remove,$(AUX_MAKEFILE_LIST),$(call set_create,$(MAKEFILE_LIST)))
 
-__itg_aux_makefile=$(if $2,$2,$(AUXDIR))$(strip $1)
+__itg_aux_makefile=$(call merge,,$(if $2,$2,$(AUXDIR)) $1)
 
 ifeq ($(is_productive_target),$(true))
 
