@@ -133,8 +133,12 @@ ifeq ($(OS),Windows_NT)
   else
     ISCYGWIN := $(false)
   endif
+  HIDE := attrib +h
+  UNHIDE := attrib -h
 else
   ISCYGWIN := $(false)
+  HIDE := /dev/null <
+  UNHIDE := /dev/null <
 endif
 
 VERBOSE            ?= true
@@ -145,14 +149,17 @@ MAKETARGETASDIR    = $(MKDIR) $@
 RMDIR              := rm -r -f
 RM                 := rm -r -f
 TOUCH              := touch
+HIDETARGET         = $(HIDE) $@
+UNHIDETARGET       = $(UNHIDE) $@
 COPY               := cp
 CURL               := curl
 
-DIRMARKERFILE      := ~.dirstate
+DIRMARKERFILE      := .dirstate
 
 %/$(DIRMARKERFILE):
 	$(MAKETARGETDIR)
 	@$(TOUCH) $@
+	@$(HIDE) $@
 
 TARGETDIR = $(if $1,$(dir $1)$(DIRMARKERFILE),$$(@D)/$(DIRMARKERFILE))
 
