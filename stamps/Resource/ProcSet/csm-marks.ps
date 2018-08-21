@@ -221,7 +221,7 @@ grestore
   matrix currentmatrix
   currentpoint translate
   args /size get   /csm-marks /ProcSet findresource /verification_stamp_params get  /h_size get  div  dup  scale
-  9 9 translate
+  /csm-marks /ProcSet findresource /verification_stamp_params get  /h_size get  2 div  dup  translate
 
   % окружность
   /csm-marks /ProcSet findresource /verification_stamp_params get  /h_size get 2 div  0  moveto
@@ -679,9 +679,8 @@ grestore
   matrix currentmatrix
   currentpoint translate
   args /size get  /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /h_size get  div  dup  scale
-  45 rotate
-
   /csm-marks /ProcSet findresource /verification_stamp_rhombus_params get /h_size get 2 div  dup  translate
+  45 rotate
 
   % рамка
   matrix currentmatrix

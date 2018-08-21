@@ -21,7 +21,7 @@
 %%IncludeResource: ProcSet distiller 2.2 0
 %%IncludeResource: ProcSet csm-marks-params 2.3 0
 
-/mm  /si /ProcSet findresource  1 index  get  def
+/mm        /si        /ProcSet findresource  1 index  get  def
 
 /range     /arrays    /ProcSet findresource  1 index  get  def
 
@@ -48,7 +48,7 @@
 
 <<
   /WhiteIsOpaque true
-  /HWResolution [2400 2400]
+  /HWResolution [ StampDPI dup ]
   /PageSize [ StampSize dup ]
   /ImagingBBox [ 0 0  StampSize dup ]
 >> setpagedevice
@@ -58,16 +58,17 @@
 gsave
 
 0 0 moveto
-  <<
-    /year StampYear
-    /period StampPeriod
-    /id StampId
-    /sign StampSign
-    /size StampSize
-    /is_for_production StampForProduction
-  >>
-/csm-marks /ProcSet findresource /verification_stamp_path get exec
-fill
+    <<
+      /year StampYear
+      /period StampPeriod
+      /id StampId
+      /sign StampSign
+      /size StampSize
+      /is_for_production StampForProduction
+      /functor StampFunctor
+    >>
+  /csm-marks /ProcSet findresource /create_stamps get exec
+ufill
 
 grestore
 
