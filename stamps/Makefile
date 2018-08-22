@@ -40,10 +40,9 @@ endef
 
 $(eval $(call call_as_makefile,$$(call __copy_font_resources_aux),copy_postscript_font_resources.mk))
 
-ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean))),$(true))
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean_target))),$(true))
 POSTSCRIPTRESOURCEFILES := $(foreach f,$(STAMPFONTFILES),$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR)$(notdir $f)) $$(POSTSCRIPTRESOURCEFILES)
 endif
-
 
 $(eval $(call prepare_PostScript_resource,,,$(call uniq,$(call getPostScriptResourceSourceFiles) $(ENCODINGSDIR)$(notdir $(CP1251TARGET)) $(ENCODINGSDIR)$(notdir $(CP1253TARGET)))))
 $(eval $(call copy_PostScript_resource,$(ITG_POSTSCRIPTLIBDIR),,$(ITG_POSTSCRIPTLIBFILES)))
@@ -118,12 +117,15 @@ all:: marks-pdf
 # $(call define_stamps_output_file_rule, file_type_slug)
 define __define_stamps_output_file_rule_aux
 
-$(OUTPUTDIR)%.$(call lc,$(strip $1)): $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
+$(OUTPUTDIR)%.$(call lc,$(strip $1)): $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $$(TARGETDIR)
 	$$(PSTO$(call uc,$(strip $1))CMDLINE) -sOutputFile='$$@' '$$<'
 
 endef
 
-define_stamps_output_file_rule=$(call call_as_makefile,$$(call __define_stamps_output_file_rule_aux,$1),$(call merge,_,define_stamps_output_file_rule $(call strip,$1)).mk)
+define_stamps_output_file_rule=$(call call_as_makefile,\
+  $$(call __define_stamps_output_file_rule_aux,$1),\
+  $(call merge,_,define_stamps_output_file_rule $(call strip,$1)).mk\
+)
 
 $(eval $(foreach f,$(MFSUPPORTEDFORMATS),$(call define_stamps_output_file_rule,$f)))
 
@@ -136,7 +138,10 @@ $(MULTIFILEORDEROUTPUTDIR)%.$(call lc,$(strip $1)): $(MULTIFILEORDERAUXDIR)%.ps 
 
 endef
 
-define_multifile_stamps_images_rule=$(call call_as_makefile,$$(call __define_multifile_stamps_images_rule_aux,$1),$(call merge,_,define_multifile_stamps_images_rule $(call strip,$1)).mk)
+define_multifile_stamps_images_rule=$(call call_as_makefile,\
+  $$(call __define_multifile_stamps_images_rule_aux,$1),\
+  $(call merge,_,define_multifile_stamps_images_rule $(call strip,$1)).mk\
+)
 
 $(eval $(foreach f,$(MFSUPPORTEDFORMATS),$(call define_multifile_stamps_images_rule,$f)))
 
@@ -187,7 +192,7 @@ define __create_stamps_aux
 	)
 endef
 
-create_stamps=$(call call_as_makefile,\
+create_stamps=$(call call_as_build_makefile,\
   $$(call __create_stamps_aux,$1,$2,$3,$4,$5,$6,$7,$8),\
   $(call merge,_,\
     create_stamps \
@@ -201,4 +206,4 @@ MFSTAMPSDPI := 2400
 
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
-$(eval $(foreach f,$(MULTIFILEORDERFILES), $(call include_makefile, $f)))
+$(eval $(foreach f,$(MULTIFILEORDERFILES), $(call include_build_makefile, $f)))
