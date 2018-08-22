@@ -254,7 +254,8 @@ MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
 $(eval $(foreach f,$(MULTIFILEORDERFILES),\
   $(call call_as_build_makefile,$$(call __foreach_multifile_order_aux,$f),\
-    $(call merge,_,prepare_multifile_order $(call get_multifile_order_slug,$f)).mk\
+    $(patsubst $(SOURCESDIR)%.mk,%,$f)/prepare_multifile_order.mk,\
+    $(MULTIFILEAUXMAKEFILESDIR)\
   )\
 ))
 
