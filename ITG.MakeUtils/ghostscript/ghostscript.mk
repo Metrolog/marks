@@ -63,7 +63,7 @@ getPostScriptResourceOutputFiles = \
 # $(call prepare_PostScript_resource[, fromDir[, toDir[, files]]] )
 define __prepare_PostScript_resource_aux
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3): )$(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))%.ps | $$(TARGETDIR)
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3): )$(if $2,$2,$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$(PSRESOURCESOURCEDIR))%.ps | $$(TARGETDIR)
 	$$(COPY) $$< $$@
 
 POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
@@ -74,7 +74,8 @@ define prepare_PostScript_resource
 
 $(call call_as_makefile,$$(call __prepare_PostScript_resource_aux,$1,$2,$3),$(call merge,_,prepare_postscript_resources $(call split,/,$1)).mk)
 
-ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean))),$(true))
+# TODO: возможно, можно будет убрать благодаря configure
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean_target))),$(true))
 POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
 endif
 
@@ -83,7 +84,7 @@ endef
 # $(call copy_PostScript_resource[, fromDir[, toDir[, files]]] )
 define __copy_PostScript_resource_aux
 
-$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3): )$(if $2,$2,$$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$$(PSRESOURCESOURCEDIR))% | $$(TARGETDIR)
+$(if $3,$(call getPostScriptResourceOutputFiles,$1,$2,$3): )$(if $2,$2,$(PSRESOURCEOUTPUTDIR))%: $(if $1,$1,$(PSRESOURCESOURCEDIR))% | $$(TARGETDIR)
 	$$(COPY) $$< $$@
 
 POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
@@ -94,7 +95,7 @@ define copy_PostScript_resource
 
 $(call call_as_makefile,$$(call __copy_PostScript_resource_aux,$1,$2,$3),$(call merge,_,copy_postscript_resources $(call split,/,$1)).mk)
 
-ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean))),$(true))
+ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean_target))),$(true))
 POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
 endif
 
@@ -130,6 +131,9 @@ ifdef MAKE_TESTS_DIR
 # just postscript tests files, without output files
 
 TESTSPSSOURCEDIR ?= $(TESTSDIR)ps/
+TESTSPS2PDFSOURCEDIR ?= $(TESTSDIR)pdf/
+TESTSPS2PDFOUTPUTDIR ?= $(AUXDIR)tests/pdf/
+
 TESTSPSSOURCEFILES = $(call rwildcard,$(TESTSPSSOURCEDIR),*.ps)
 
 # $(call definePostScriptClearTest,target,source,dependencies)
@@ -149,8 +153,6 @@ definePostScriptClearTests = $(foreach f,$(TESTSPSSOURCEFILES),$(call definePost
 
 #  postscript tests files with pdf output
 
-TESTSPS2PDFSOURCEDIR ?= $(TESTSDIR)pdf/
-TESTSPS2PDFOUTPUTDIR ?= $(AUXDIR)tests/pdf/
 TESTSPS2PDFSOURCEFILES = $(call rwildcard,$(TESTSPS2PDFSOURCEDIR),*.ps)
 TESTSPS2PDFOUTPUTFILES = $(patsubst $(TESTSPS2PDFSOURCEDIR)%.ps,$(TESTSPS2PDFOUTPUTDIR)%.pdf,$(TESTSPS2PDFSOURCEFILES))
 
@@ -177,8 +179,7 @@ $(call definePostScriptClearTests,$1)
 $(call definePostScript2PDFTests,$1)
 endef
 
-define_PostScript_tests = $(call call_as_makefile,$$(call __define_PostScript_tests_aux,$1),postscript_tests.mk)
-
+define_PostScript_tests = $(call call_as_check_makefile,$$(call __define_PostScript_tests_aux,$1),postscript_tests.mk)
 
 endif
 

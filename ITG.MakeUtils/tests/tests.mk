@@ -79,6 +79,6 @@ check: | test-$2
 
 endef
 
-define_test = $(call call_as_makefile,$$(call __define_test_aux,$1,$2,$3,$4,$5,$6,$7,$8),test.$1-$2.mk)
+define_test = $(call call_as_check_makefile,$$(call __define_test_aux,$1,$2,$3,$4,$5,$6,$7,$8),test.$1-$2.mk)
 
 endif

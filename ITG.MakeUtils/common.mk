@@ -177,9 +177,11 @@ CONFIGDIR          ?= config/
 
 #endregion common dirs
 
-is_clean:=$(call __gmsl_make_bool,$(filter %clean,$(MAKECMDGOALS)))
+is_configure_target:=$(call set_is_member,configure,$(call set_create,$(MAKECMDGOALS)))
+is_clean_target:=$(call __gmsl_make_bool,$(filter %clean,$(MAKECMDGOALS)))
+is_check_target:=$(call __gmsl_make_bool,$(filter check% test%,$(MAKECMDGOALS)))
 is_config_target:=$(call set_is_member,.GLOBAL_VARIABLES,$(call set_create,$(MAKECMDGOALS)))
-is_productive_target:=$(call and,$(call not,$(is_clean)),$(call not,$(is_config_target)))
+is_productive_target:=$(call and,$(call not,$(is_clean_target)),$(call not,$(is_config_target)),$(call not,$(is_configure_target)))
 
 is_root_project:=$(false)
 ifdef ROOT_PROJECT_DIR
@@ -201,8 +203,15 @@ endef
 # $(call include_makefile_if_not_clean,makefile)
 define include_makefile_if_not_clean
 $(call assert,$1,Expected makefile name)
-$(if $(call not,$(is_clean)),$(call include_makefile,$1))
+$(if $(call not,$(is_clean_target)),$(call include_makefile,$1))
 endef
+
+# $(call include_build_makefile,makefile)
+define include_build_makefile
+$(call assert,$1,Expected makefile name)
+$(if $(is_productive_target),$(call include_makefile,$1))
+endef
+
 
 AUX_MAKEFILE_LIST:=$(empty_set)
 
@@ -210,11 +219,8 @@ __itg_get_static_makefile_list=$(call set_remove,$(AUX_MAKEFILE_LIST),$(call set
 
 __itg_aux_makefile=$(call merge,,$(if $2,$2,$(AUXDIR)) $1)
 
-ifeq ($(is_productive_target),$(true))
-
 # $(call call_as_makefile,expression,makefile,makefile_dir)
-define call_as_makefile
-$(call assert,$2,Expected makefile name)
+define __call_as_makefile_aux
 
 $(call __itg_aux_makefile,$2,$3): $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
 	$$(file > $$@,#!/usr/bin/make)
@@ -224,13 +230,57 @@ $(call __itg_aux_makefile,$2,$3): $(call __itg_get_static_makefile_list) | $$(TA
 
 AUX_MAKEFILE_LIST:=$(call __itg_aux_makefile,$2,$3) $$(AUX_MAKEFILE_LIST)
 
-$(call include_makefile_if_not_clean,$(call __itg_aux_makefile,$2,$3))
+endef
+
+ifeq ($(is_configure_target),$(true))
+
+define call_as_makefile
+$(call assert,$2,Expected makefile name)
+$(call __call_as_makefile_aux,$1,$2,$(if $3,$3,$(CONFIGDIR)))
+configure:: $(call __itg_aux_makefile,$2,$(if $3,$3,$(CONFIGDIR)))
+
+endef
+
+else
+
+ifeq ($(is_productive_target),$(true))
+
+define call_as_makefile
+
+AUX_MAKEFILE_LIST:=$(call __itg_aux_makefile,$2,$3) $$(AUX_MAKEFILE_LIST)
+
+$(call include_makefile,$(call __itg_aux_makefile,$2,$(if $3,$3,$(CONFIGDIR))))
 
 endef
 
 else
   call_as_makefile=
 endif
+
+endif
+
+# $(call call_as_check_makefile,expression,makefile,makefile_dir)
+ifeq ($(is_check_target),$(true))
+
+define call_as_check_makefile
+$(call assert,$2,Expected makefile name)
+$(call __call_as_makefile_aux,$1,$2,$3)
+$(call include_makefile,$(call __itg_aux_makefile,$2,$3))
+endef
+
+endif
+
+# $(call call_as_build_makefile,expression,makefile,makefile_dir)
+ifeq ($(is_productive_target),$(true))
+
+define call_as_build_makefile
+$(call assert,$2,Expected makefile name)
+$(call __call_as_makefile_aux,$1,$2,$3)
+$(call include_makefile,$(call __itg_aux_makefile,$2,$3))
+endef
+
+endif
+
 
 # $(call reversedirpath,dirPath,pathToRootFromChild)
 reversedirpath = $(if $(strip $1),$(call merge,/,$(foreach d,$(call split,/,$1),..))/,./)
@@ -241,7 +291,7 @@ $1:=$2
 
 endef
 
-ifeq ($(is_productive_target),$(true))
+ifeq ($(call or,$(is_productive_target),$(is_configure_target)),$(true))
 
 # $(call copy_file, to, from)
 define copy_file
@@ -343,6 +393,8 @@ $(foreach target,$3,test.%-$(target)):
 	$(call MAKE_SUBPROJECT,$1) --keep-going $$@
 $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
+configure::
+	$(call MAKE_SUBPROJECT,$1) $$@
 all:: $1
 check: test-$1
 help::
@@ -374,12 +426,18 @@ endif
 #region standard targets support
 
 .DEFAULT_GOAL := all
+
+.PHONY: configure
+configure:: $(call _itg_makeutils_print-help,all,Prepare build environment and create intermediate makefiles.)
+
 .PHONY: all
 all:: $(call _itg_makeutils_print-help,all,Build all targets.)
+all:: configure
 
 .PHONY: check
 check: $(call _itg_makeutils_print-help,check,Perform self-tests.)
 check: MAKEFLAGS += --keep-going
+check: configure
 
 .PHONY: mostlyclean
 mostlyclean:: $(call _itg_makeutils_print-help,mostlyclean,Like 'clean'$(COMMA) but may refrain from deleting a few files that people normally don’t want to recompile.)
