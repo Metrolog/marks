@@ -212,6 +212,12 @@ $(call assert,$1,Expected makefile name)
 $(if $(is_productive_target),$(call include_makefile,$1))
 endef
 
+# $(call include_check_makefile,makefile)
+define include_check_makefile
+$(call assert,$1,Expected makefile name)
+$(if $(is_check_target),$(call include_makefile,$1))
+endef
+
 
 AUX_MAKEFILE_LIST:=$(empty_set)
 
