@@ -10,6 +10,7 @@ MAKE_TESTS_DIR = $(MAKE_COMMON_DIR)tests/
 __itg_makeutils_tests_included:=$(true)
 
 TESTSDIR ?= tests/
+TESTSOUTPUTDIR ?= $(AUXDIR)tests/
 TESTSRECIPESDIR = $(AUXDIR)
 export TESTSSTATUSLOG = $(ROOT_PROJECT_DIR)$(AUXDIR)tests_status.txt
 
