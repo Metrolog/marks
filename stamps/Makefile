@@ -14,7 +14,8 @@ __itg_stamps_included:=$(true)
 
 MSSTAMPSOUTPUTFORMATSSUPPORTMAKEFILEPREFIX = outputFileFormatSupport
 MSSTAMPSOUTPUTFORMATSSUPPORTMAKEFILES := $(wildcard $(MSSTAMPSOUTPUTFORMATSSUPPORTMAKEFILEPREFIX).*.mk)
-MFSUPPORTEDFORMATS = $(foreach f,$(MSSTAMPSOUTPUTFORMATSSUPPORTMAKEFILES),$(patsubst $(MSSTAMPSOUTPUTFORMATSSUPPORTMAKEFILEPREFIX).%.mk,%,$f))
+MFSUPPORTEDFORMATS := $(foreach f,$(MSSTAMPSOUTPUTFORMATSSUPPORTMAKEFILES),$(patsubst $(MSSTAMPSOUTPUTFORMATSSUPPORTMAKEFILEPREFIX).%.mk,%,$f))
+
 
 PSRESOURCEOUTPUTDIR = $(AUXDIR)Resource/
 PSRESOURCESOURCEDIR = Resource/
@@ -59,6 +60,7 @@ marks-pdf: $(STAMPSPDFFILES) $(call print-help,marks-pdf,Выполнить по
 
 MULTIFILEORDEROUTPUTDIR = $(OUTPUTDIR)mf/
 MULTIFILEORDERAUXDIR = $(AUXDIR)mf/
+MULTIFILETESTSOUTPUTDIR = $(TESTSOUTPUTDIR)mf/
 
 # $(call range, from, to)
 __itg_range_aux = $(shell i=$1; while [[ $$i -le $2 ]]; do printf "%d " $$i; i=$$(( i+1 )); done )
@@ -86,8 +88,6 @@ ifeq ($$(DONT_USE_$(call uc,$(strip $1))_BY_DEFAULT),$(false))
 MFSTAMPSFORMATSDEFAULT := $(strip $1) $$(MFSTAMPSFORMATSDEFAULT)
 endif
 
-.PHONY: marks-$(strip $1)
-
 endef
 
 define __include_stamps_output_format_support_makefiles_aux
@@ -100,14 +100,6 @@ $(eval $(call call_as_makefile,$$(call __include_stamps_output_format_support_ma
 
 MFSTAMPSFORMATS ?= $(MFSTAMPSFORMATSDEFAULT)
 
-define __enable_stamps_output_format_aux
-all:: marks-$(strip $1)
-
-endef
-
-$(eval $(foreach f,$(MFSTAMPSFORMATS), $(call __enable_stamps_output_format_aux,$f)))
-
-
 ifeq ($(call set_is_subset,$(call set_create,$(MFSTAMPSFORMATS)),$(call set_create,$(MFSUPPORTEDFORMATS))),$(false))
 $(call writeerror,MFSTAMPSFORMATS contains unsupported file types. Must contains any from: $(MFSUPPORTEDFORMATS))
 endif
@@ -118,6 +110,9 @@ all:: marks-pdf
 define __define_stamps_output_file_rule_aux
 
 $(OUTPUTDIR)%.$(call lc,$(strip $1)): $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $$(TARGETDIR)
+	$$(PSTO$(call uc,$(strip $1))CMDLINE) -sOutputFile='$$@' '$$<'
+
+$(TESTSOUTPUTDIR)%.$(call lc,$(strip $1)): $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $$(TARGETDIR)
 	$$(PSTO$(call uc,$(strip $1))CMDLINE) -sOutputFile='$$@' '$$<'
 
 endef
@@ -136,6 +131,9 @@ define __define_multifile_stamps_images_rule_aux
 $(MULTIFILEORDEROUTPUTDIR)%.$(call lc,$(strip $1)): $(MULTIFILEORDERAUXDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
 	$$(PSTO$(call uc,$(strip $1))CMDLINE) -sOutputFile='$$@' '$$<'
 
+$(MULTIFILETESTSOUTPUTDIR)%.$(call lc,$(strip $1)): $(MULTIFILEORDERAUXDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
+	$$(PSTO$(call uc,$(strip $1))CMDLINE) -sOutputFile='$$@' '$$<'
+
 endef
 
 define_multifile_stamps_images_rule=$(call call_as_makefile,\
@@ -151,12 +149,15 @@ MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
 
 # $(call create_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, stamp_type, srcfile)
 
+get_multifile_order_slug = $(call lc,$(call merge,_,$(call split,/,$(patsubst $(SOURCESDIR)%.mk,%,$1))))
+
 define __create_stamp_aux
-marks-$(strip $1): $2
+
+marks-$(strip $1)-$(strip $2): $3
 
 endef
 
-define create_stamp
+define __create_stamp_auxII
 
 $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: $(MARK2IMAGE) $8 $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
 	set -o pipefail; \
@@ -173,31 +174,67 @@ $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,
     -D StampDPI=$$(MFSTAMPSDPI) \
   | iconv -t CP1251 > $$@
 
-$(foreach f,$(MFSUPPORTEDFORMATS),$(call __create_stamp_aux,$f,$(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).$(call lc,$(strip $f))))
+endef
+
+define create_stamp
+$(call __create_stamp_auxII,$1,$2,$3,$4,$5,$6,$7,$8)
+$(foreach f,$(MFSUPPORTEDFORMATS),\
+  $(call __create_stamp_aux,\
+    $(call get_multifile_order_slug,$8),\
+    $f,\
+    $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).$(call lc,$(strip $f))\
+  )\
+)
+endef
+
+# $(call create_stamps, years, periods, stamp_ids, stamps_signs, stamp_size, is_for_production, stamp_type, srcfile, outputdir)
+define __create_stamps_auxII
+
+marks-$(strip $1): marks-$(strip $1)-$(strip $2)
+
+.PHONY: marks-$(strip $1)-$(strip $2)
 
 endef
 
-# $(call create_stamps, years, periods, stamp_ids, stamps_signs, stamp_size, is_for_production, stamp_type, srcfile)
 define __create_stamps_aux
-	$(foreach year,$1, \
-		$(foreach period,$2, \
-			$(foreach id,$3, \
-				$(foreach sign,$4, \
-					$(foreach is_for_production,$6, \
-						$(call create_stamp,$(year),$(period),$(id),$(sign),$5,$(is_for_production),$7,$8) \
-					) \
-				) \
-			) \
-		) \
-	)
+
+all:: marks-$(strip $(call get_multifile_order_slug,$8))
+
+.PHONY: marks-$(strip $(call get_multifile_order_slug,$8))
+
+#
+# MFSTAMPSFORMATS = $(MFSTAMPSFORMATS)
+#
+
+$(foreach f,$(MFSTAMPSFORMATS),\
+  $(call __create_stamps_auxII,\
+    $(call get_multifile_order_slug,$8),\
+    $f\
+  )\
+)
+
+$(foreach year,$1, \
+  $(foreach period,$2, \
+    $(foreach id,$3, \
+      $(foreach sign,$4, \
+        $(foreach is_for_production,$6, \
+          $(call create_stamp,$(year),$(period),$(id),$(sign),$5,$(is_for_production),$7,$8,$9) \
+        ) \
+      ) \
+    ) \
+  ) \
+)
+
 endef
+
+MULTIFILEORDERCURRENTOUTPUTDIR = $(MULTIFILEORDEROUTPUTDIR)
 
 create_stamps=$(call call_as_build_makefile,\
-  $$(call __create_stamps_aux,$1,$2,$3,$4,$5,$6,$7,$8),\
+  $$(call __create_stamps_aux,$1,$2,$3,$4,$5,$6,$7,$8,$(MULTIFILEORDERCURRENTOUTPUTDIR)),\
   $(call merge,_,\
     create_stamps \
     $(if $(call __gmsl_make_bool,$7),$(strip $7),verification_stamp)\
-    $(call split,/,$(patsubst $(SOURCESDIR)%.mk,%,$8))\
+    $(call get_multifile_order_slug,$8)\
   ).mk\
 )
 
@@ -207,3 +244,11 @@ MFSTAMPSDPI := 2400
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
 $(eval $(foreach f,$(MULTIFILEORDERFILES), $(call include_build_makefile, $f)))
+
+
+#MULTIFILETARGETSUFFIX = -tests
+#MULTIFILETESTSSOURCEDIR ?= $(TESTSDIR)mf/
+#MULTIFILEORDERCURRENTOUTPUTDIR = $(MULTIFILETESTSOUTPUTDIR)
+#MULTIFILETESTSFILES := $(call rwildcard,$(MULTIFILETESTSSOURCEDIR),*.mk)
+
+#$(eval $(foreach f,$(MULTIFILETESTSFILES), $(call include_makefile, $f)))
