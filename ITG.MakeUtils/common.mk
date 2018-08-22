@@ -219,10 +219,10 @@ __itg_get_static_makefile_list=$(call set_remove,$(AUX_MAKEFILE_LIST),$(call set
 
 __itg_aux_makefile=$(call merge,,$(if $2,$2,$(AUXDIR)) $1)
 
-# $(call call_as_makefile,expression,makefile,makefile_dir)
+# $(call call_as_makefile,expression,makefile,makefile_dir,deps)
 define __call_as_makefile_aux
 
-$(call __itg_aux_makefile,$2,$3): $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
+$(call __itg_aux_makefile,$2,$3): $(call __itg_get_static_makefile_list) $4 | $$(TARGETDIR)
 	$$(file > $$@,#!/usr/bin/make)
 	$$(file >> $$@,)
 	$$(file >> $$@,$1)
@@ -236,7 +236,7 @@ ifeq ($(is_configure_target),$(true))
 
 define call_as_makefile
 $(call assert,$2,Expected makefile name)
-$(call __call_as_makefile_aux,$1,$2,$(if $3,$3,$(CONFIGDIR)))
+$(call __call_as_makefile_aux,$1,$2,$(if $3,$3,$(CONFIGDIR)),$4)
 configure:: $(call __itg_aux_makefile,$2,$(if $3,$3,$(CONFIGDIR)))
 
 endef
@@ -259,23 +259,23 @@ endif
 
 endif
 
-# $(call call_as_check_makefile,expression,makefile,makefile_dir)
+# $(call call_as_check_makefile,expression,makefile,makefile_dir,deps)
 ifeq ($(is_check_target),$(true))
 
 define call_as_check_makefile
 $(call assert,$2,Expected makefile name)
-$(call __call_as_makefile_aux,$1,$2,$3)
+$(call __call_as_makefile_aux,$1,$2,$3,$4)
 $(call include_makefile,$(call __itg_aux_makefile,$2,$3))
 endef
 
 endif
 
-# $(call call_as_build_makefile,expression,makefile,makefile_dir)
+# $(call call_as_build_makefile,expression,makefile,makefile_dir,deps)
 ifeq ($(is_productive_target),$(true))
 
 define call_as_build_makefile
 $(call assert,$2,Expected makefile name)
-$(call __call_as_makefile_aux,$1,$2,$3)
+$(call __call_as_makefile_aux,$1,$2,$3,$4)
 $(call include_makefile,$(call __itg_aux_makefile,$2,$3))
 endef
 
