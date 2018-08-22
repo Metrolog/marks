@@ -70,16 +70,7 @@ POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(
 
 endef
 
-define prepare_PostScript_resource
-
-$(call call_as_makefile,$$(call __prepare_PostScript_resource_aux,$1,$2,$3),$(call merge,_,prepare_postscript_resources $(call split,/,$1)).mk)
-
-# TODO: возможно, можно будет убрать благодаря configure
-ifeq ($(call and,$(call not,$(is_productive_target)),$(call not,$(is_clean_target))),$(true))
-POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,$1,$2,$3) $$(POSTSCRIPTRESOURCEFILES)
-endif
-
-endef
+prepare_PostScript_resource = $(call call_as_makefile,$$(call __prepare_PostScript_resource_aux,$1,$2,$3),$(call merge,_,prepare_postscript_resources $(call split,/,$1)).mk)
 
 # $(call copy_PostScript_resource[, fromDir[, toDir[, files]]] )
 define __copy_PostScript_resource_aux
