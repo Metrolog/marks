@@ -147,6 +147,21 @@ $(eval $(foreach f,$(MFSUPPORTEDFORMATS),$(call define_multifile_stamps_images_r
 PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
 
+$(MULTIFILEORDERAUXDIR)%.ps: $(MARK2IMAGE) $(call __itg_get_static_makefile_list) | $(TARGETDIR)
+	set -o pipefail; \
+  export LANG=ru_RU.UTF8; \
+  iconv -f CP1251 $< \
+  | m4 \
+    -D StampYear=\($(strip $(StampYear))\) \
+    -D StampPeriod=\($(if $(call seq,$(strip $(StampPeriod)),year),,$(strip $(StampPeriod)))\) \
+    -D StampId=\($(strip $(StampId))\) \
+    -D StampSign=$(strip $(StampSign)) \
+    -D StampSize='$(strip $(StampSize))' \
+    -D StampForProduction=$(strip $(StampForProduction)) \
+    -D StampFunctor=$(strip $(StampFunctor)) \
+    -D StampDPI=$(MFSTAMPSDPI) \
+  | iconv -t CP1251 > $@
+
 # $(call create_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, stamp_type, srcfile)
 
 get_multifile_order_slug = $(call lc,$(call merge,_,$(call split,/,$(patsubst $(SOURCESDIR)%.mk,%,$1))))
@@ -159,20 +174,14 @@ endef
 
 define __create_stamp_auxII
 
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: $(MARK2IMAGE) $8 $(call __itg_get_static_makefile_list) | $$(TARGETDIR)
-	set -o pipefail; \
-  export LANG=ru_RU.UTF8; \
-  iconv -f CP1251 $$< \
-  | m4 \
-    -D StampYear=\($(strip $1)\) \
-    -D StampPeriod=\($(if $(call seq,$(strip $2),year),,$(strip $2))\) \
-    -D StampId=\($(strip $3)\) \
-    -D StampSign=$(strip $4) \
-    -D StampSize='$(strip $5)' \
-    -D StampForProduction=$(strip $6) \
-    -D StampFunctor=$(if $(call __gmsl_make_bool,$7),/$(strip $7)_upath,/verification_stamp_upath) \
-    -D StampDPI=$$(MFSTAMPSDPI) \
-  | iconv -t CP1251 > $$@
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: $(strip $8)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampYear:=$1
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampPeriod:=$2
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampId:=$3
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampSign:=$4
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampSize:=$5
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampForProduction:=$6
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampFunctor:=$(if $(call __gmsl_make_bool,$7),/$(strip $7)_upath,/verification_stamp_upath)
 
 endef
 
@@ -201,10 +210,6 @@ define __create_stamps_aux
 all:: marks-$(strip $(call get_multifile_order_slug,$8))
 
 .PHONY: marks-$(strip $(call get_multifile_order_slug,$8))
-
-#
-# MFSTAMPSFORMATS = $(MFSTAMPSFORMATS)
-#
 
 $(foreach f,$(MFSTAMPSFORMATS),\
   $(call __create_stamps_auxII,\
@@ -235,7 +240,8 @@ create_stamps=$(call call_as_build_makefile,\
     create_stamps \
     $(if $(call __gmsl_make_bool,$7),$(strip $7),verification_stamp)\
     $(call get_multifile_order_slug,$8)\
-  ).mk\
+  ).mk,,\
+  $8\
 )
 
 
