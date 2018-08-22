@@ -147,10 +147,10 @@ $(eval $(foreach f,$(MFSUPPORTEDFORMATS),$(call define_multifile_stamps_images_r
 PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
 
-$(MULTIFILEORDERAUXDIR)%.ps: $(MARK2IMAGE) $(call __itg_get_static_makefile_list) | $(TARGETDIR)
-	set -o pipefail; \
+__multifile_stamps_ps_recipe_aux = \
+  set -o pipefail; \
   export LANG=ru_RU.UTF8; \
-  iconv -f CP1251 $< \
+  iconv -f CP1251 $2 \
   | m4 \
     -D StampYear=\($(strip $(StampYear))\) \
     -D StampPeriod=\($(if $(call seq,$(strip $(StampPeriod)),year),,$(strip $(StampPeriod)))\) \
@@ -160,7 +160,10 @@ $(MULTIFILEORDERAUXDIR)%.ps: $(MARK2IMAGE) $(call __itg_get_static_makefile_list
     -D StampForProduction=$(strip $(StampForProduction)) \
     -D StampFunctor=$(strip $(StampFunctor)) \
     -D StampDPI=$(MFSTAMPSDPI) \
-  | iconv -t CP1251 > $@
+  | iconv -t CP1251 > $1
+
+$(MULTIFILEORDERAUXDIR)%.ps: $(MARK2IMAGE) $(call __itg_get_static_makefile_list) | $(TARGETDIR)
+	$(call __multifile_stamps_ps_recipe_aux,$@,$<)
 
 # $(call create_stamp, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, stamp_type, srcfile)
 
