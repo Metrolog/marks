@@ -76,10 +76,6 @@ quarters = $(foreach q,$1,$(call tr,1 2 3 4,I II III IV,$q))
 # $(call year)
 year = year
 
-# $(call get_multifile_order_relative_filename, srcfile, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, stamp_type)
-get_multifile_order_relative_filename = $(patsubst $(SOURCESDIR)%,%,$(basename $1))/$(strip $2)/$(strip $4)/$(strip $3)/$(strip $8)/$(if $(call seq,$(strip $7),true),1,2)/$(strip $5)
-
-
 define __include_stamps_output_format_support_makefiles_auxII
 
 $(call include_makefile, $(MSSTAMPSOUTPUTFORMATSSUPPORTMAKEFILEPREFIX).$(call lc,$(strip $1)).mk)
@@ -152,45 +148,52 @@ __multifile_stamps_ps_recipe_aux = \
   export LANG=ru_RU.UTF8; \
   iconv -f CP1251 $2 \
   | m4 \
-    -D StampYear=\($(strip $(StampYear))\) \
-    -D StampPeriod=\($(if $(call seq,$(strip $(StampPeriod)),year),,$(strip $(StampPeriod)))\) \
-    -D StampId=\($(strip $(StampId))\) \
-    -D StampSign=$(strip $(StampSign)) \
-    -D StampSize='$(strip $(StampSize))' \
-    -D StampForProduction=$(strip $(StampForProduction)) \
-    -D StampFunctor=$(strip $(StampFunctor)) \
+    -D StampYear=\($(strip $(STAMPS_YEAR))\) \
+    -D StampPeriod=\($(if $(call seq,$(strip $(STAMPS_PERIOD)),year),,$(strip $(STAMPS_PERIOD)))\) \
+    -D StampId=\($(strip $(STAMPS_ID))\) \
+    -D StampSign=$(strip $(STAMPS_SIGN)) \
+    -D StampSize='$(strip $(STAMPS_SIZE))' \
+    -D StampForProduction=$(if $(call seq,$(STAMPS_VARIANT),1),true,false) \
+    -D StampFunctor=/$(strip $(STAMPS_TYPE))_upath \
     -D StampDPI=$(STAMPS_DPI) \
   | iconv -t CP1251 > $1
 
 $(MULTIFILEORDERAUXDIR)%.ps: $(MARK2IMAGE) $(call __itg_get_static_makefile_list) | $(TARGETDIR)
 	$(call __multifile_stamps_ps_recipe_aux,$@,$<)
 
-# $(call create_stamp, srcfile, year, period, stamp_id, stamps_sign, stamp_size, is_for_production, stamp_type)
+# $(call create_stamp, srcfile)
 
 get_multifile_order_slug = $(call lc,$(call merge,_,$(call split,/,$(patsubst $(SOURCESDIR)%.mk,%,$1))))
 
 define __create_stamp_aux
 
 marks-$(strip $1)-$(strip $2): $3
-
 endef
+
+# $(call get_multifile_order_relative_filename, srcfile)
+get_multifile_order_relative_filename = $(call merge,/,\
+  $(patsubst $(SOURCESDIR)%,%,$(basename $1))\
+  $(STAMPS_YEAR)\
+  $(STAMPS_ID)\
+  $(STAMPS_PERIOD)\
+  $(STAMPS_TYPE)\
+  $(STAMPS_VARIANT)\
+  $(STAMPS_SIGN)\
+)
+# $(STAMPS_SIZE)
 
 define create_stamp
 
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: $(strip $1)
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampYear:=$(strip $2)
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampPeriod:=$(strip $3)
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampId:=$(strip $4)
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampSign:=$(strip $5)
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampSize:=$(strip $6)
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampForProduction:=$(strip $7)
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampFunctor:=$(strip $(if $(call __gmsl_make_bool,$8),/$(strip $8)_upath,/verification_stamp_upath))
+$(foreach v,DPI YEAR ID PERIOD SIGN SIZE VARIANT TYPE,\
+  $(__gmsl_newline)$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1).ps: STAMPS_$v:=$(strip $(STAMPS_$v))\
+)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1).ps: $(strip $1)
 
 $(foreach f,$(MFSUPPORTEDFORMATS),\
   $(call __create_stamp_aux,\
     $(call get_multifile_order_slug,$1),\
     $f,\
-    $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).$(call lc,$(strip $f))\
+    $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1).$(call lc,$(strip $f))\
   )\
 )
 endef
@@ -204,16 +207,7 @@ define __multifile_order_intermediate_makefile_aux
 
 $(foreach STAMPS_PERIOD,$(STAMPS_PERIODS), \
   $(foreach STAMPS_SIGN,$(STAMPS_SIGNS), \
-    $(call create_stamp,\
-      $1,\
-      $(STAMPS_YEAR),\
-      $(STAMPS_PERIOD),\
-      $(STAMPS_ID),\
-      $(STAMPS_SIGN),\
-      $(STAMPS_SIZE),\
-      $(if $(call seq,$(STAMPS_VARIANT),1),true,false),\
-      $(STAMPS_TYPE)\
-    ) \
+    $(call create_stamp,$1) \
   ) \
 )
 endef
