@@ -159,7 +159,7 @@ __multifile_stamps_ps_recipe_aux = \
     -D StampSize='$(strip $(StampSize))' \
     -D StampForProduction=$(strip $(StampForProduction)) \
     -D StampFunctor=$(strip $(StampFunctor)) \
-    -D StampDPI=$(MFSTAMPSDPI) \
+    -D StampDPI=$(STAMPS_DPI) \
   | iconv -t CP1251 > $1
 
 $(MULTIFILEORDERAUXDIR)%.ps: $(MARK2IMAGE) $(call __itg_get_static_makefile_list) | $(TARGETDIR)
@@ -178,13 +178,13 @@ endef
 define __create_stamp_auxII
 
 $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: $(strip $8)
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampYear:=$1
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampPeriod:=$2
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampId:=$3
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampSign:=$4
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampSize:=$5
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampForProduction:=$6
-$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampFunctor:=$(if $(call __gmsl_make_bool,$7),/$(strip $7)_upath,/verification_stamp_upath)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampYear:=$(strip $1)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampPeriod:=$(strip $2)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampId:=$(strip $3)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampSign:=$(strip $4)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampSize:=$(strip $5)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampForProduction:=$(strip $6)
+$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1,$2,$3,$4,$5,$6,$7,$8).ps: StampFunctor:=$(strip $(if $(call __gmsl_make_bool,$7),/$(strip $7)_upath,/verification_stamp_upath))
 
 endef
 
@@ -248,16 +248,79 @@ create_stamps=$(call call_as_build_makefile,\
 )
 
 
-MFSTAMPSDPI := 2400
+MULTIFILEAUXMAKEFILESDIR = $(AUXDIR)mf/
+
+get_multifile_order_intermediate_makefile_name = $(call merge,_,build_multifile_order $(call get_multifile_order_slug,$1)).mk
+
+define __multifile_order_intermediate_makefile_aux
+# source file: $1
+
+$(foreach period,$(STAMPS_PERIODS), \
+  $(foreach sign,$(STAMPS_SIGNS), \
+    $(call create_stamp,\
+      $(STAMPS_YEAR),\
+      $(period),\
+      $(STAMPS_ID),\
+      $(sign),\
+      $(STAMPS_SIZE),\
+      $(if $(call seq,$(STAMPS_VARIANT),1),true,false),\
+      $(STAMPS_TYPE),\
+      $1\
+    ) \
+  ) \
+)
+endef
+
+define __foreach_multifile_order_auxII
+
+marks-$(strip $1): marks-$(strip $1)-$(strip $2)
+.PHONY: marks-$(strip $1)-$(strip $2)
+endef
+
+define __foreach_multifile_order_aux
+# source file: $1
+
+STAMPS_DPI     := 2400
+
+STAMPS_SIGNS   := 0
+STAMPS_SIZE    := 18 mm
+STAMPS_VARIANT := 1
+STAMPS_TYPE    := verification_stamp
+$(eval $(call include_makefile, $1))
+
+all:: marks-$(strip $(call get_multifile_order_slug,$1))
+
+.PHONY: marks-$(strip $(call get_multifile_order_slug,$1))
+
+$(foreach f,$(MFSTAMPSFORMATS),\
+  $(call __foreach_multifile_order_auxII,\
+    $(call get_multifile_order_slug,$1),\
+    $f\
+  )\
+)
+
+$(foreach v,DPI YEAR ID PERIODS SIGNS SIZE VARIANT TYPE,\
+  $(__gmsl_newline)$(MULTIFILEAUXMAKEFILESDIR)$(call get_multifile_order_intermediate_makefile_name,$1): STAMPS_$v:=$(strip $(STAMPS_$v))\
+)
+$(call call_as_build_makefile,$$(call __multifile_order_intermediate_makefile_aux,$1),\
+  $(call get_multifile_order_intermediate_makefile_name,$1),\
+  $(MULTIFILEAUXMAKEFILESDIR),\
+  $1\
+)
+endef
 
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
-$(eval $(foreach f,$(MULTIFILEORDERFILES), $(call include_build_makefile, $f)))
+$(eval $(foreach f,$(MULTIFILEORDERFILES),\
+  $(call call_as_build_makefile,$$(call __foreach_multifile_order_aux,$f),\
+    $(call merge,_,prepare_multifile_order $(call get_multifile_order_slug,$f)).mk\
+  )\
+))
 
 
 #MULTIFILETARGETSUFFIX = -tests
-#MULTIFILETESTSSOURCEDIR ?= $(TESTSDIR)mf/
+MULTIFILETESTSSOURCEDIR ?= $(TESTSDIR)mf/
 #MULTIFILEORDERCURRENTOUTPUTDIR = $(MULTIFILETESTSOUTPUTDIR)
-#MULTIFILETESTSFILES := $(call rwildcard,$(MULTIFILETESTSSOURCEDIR),*.mk)
+MULTIFILETESTSFILES := $(call rwildcard,$(MULTIFILETESTSSOURCEDIR),*.mk)
 
-#$(eval $(foreach f,$(MULTIFILETESTSFILES), $(call include_makefile, $f)))
+#$(eval $(foreach f,$(MULTIFILETESTSFILES), $(call include_check_makefile, $f)))
