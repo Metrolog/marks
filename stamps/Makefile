@@ -200,7 +200,7 @@ endef
 
 MULTIFILEAUXMAKEFILESDIR = $(AUXDIR)mf/
 
-get_multifile_order_intermediate_makefile_name = $(call merge,_,build_multifile_order $(call get_multifile_order_slug,$1)).mk
+get_multifile_order_intermediate_makefile_name = $(patsubst $(SOURCESDIR)%.mk,%,$1)/build_multifile_order.mk
 
 define __multifile_order_intermediate_makefile_aux
 # source file: $1
