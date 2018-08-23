@@ -253,7 +253,7 @@ ifeq ($(is_productive_target),$(true))
 
 define call_as_makefile
 
-AUX_MAKEFILE_LIST:=$(call __itg_aux_makefile,$2,$3) $$(AUX_MAKEFILE_LIST)
+AUX_MAKEFILE_LIST:=$(call __itg_aux_makefile,$2,$(if $3,$3,$(CONFIGDIR))) $$(AUX_MAKEFILE_LIST)
 
 $(call include_makefile,$(call __itg_aux_makefile,$2,$(if $3,$3,$(CONFIGDIR))))
 

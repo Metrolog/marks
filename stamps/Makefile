@@ -265,6 +265,8 @@ all:: marks-$(strip $(call get_multifile_order_slug,$1))
 
 endef
 
+AUX_MAKEFILE_LIST:=$(MULTIFILEORDERFILES) $(AUX_MAKEFILE_LIST)
+
 $(eval $(foreach f,$(MULTIFILEORDERFILES),$(call __foreach_multifile_order_auxIII,$f)))
 
 
@@ -288,5 +290,7 @@ $(call define_test,\
 )
 
 endef
+
+AUX_MAKEFILE_LIST:=$(MULTIFILETESTSFILES) $(AUX_MAKEFILE_LIST)
 
 $(eval $(foreach f,$(MULTIFILETESTSFILES),$(call __foreach_multifile_order_test_auxIII,$f)))
