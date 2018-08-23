@@ -21,6 +21,7 @@ PSRESOURCEOUTPUTDIR = $(AUXDIR)Resource/
 PSRESOURCESOURCEDIR = Resource/
 STAMPSRCDIR := $(SOURCESDIR)
 STAMPSSOURCEFILES := $(call rwildcard,$(STAMPSRCDIR),*.ps)
+MULTIFILETESTSSOURCEDIR ?= $(TESTSDIR)mf/
 
 STAMPLIBDIR := $(PSRESOURCESOURCEDIR)
 ENCODINGSDIR := $(STAMPLIBDIR)$(ENCODINGRESOURCEDIR)
@@ -58,8 +59,8 @@ marks-pdf: $(STAMPSPDFFILES) $(call print-help,marks-pdf,Выполнить по
 
 # multiple output files orders support
 
-MULTIFILEORDEROUTPUTDIR = $(OUTPUTDIR)mf/
-MULTIFILEORDERAUXDIR = $(AUXDIR)mf/
+MULTIFILEORDEROUTPUTDIR ?= $(OUTPUTDIR)mf/
+MULTIFILEORDERAUXDIR ?= $(AUXDIR)mf/
 MULTIFILETESTSOUTPUTDIR = $(TESTSOUTPUTDIR)mf/
 
 # $(call range, from, to)
@@ -105,10 +106,10 @@ all:: marks-pdf
 # $(call define_stamps_output_file_rule, file_type_slug)
 define __define_stamps_output_file_rule_aux
 
-$(OUTPUTDIR)%.$(call lc,$(strip $1)): $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $$(TARGETDIR)
+$(OUTPUTDIR)%.$(call lc,$(strip $1)): $(STAMPSRCDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $$(TARGETDIR)
 	$$(PSTO$(call uc,$(strip $1))CMDLINE) -sOutputFile='$$@' '$$<'
 
-$(TESTSOUTPUTDIR)%.$(call lc,$(strip $1)): $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $$(TARGETDIR)
+$(TESTSOUTPUTDIR)%.$(call lc,$(strip $1)): $(STAMPSRCDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $$(TARGETDIR)
 	$$(PSTO$(call uc,$(strip $1))CMDLINE) -sOutputFile='$$@' '$$<'
 
 endef
@@ -163,7 +164,7 @@ $(MULTIFILEORDERAUXDIR)%.ps: $(MARK2IMAGE) $(call __itg_get_static_makefile_list
 
 # $(call create_stamp, srcfile)
 
-get_multifile_order_slug = $(call lc,$(call merge,_,$(call split,/,$(patsubst $(SOURCESDIR)%.mk,%,$1))))
+get_multifile_order_slug = $(call lc,$(call merge,_,$(call split,/,$(patsubst %.mk,%,$(patsubst $(MULTIFILETESTSSOURCEDIR)%.mk,%,$(patsubst $(STAMPSRCDIR)%.mk,%,$1))))))
 
 define __create_stamp_aux
 
@@ -172,7 +173,7 @@ endef
 
 # $(call get_multifile_order_relative_filename, srcfile)
 get_multifile_order_relative_filename = $(call merge,/,\
-  $(patsubst $(SOURCESDIR)%,%,$(basename $1))\
+  $(patsubst $(MULTIFILETESTSSOURCEDIR)%,%,$(patsubst $(STAMPSRCDIR)%,%,$(basename $1)))\
   $(STAMPS_YEAR)\
   $(STAMPS_ID)\
   $(STAMPS_PERIOD)\
@@ -189,6 +190,8 @@ $(foreach v,DPI YEAR ID PERIOD SIGN SIZE VARIANT TYPE,\
 )
 $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1).ps: $(strip $1)
 
+# TODO: этот сегмент выделить в отдельный макрос и вызывать с указанием каталога
+# TODO: или использовать target специфичные переменные для указания каталога
 $(foreach f,$(MFSUPPORTEDFORMATS),\
   $(call __create_stamp_aux,\
     $(call get_multifile_order_slug,$1),\
@@ -200,7 +203,7 @@ endef
 
 MULTIFILEAUXMAKEFILESDIR = $(AUXDIR)mf/
 
-get_multifile_order_intermediate_makefile_name = $(patsubst $(SOURCESDIR)%.mk,%,$1)/build_multifile_order.mk
+get_multifile_order_intermediate_makefile_name = $(patsubst %.mk,%,$(patsubst $(MULTIFILETESTSSOURCEDIR)%.mk,%,$(patsubst $(STAMPSRCDIR)%.mk,%,$1)))/build_multifile_order.mk
 
 define __multifile_order_intermediate_makefile_aux
 # source file: $1
@@ -229,8 +232,6 @@ STAMPS_VARIANT := 1
 STAMPS_TYPE    := verification_stamp
 $(eval $(call include_makefile, $1))
 
-all:: marks-$(strip $(call get_multifile_order_slug,$1))
-
 .PHONY: marks-$(strip $(call get_multifile_order_slug,$1))
 
 $(foreach f,$(MFSTAMPSFORMATS),\
@@ -243,6 +244,7 @@ $(foreach f,$(MFSTAMPSFORMATS),\
 $(foreach v,DPI YEAR ID PERIODS SIGNS SIZE VARIANT TYPE,\
   $(__gmsl_newline)$(MULTIFILEAUXMAKEFILESDIR)$(call get_multifile_order_intermediate_makefile_name,$1): STAMPS_$v:=$(strip $(STAMPS_$v))\
 )
+# TODO: так не пойдёт. А для тестов как? call_as_check_makefile?
 $(call call_as_build_makefile,$$(call __multifile_order_intermediate_makefile_aux,$1),\
   $(call get_multifile_order_intermediate_makefile_name,$1),\
   $(MULTIFILEAUXMAKEFILESDIR),\
@@ -252,17 +254,39 @@ endef
 
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
 
-$(eval $(foreach f,$(MULTIFILEORDERFILES),\
-  $(call call_as_build_makefile,$$(call __foreach_multifile_order_aux,$f),\
-    $(patsubst $(SOURCESDIR)%.mk,%,$f)/prepare_multifile_order.mk,\
-    $(MULTIFILEAUXMAKEFILESDIR)\
-  )\
-))
+define __foreach_multifile_order_auxIII
+
+$(call call_as_build_makefile,$$(call __foreach_multifile_order_aux,$1),\
+  $(patsubst %.mk,%,$(patsubst $(MULTIFILETESTSSOURCEDIR)%.mk,%,$(patsubst $(STAMPSRCDIR)%.mk,%,$1)))/prepare_multifile_order.mk,\
+  $(MULTIFILEAUXMAKEFILESDIR)\
+)
+
+all:: marks-$(strip $(call get_multifile_order_slug,$1))
+
+endef
+
+$(eval $(foreach f,$(MULTIFILEORDERFILES),$(call __foreach_multifile_order_auxIII,$f)))
 
 
-#MULTIFILETARGETSUFFIX = -tests
-MULTIFILETESTSSOURCEDIR ?= $(TESTSDIR)mf/
-#MULTIFILEORDERCURRENTOUTPUTDIR = $(MULTIFILETESTSOUTPUTDIR)
 MULTIFILETESTSFILES := $(call rwildcard,$(MULTIFILETESTSSOURCEDIR),*.mk)
+MULTIFILETESTSOUTPUTDIR ?= $(TESTSOUTPUTDIR)mf/
 
-#$(eval $(foreach f,$(MULTIFILETESTSFILES), $(call include_check_makefile, $f)))
+test-mf_order: export MULTIFILEORDEROUTPUTDIR:=$(MULTIFILETESTSOUTPUTDIR)
+
+define __foreach_multifile_order_test_auxIII
+
+$(call call_as_check_makefile,$$(call __foreach_multifile_order_aux,$1),\
+  $(patsubst $(MULTIFILETESTSSOURCEDIR)%.mk,%,$1)/prepare_multifile_order_test.mk,\
+  $(MULTIFILEAUXMAKEFILESDIR)\
+)
+
+$(call define_test,\
+	$(call get_multifile_order_slug,$1),\
+	mf_order,,\
+	marks-$(strip $(call get_multifile_order_slug,$1)),,,\
+	$1\
+)
+
+endef
+
+$(eval $(foreach f,$(MULTIFILETESTSFILES),$(call __foreach_multifile_order_test_auxIII,$f)))
