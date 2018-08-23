@@ -282,8 +282,8 @@ $(call call_as_check_makefile,$$(call __foreach_multifile_order_aux,$1),\
 
 $(call define_test,\
 	$(call get_multifile_order_slug,$1),\
-	mf_order,,\
-	marks-$(strip $(call get_multifile_order_slug,$1)),,,\
+	mf_order,,,\
+	marks-$(strip $(call get_multifile_order_slug,$1)),,\
 	$1\
 )
 
