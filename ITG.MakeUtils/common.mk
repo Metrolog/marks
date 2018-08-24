@@ -178,10 +178,16 @@ CONFIGDIR          ?= config/
 #endregion common dirs
 
 is_configure_target:=$(call set_is_member,configure,$(call set_create,$(MAKECMDGOALS)))
+is_help_target:=$(call set_is_member,help,$(call set_create,$(MAKECMDGOALS)))
 is_clean_target:=$(call __gmsl_make_bool,$(filter %clean,$(MAKECMDGOALS)))
 is_check_target:=$(call __gmsl_make_bool,$(filter check% test%,$(MAKECMDGOALS)))
 is_config_target:=$(call set_is_member,.GLOBAL_VARIABLES,$(call set_create,$(MAKECMDGOALS)))
-is_productive_target:=$(call and,$(call not,$(is_clean_target)),$(call not,$(is_config_target)),$(call not,$(is_configure_target)))
+is_productive_target:=$(call and,\
+  $(call not,$(is_help_target)),\
+  $(call not,$(is_clean_target)),\
+  $(call not,$(is_config_target)),\
+  $(call not,$(is_configure_target))\
+)
 
 is_root_project:=$(false)
 ifdef ROOT_PROJECT_DIR
