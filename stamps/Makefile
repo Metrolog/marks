@@ -59,8 +59,8 @@ marks-pdf: $(STAMPSPDFFILES) $(call print-help,marks-pdf,Выполнить по
 
 # multiple output files orders support
 
-MULTIFILEORDEROUTPUTDIR ?= $(OUTPUTDIR)mf/
-MULTIFILEORDERAUXDIR ?= $(AUXDIR)mf/
+MULTIFILEORDEROUTPUTDIR = $$(OUTPUTDIR)mf/
+MULTIFILEORDERAUXDIR = $(AUXDIR)mf/
 MULTIFILETESTSOUTPUTDIR = $(TESTSOUTPUTDIR)mf/
 
 # $(call range, from, to)
@@ -244,7 +244,6 @@ $(foreach f,$(MFSTAMPSFORMATS),\
 $(foreach v,DPI YEAR ID PERIODS SIGNS SIZE VARIANT TYPE,\
   $(__gmsl_newline)$(MULTIFILEAUXMAKEFILESDIR)$(call get_multifile_order_intermediate_makefile_name,$1): STAMPS_$v:=$(strip $(STAMPS_$v))\
 )
-# TODO: так не пойдёт. А для тестов как? call_as_check_makefile?
 $(call call_as_build_makefile,$$(call __multifile_order_intermediate_makefile_aux,$1),\
   $(call get_multifile_order_intermediate_makefile_name,$1),\
   $(MULTIFILEAUXMAKEFILESDIR),\
@@ -271,9 +270,7 @@ $(eval $(foreach f,$(MULTIFILEORDERFILES),$(call __foreach_multifile_order_auxII
 
 
 MULTIFILETESTSFILES := $(call rwildcard,$(MULTIFILETESTSSOURCEDIR),*.mk)
-MULTIFILETESTSOUTPUTDIR ?= $(TESTSOUTPUTDIR)mf/
-
-test-mf_order: export MULTIFILEORDEROUTPUTDIR:=$(MULTIFILETESTSOUTPUTDIR)
+MULTIFILETESTSOUTPUTDIR = $(TESTSOUTPUTDIR)mf/
 
 define __foreach_multifile_order_test_auxIII
 

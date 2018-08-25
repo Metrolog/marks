@@ -70,7 +70,11 @@ $(if $(strip $3),	$(strip $3))
 
 .PHONY: test.$(strip $1)-$(strip $2)
 test.$(strip $1)-$(strip $2): $(call uniq,$7 $4) $(if $6,| $6)
-	$$(call testPlatformWrapper,$$@,$$(MAKE) test.$(strip $1)-$(strip $2).recipe,$(strip $7))
+	$$(call testPlatformWrapper,$$@,\
+    $$(MAKE) test.$(strip $1)-$(strip $2).recipe \
+      OUTPUTDIR=$(TESTSOUTPUTDIR) \
+    ,$(strip $7)\
+  )
 $(if $(strip $8),	$(strip $8))
 
 .PHONY: test-$(strip $2)
