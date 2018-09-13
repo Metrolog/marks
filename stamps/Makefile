@@ -8,6 +8,7 @@ include $(ITG_MAKEUTILS_DIR)common.mk
 
 include $(ITG_MAKEUTILS_DIR)tests/tests.mk
 include $(ITG_MAKEUTILS_DIR)ghostscript/ghostscript.mk
+include $(ITG_MAKEUTILS_DIR)zip/zip.mk
 include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
 __itg_stamps_included:=$(true)
@@ -168,7 +169,10 @@ get_multifile_order_slug = $(call lc,$(call merge,_,$(call split,/,$(patsubst %.
 
 define __create_stamp_aux
 
-marks-$(strip $1)-$(strip $2): $3
+marks-$(strip $2)-$(strip $3): $4
+
+$(call get_multifile_order_zip,$1): $4
+
 endef
 
 # $(call get_multifile_order_relative_filename, srcfile)
@@ -183,6 +187,8 @@ get_multifile_order_relative_filename = $(call merge,/,\
 )
 # $(STAMPS_SIZE)
 
+get_multifile_order_zip = $(MULTIFILETESTSOUTPUTDIR)$(patsubst %.mk,%,$(patsubst $(MULTIFILETESTSSOURCEDIR)%.mk,%,$(patsubst $(STAMPSRCDIR)%.mk,%,$1))).zip
+
 define create_stamp
 
 $(foreach v,DPI YEAR ID PERIOD SIGN SIZE VARIANT TYPE,\
@@ -190,15 +196,12 @@ $(foreach v,DPI YEAR ID PERIOD SIGN SIZE VARIANT TYPE,\
 )
 $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1).ps: $(strip $1)
 
-# TODO: этот сегмент выделить в отдельный макрос и вызывать с указанием каталога
-# TODO: или использовать target специфичные переменные для указания каталога
 $(foreach f,$(MFSUPPORTEDFORMATS),\
-  $(call __create_stamp_aux,\
-    $(call get_multifile_order_slug,$1),\
-    $f,\
+  $(call __create_stamp_aux,$1,$(call get_multifile_order_slug,$1),$f,\
     $(MULTIFILEORDEROUTPUTDIR)$(call get_multifile_order_relative_filename,$1).$(call lc,$(strip $f))\
   )\
 )
+
 endef
 
 MULTIFILEAUXMAKEFILESDIR = $(AUXDIR)mf/
@@ -249,6 +252,15 @@ $(call call_as_build_makefile,$$(call __multifile_order_intermediate_makefile_au
   $(MULTIFILEAUXMAKEFILESDIR),\
   $1\
 )
+
+# TODO: осталось найти файлы для архивирования и PushArtifact устроить.
+#$(call get_multifile_order_zip,$1): | $$(TARGETDIR)
+#	cd $(patsubst $(MULTIFILETESTSSOURCEDIR)%,%,$(patsubst $(STAMPSRCDIR)%,%,$(basename $1)));\
+#  $(ZIP) -FS -o -r -D $$(abspath $$@) !!!!$$(patsubst $3/%, %, $$^)!!!!
+#	$(TOUCH) $$@
+$(call get_multifile_order_zip,$1): | $$(TARGETDIR)
+	$(TOUCH) $$@
+
 endef
 
 MULTIFILEORDERFILES := $(call rwildcard,$(STAMPSRCDIR),*.mk)
@@ -280,10 +292,10 @@ $(call call_as_check_makefile,$$(call __foreach_multifile_order_aux,$1),\
 )
 
 $(call define_test,\
-	$(call get_multifile_order_slug,$1),\
-	mf_order,,,\
-	marks-$(strip $(call get_multifile_order_slug,$1)),,\
-	$1\
+  $(call get_multifile_order_slug,$1),\
+  mf_order,,,\
+  $(call get_multifile_order_zip,$1),,\
+  $1\
 )
 
 endef
