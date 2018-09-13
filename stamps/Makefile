@@ -253,12 +253,10 @@ $(call call_as_build_makefile,$$(call __multifile_order_intermediate_makefile_au
   $1\
 )
 
-# TODO: осталось найти файлы для архивирования и PushArtifact устроить.
-#$(call get_multifile_order_zip,$1): | $$(TARGETDIR)
-#	cd $(patsubst $(MULTIFILETESTSSOURCEDIR)%,%,$(patsubst $(STAMPSRCDIR)%,%,$(basename $1)));\
-#  $(ZIP) -FS -o -r -D $$(abspath $$@) !!!!$$(patsubst $3/%, %, $$^)!!!!
-#	$(TOUCH) $$@
+# TODO: осталось PushArtifact устроить.
 $(call get_multifile_order_zip,$1): | $$(TARGETDIR)
+	cd $$(basename $$@);\
+  $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $$(basename $$@)/%,%,$$^)
 	$(TOUCH) $$@
 
 endef
