@@ -261,6 +261,7 @@ $(call get_multifile_order_zip,$1): | $$(TARGETDIR)
     --directory=$(MULTIFILETESTSOUTPUTDIR) \
     $$(patsubst $(MULTIFILETESTSOUTPUTDIR)%,%,$$^)
 	$(TOUCH) $$@
+	$(call pushDeploymentArtifactFile,$$(basename $$@),$$@)
 
 endef
 
