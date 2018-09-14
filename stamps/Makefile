@@ -253,7 +253,6 @@ $(call call_as_build_makefile,$$(call __multifile_order_intermediate_makefile_au
   $1\
 )
 
-# TODO: осталось PushArtifact устроить.
 $(call get_multifile_order_zip,$1): | $$(TARGETDIR)
 	tar --create \
     --gzip \
@@ -261,7 +260,6 @@ $(call get_multifile_order_zip,$1): | $$(TARGETDIR)
     --directory=$(MULTIFILETESTSOUTPUTDIR) \
     $$(patsubst $(MULTIFILETESTSOUTPUTDIR)%,%,$$^)
 	$(TOUCH) $$@
-	$(call pushDeploymentArtifactFile,$$(basename $$@),$$@)
 
 endef
 
@@ -297,7 +295,8 @@ $(call define_test,\
   $(call get_multifile_order_slug,$1),\
   mf_order,,,\
   $(call get_multifile_order_zip,$1),,\
-  $1\
+  $1,\
+	$(call pushDeploymentArtifact)\
 )
 
 endef
