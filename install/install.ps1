@@ -94,7 +94,7 @@ $chocoExe = Join-Path `
     -ChildPath 'choco.exe' `
 ;
 
-# if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
+if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     if (
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
         -and $PSCmdLet.ShouldProcess('cygwin', 'Установить')
@@ -132,14 +132,14 @@ $chocoExe = Join-Path `
 
     if (
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
-		-and $PSCmdLet.ShouldProcess('Пакеты CygWin make, curl, awk, cat, cmp, cp, diff, echo, egrep, expr, false, grep, ln, ls, m4, mkdir, mv, printf, pwd, rm, rmdir, sed, sleep, sort, tar, test, touch, tr, true, zip', 'Установить')
+		-and $PSCmdLet.ShouldProcess('Пакеты CygWin make, curl, awk, cat, cmp, cp, diff, echo, egrep, expr, false, grep, ln, ls, m4, mkdir, mv, printf, pwd, rm, rmdir, sed, sleep, sort, tar, test, touch, tr, true', 'Установить')
     ) {
         Invoke-ExternalInstaller `
             -LiteralPath $cygwinsetup `
-            -ArgumentList '--packages make,curl,awk,cat,cmp,cp,diff,echo,egrep,expr,false,grep,ln,ls,m4,mkdir,mv,printf,pwd,rm,rmdir,sed,sleep,sort,tar,test,touch,tr,true,zip --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
+            -ArgumentList '--packages make,curl,awk,cat,cmp,cp,diff,echo,egrep,expr,false,grep,ln,ls,m4,mkdir,mv,printf,pwd,rm,rmdir,sed,sleep,sort,tar,test,touch,tr,true --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
         ;
     };
-# };
+};
 
 $env:CygWin = Get-ItemPropertyValue `
     -Path HKLM:\SOFTWARE\Cygwin\setup `

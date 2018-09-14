@@ -187,7 +187,7 @@ get_multifile_order_relative_filename = $(call merge,/,\
 )
 # $(STAMPS_SIZE)
 
-get_multifile_order_zip = $(MULTIFILETESTSOUTPUTDIR)$(patsubst %.mk,%,$(patsubst $(MULTIFILETESTSSOURCEDIR)%.mk,%,$(patsubst $(STAMPSRCDIR)%.mk,%,$1))).zip
+get_multifile_order_zip = $(MULTIFILETESTSOUTPUTDIR)$(patsubst %.mk,%,$(patsubst $(MULTIFILETESTSSOURCEDIR)%.mk,%,$(patsubst $(STAMPSRCDIR)%.mk,%,$1))).tar.gz
 
 define create_stamp
 
@@ -255,8 +255,11 @@ $(call call_as_build_makefile,$$(call __multifile_order_intermediate_makefile_au
 
 # TODO: осталось PushArtifact устроить.
 $(call get_multifile_order_zip,$1): | $$(TARGETDIR)
-	cd $$(basename $$@);\
-  $(ZIP) -FS -o -r -D $$(abspath $$@) $$(patsubst $$(basename $$@)/%,%,$$^)
+	tar --create \
+    --gzip \
+    --file=$$(abspath $$@) \
+    --directory=$(MULTIFILETESTSOUTPUTDIR) \
+    $$(patsubst $(MULTIFILETESTSOUTPUTDIR)%,%,$$^)
 	$(TOUCH) $$@
 
 endef
