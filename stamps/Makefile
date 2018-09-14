@@ -296,7 +296,7 @@ $(call define_test,\
   mf_order,,,\
   $(call get_multifile_order_zip,$1),,\
   $1,\
-	$(call pushDeploymentArtifact)\
+	$$(call pushDeploymentArtifact)\
 )
 
 endef
