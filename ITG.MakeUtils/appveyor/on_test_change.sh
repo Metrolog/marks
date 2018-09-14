@@ -35,16 +35,22 @@ on_test_change() {
 	unset OPTIND
 
 	local test_stdout
-	if
-		[ ! -z "${test_stdout_filename-}" ]
+	if [ ! -z "${test_stdout_filename-}" ]
 	then
 		test_stdout=$(< "${test_stdout_filename}")
+		if [ ${#test_stdout} -gt 1024 ]
+		then
+			test_stdout="${test_stdout:0:1024}"...
+		fi
 	fi
 	local test_stderr
-	if
-		[ ! -z "${test_stderr_filename-}" ]
+	if [ ! -z "${test_stderr_filename-}" ]
 	then
 		test_stderr=$(< "${test_stderr_filename}")
+		if [ ${#test_stderr} -gt 1024 ]
+		then
+			test_stderr="${test_stderr:0:1024}"...
+		fi
 	fi
 
 	#set -o xtrace
