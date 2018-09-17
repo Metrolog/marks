@@ -1,24 +1,35 @@
-<!--- Укажите краткую сводную информацию в заголовке выше -->
+---
+name: Bug report
+about: Create a report to help us improve
 
-<!--
-- Изучите issues репозитория
-- Заполните приведённые ниже шаблон
-- Если это сообщение об ошибке, убедитесь, что Вы можете воспроизвести его на последней версии
--->
+---
 
-## Требуемое поведение
+**Describe the bug**
+A clear and concise description of what the bug is.
 
-<!--- Сообщите, что должно происходить -->
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-## Текущее поведение
+**Expected behavior**
+A clear and concise description of what you expected to happen.
 
-<!--- Сообщите, что происходит вместо ожидаемого поведения -->
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
 
-## Возможное решение
+**Desktop (please complete the following information):**
+ - OS: [e.g. iOS]
+ - Browser [e.g. chrome, safari]
+ - Version [e.g. 22]
 
-<!--- Не обязательно -->
+**Smartphone (please complete the following information):**
+ - Device: [e.g. iPhone6]
+ - OS: [e.g. iOS8.1]
+ - Browser [e.g. stock browser, safari]
+ - Version [e.g. 22]
 
-## Шаги для воспроизведения (для ошибок)
-
-<!--- Укажите ссылку на пример с ошибкой -->
-<!--- Или приведите шаги для воспроизведения ошибки -->
+**Additional context**
+Add any other context about the problem here.

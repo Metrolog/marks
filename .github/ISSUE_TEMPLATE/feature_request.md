@@ -1,18 +1,17 @@
-<!--- Укажите краткую сводную информацию в заголовке выше -->
+---
+name: Feature request
+about: Suggest an idea for this project
 
-<!--
-- Изучите issues репозитория
-- Заполните приведённые ниже шаблон
--->
+---
 
-## Требуемая возможность
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-<!--- Сообщите, как это должно работать -->
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen.
 
-## Текущее поведение
+**Describe alternatives you've considered**
+A clear and concise description of any alternative solutions or features you've considered.
 
-<!--- Разъясните отличия от текущего поведения -->
-
-## Возможное решение
-
-<!--- Не обязательно -->
+**Additional context**
+Add any other context or screenshots about the feature request here.
