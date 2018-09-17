@@ -1,8 +1,8 @@
 image:
   - WMF 5
-  - Ubuntu
+#  - Ubuntu
 
-version: 2.2.0.{build}
+version: 2.3.0.{build}
 
 install:
   - sh: |
@@ -15,7 +15,7 @@ install:
   - make --version
 
 build_script:
-  - make
+  - make all
 
 test_script:
   - make check --keep-going

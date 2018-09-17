@@ -18,10 +18,10 @@
             "label": "Выполнить сборку",
             "type": "shell",
             "windows": {
-                "command": "cmd /c 'make 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+                "command": "cmd /c 'make all SHOW_PDF=yes 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
             },
             "linux": {
-                "command": "/bin/sh -c 'make 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
+                "command": "/bin/sh -c 'make all SHOW_PDF=yes 2>&1' | .\\.vscode\\Resolve-PathInGNUMakeLog.ps1",
             },
             "group": {
                 "kind": "build",
@@ -81,7 +81,7 @@
         {
             "label": "Отправить изменения в ITG.MakeUtils",
             "type": "shell",
-            "command": "git remote add makeutils git@github.com:IT-Service/ITG.MakeUtils.git; git subtree push --prefix=ITG.MakeUtils makeutils master",
+            "command": "make maintainer-push-makeutils",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
@@ -91,17 +91,7 @@
         {
             "label": "Получить изменения из ITG.MakeUtils",
             "type": "shell",
-            "command": "git remote add makeutils git@github.com:IT-Service/ITG.MakeUtils.git; git fetch makeutils; git subtree pull --prefix=ITG.MakeUtils --squash makeutils master",
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Получить изменения из agl-aglfn",
-            "type": "shell",
-            "command": "git remote add agl-aglfn git@github.com:adobe-type-tools/agl-aglfn.git; git fetch agl-aglfn; git subtree pull --prefix=encodings/agl-aglfn --squash agl-aglfn master",
+            "command": "make maintainer-pull-makeutils",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"

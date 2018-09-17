@@ -1,0 +1,359 @@
+%!PS-Adobe-3.0
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (arrays) 2.2 0
+%%+: ProcSet (operators) 2.3 0
+%%DocumentSuppliedResources: ProcSet (procs)
+%%Version: 2.3 0
+%%EndComments
+%%BeginProlog
+
+%%IncludeResource: ProcSet arrays 2.2 0
+%%IncludeResource: ProcSet operators 2.3 0
+
+%(procs) /ProcSet resourcestatus { pop pop } {
+%!PS-Adobe-3.0 Resource-ProcSet
+%%BeginResource: ProcSet (procs)
+/procs <<
+
+/dont_process_define_args
+{
+  dup length  1 add  dict  copy
+  dup /_dont_process_define_args true put
+} bind
+
+/define_args
+{
+        1 index  type  /dicttype  eq
+        { 1 index  /_dont_process_define_args known }
+        { false }
+      ifelse
+    { pop }
+    {
+
+      /arrays /ProcSet findresource /areverse get exec
+
+      dup [ exch
+          {
+            dup type
+            <<
+              /nametype {} bind
+              /dicttype {
+                  dup /arg known
+                  { /arg get }
+                  {
+                    $error begin
+                      /errorinfo exch def
+                    end
+                    cleartomark
+                    pop
+                    /define_args /undefined signalerror
+                  }
+                ifelse
+              } bind
+              /default {
+                $error begin
+                  /errorinfo exch def
+                end
+                cleartomark
+                pop
+                /define_args /undefined signalerror
+              } bind
+            >>
+            /operators /ProcSet findresource /switch get exec
+          }
+        forall
+      ]
+
+      exch
+      <<  exch
+          {
+            dup type
+            <<
+              /nametype { 0 dict } bind
+              /dicttype {
+                % # TODO: Проверить на отсутствие /arg
+                dup  /arg get  exch
+                begin
+                  currentdict /arg undef
+                  currentdict
+                end
+              } bind
+            >>
+            /operators /ProcSet findresource /switch get exec
+          }
+        forall
+      >>  begin {
+
+          1 index  type  /dicttype  eq
+          { pop }
+          {
+            dup length dict begin
+              { exch def } forall
+              currentdict
+            end
+          }
+        ifelse
+
+          currentdict % params definitions
+          {
+              1 index  3 index  exch  known
+              { pop pop }
+              {
+                  dup /default known
+                  { /default get  def }
+                  {
+                    pop
+                      [ exch ]
+                      /define_args
+                      /undefined
+                    /except /ProcSet findresource /signalerrorwithinfo get exec
+                  }
+                ifelse
+              }
+            ifelse
+          }
+        forall
+
+          {
+              currentdict  2 index  known
+              {
+                  {
+                      currentdict  2 index  get  dup length dict  copy  begin
+                        [
+                            [ /type ]
+                            {
+                                dup currentdict exch known
+                                { dup currentdict exch undef }
+                                { pop }
+                              ifelse
+                            }
+                          forall
+                          currentdict { pop } forall
+                        ]
+                      end
+                      {
+                        dup  currentdict  4 index  get  exch get
+                        /procs /ProcSet findresource  /params_attributes get
+                          dup  3 index  known
+                          {
+                            3 -1 roll
+                            $error begin
+                              dup [ exch ] /errorinfo exch def
+                              /errorname /invalidparamattributevalue def
+                              /command /define_args def
+                              /recordstacks false def
+                            end
+                            get
+                            exec
+                          }
+                          {
+                            pop
+                            pop
+                              2 index  exch  2 array  astore
+                              /define_args
+                              /undefined
+                            /except /ProcSet findresource /signalerrorwithinfo get exec
+                          }
+                        ifelse
+                      }
+                    forall
+
+                  } stopped
+                  {
+                    pop pop
+                    stop
+                  }
+                if
+
+                def
+              }
+              {
+                  2 array  astore
+                  /define_args
+                  /undefined
+                /except /ProcSet findresource /signalerrorwithinfo get exec
+              }
+            ifelse
+          }
+        forall
+
+        currentdict
+
+      } stopped  end  { stop } if
+
+      readonly
+
+    }
+  ifelse
+
+  1 dict begin
+  /args exch def
+} bind
+
+/leave_local_scope
+{
+  end
+} bind
+
+/params_attributes <<
+
+/default % param_name param_value default_value --> param_name param_value
+{ % just plug
+  pop
+}
+
+/type % param_name param_value type_name --> param_name param_value
+{
+  <<
+    /arraytype {
+      dup type
+          dup /arraytype eq
+          exch /packedarraytype eq
+        or not
+        { 1 array  astore }
+      if
+    } bind
+    /booleantype {
+        dup type  /booleantype  eq  not
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
+      if
+    } bind
+    /dicttype {
+        dup type  /dicttype  eq  not
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
+      if
+    } bind
+    /filetype {
+        dup type  /filetype  eq  not
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
+      if
+    } bind
+    /fonttype {
+        dup type  /fonttype  eq  not
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
+      if
+    } bind
+    /gstatetype {
+        dup type  /gstatetype  eq  not
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
+      if
+    } bind
+    /integertype {
+      cvi
+    } bind
+    /marktype { } bind
+    /nametype {
+      dup type
+      <<
+        /stringtype { cvn } bind
+        /nametype { } bind
+        /default { 2 copy 2 array astore  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec } bind
+      >>
+      /operators /ProcSet findresource /switch get exec
+    } bind
+    /nulltype { } bind
+    /operatortype {
+        dup type  /operatortype  eq  not
+        { dup  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
+      if
+    } bind
+    /packedarraytype {
+      dup type
+          dup /arraytype eq
+          exch /packedarraytype eq
+        or not
+        { 1 array  astore }
+      if
+        dup type  /packedarraytype  eq  not
+        { aload length packedarray }
+      if
+    } bind
+    /realtype {
+      cvr
+    } bind
+    /savetype { } bind
+    /stringtype {
+      dup type
+      <<
+        /stringtype { } bind
+        /nametype { dup length string  cvs } bind
+        /booleantype { 10 string  cvs } bind
+        /realtype { 31 string  cvs } bind
+        /integertype { 31 string  cvs } bind
+        /default { 255 string  cvs } bind
+      >>
+      /operators /ProcSet findresource /switch get exec
+    } bind
+    /scripttype { % itg custom type for script block
+      cvx
+    } bind
+    /default { [ 3 copy pop ]  /define_args /typecheck  /except /ProcSet findresource /signalerrorwithinfo get exec }
+  >>
+  /operators /ProcSet findresource /switch get exec
+} bind
+
+/scriptcheck % param_name param_value script_block --> param_name param_value (assert)
+{
+  dup xcheck not  { pop stop } if
+  $error begin
+    % [ 4 copy pop pop  /scriptcheck ] /errorinfo exch def
+    /errorname /invalidparam def
+    /command /define_args def
+    /recordstacks false def
+  end
+  1 index  exch
+  exec
+} bind
+
+/rangecheck % param_name param_value [ min max ] --> param_name param_value (assert)
+{
+  dup type /arraytype eq not  { pop stop } if
+  dup length  2 eq not  { pop stop } if
+  $error begin
+    [ 4 copy pop  /rangecheck ] /errorinfo exch def
+    /errorname /invalidparam def
+    /command /define_args def
+    /recordstacks false def
+  end
+  2 copy  0 get  ge not  { pop stop } if
+  2 copy  1 get  le not  { pop stop } if
+  pop
+} bind
+
+/lengthcheck % param_name param_value [ min_length max_length ] / length --> param_name param_value (assert)
+{
+  dup type /integertype eq { dup  2 array astore } if
+  dup type /arraytype eq not  { pop stop } if
+  dup length  2 eq not  { pop stop } if
+  $error begin
+    [ 4 copy pop  /lengthcheck ] /errorinfo exch def
+    /errorname /invalidparam def
+    /command /define_args def
+    /recordstacks false def
+  end
+  { 1 index  length } stopped { pop stop } if
+  exch
+  2 copy  0 get  ge not  { pop pop stop } if
+  2 copy  1 get  le not  { pop pop stop } if
+  pop pop
+} bind
+
+/enumcheck % param_name param_value [ enum_items ] --> param_name param_value (assert)
+{
+  dup type /arraytype eq not  { pop stop } if
+    2 copy  /arrays /ProcSet findresource /aexists get exec
+    { pop }
+    { [ 4 copy pop  /enumcheck ]  exch pop  /define_args /undefined  /except /ProcSet findresource /signalerrorwithinfo get exec }
+  ifelse
+} bind
+
+>>
+
+>> /ProcSet defineresource pop
+%%EndResource:
+%} ifelse
+
+%%EndProlog

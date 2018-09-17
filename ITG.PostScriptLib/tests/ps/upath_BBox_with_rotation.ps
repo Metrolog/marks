@@ -1,0 +1,76 @@
+%!PS-Adobe-3.0
+%%Title: Test: upath_BBox должен возвращать корректные результаты при наличии поворота холста внутри upath на любые углы
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%LanguageLevel: 3
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (assert) 2.2 0
+%%+: ProcSet (boxes) 2.2 0
+%%+: ProcSet (graphics) 2.2 0
+%%EndComments
+%!
+
+%%BeginProlog
+
+%%IncludeResource: ProcSet assert 2.2 0
+%%IncludeResource: ProcSet boxes 2.2 0
+%%IncludeResource: ProcSet graphics 2.2 0
+
+%%EndProlog
+
+matrix currentmatrix
+gsave
+  /testupath1
+      newpath
+      0 0 moveto
+      10 0 rlineto
+      0 10 rlineto
+      -10 0 rlineto
+      closepath
+    false upath
+  cvlit def
+grestore
+setmatrix
+
+matrix currentmatrix
+gsave
+  /testupath2
+      45 rotate
+      newpath
+      0 0 moveto
+      10 0 rlineto
+      0 10 rlineto
+      -10 0 rlineto
+      closepath
+    false upath
+  cvlit def
+grestore
+setmatrix
+
+        testupath1
+      /boxes /ProcSet findresource /upath_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec
+    (size of testupath1: ) print  1 index 20 string cvs print  ( x ) print  dup =
+        testupath2
+      /boxes /ProcSet findresource /upath_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec
+    (size of testupath2: ) print  1 index 20 string cvs print  ( x ) print  dup =
+  /assert /ProcSet findresource /sizes_almost_equal get exec % sx1 sy1
+  (upath_BBox must return the same box size for upaths with rotated canvas in upath)
+/assert /ProcSet findresource /assert get exec
+
+        testupath1
+      /boxes /ProcSet findresource /upath_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec
+    (size of testupath1: ) print  1 index 20 string cvs print  ( x ) print  dup =
+    30 rotate
+        testupath1
+      /boxes /ProcSet findresource /upath_BBox get exec
+    /boxes /ProcSet findresource /size_of_BBox get exec
+    (size of testupath2: ) print  1 index 20 string cvs print  ( x ) print  dup =
+  /assert /ProcSet findresource /sizes_almost_equal get exec % sx1 sy1
+  (upath_BBox must return the same box size for upaths with rotated canvas)
+/assert /ProcSet findresource /assert get exec
+
+%%EOF

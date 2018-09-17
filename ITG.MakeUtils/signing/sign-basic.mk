@@ -1,11 +1,13 @@
-ifndef ITG_MAKEUTILS_LOADED
+#!/usr/bin/make
+
+ifndef __itg_makeutils_included
 $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
 endif
 
 ifndef MAKE_SIGNING_SIGN_BASIC_DIR
-MAKE_SIGNING_SIGN_BASIC_DIR = $(ITG_MAKEUTILS_DIR)signing/
+MAKE_SIGNING_SIGN_BASIC_DIR = $(MAKE_COMMON_DIR)signing/
 
-include $(ITG_MAKEUTILS_DIR)signing/sign.mk
+include $(MAKE_COMMON_DIR)signing/sign.mk
 
 CODE_SIGNING_CERTIFICATE_DIR = certificate/
 CODE_SIGNING_CERTIFICATE := $(CODE_SIGNING_CERTIFICATE_DIR)cert.pfx

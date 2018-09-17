@@ -1,9 +1,11 @@
-ifndef ITG_MAKEUTILS_LOADED
+#!/usr/bin/make
+
+ifndef __itg_makeutils_included
 $(error 'ITG.MakeUtils/common.mk' must be included before any ITG.MakeUtils files.)
 endif
 
 ifndef MAKE_SIGNING_SIGN_DIR
-MAKE_SIGNING_SIGN_DIR = $(ITG_MAKEUTILS_DIR)signing/
+MAKE_SIGNING_SIGN_DIR = $(MAKE_COMMON_DIR)signing/
 
 CODE_SIGNING_CERTIFICATE_PASSWORD ?= pfxpassword
 OPENSSL ?= openssl
@@ -15,9 +17,9 @@ CHKTRUST ?= chktrust
 CODE_SIGNING_TIMESTAMP_SERVER_URL ?= http://sha256timestamp.ws.symantec.com/sha256/timestamp
 
 # $(call exportCodeSigningCertificate,filePath,password)
+# TODO: переделать на макросы с PowerShell
 define exportCodeSigningCertificate
-$1:
-	$$(MAKETARGETDIR)
+$1: | $$(TARGETDIR)
 	powershell \
     -NoLogo \
     -NonInteractive \
@@ -33,8 +35,7 @@ endef
 
 # $(call exportCertificateKeyFromPfx2Pem,PvkPemFile,PfxFile)
 define exportCertificateKeyFromPfx2Pem
-$1: $2
-	$$(MAKETARGETDIR)
+$1: $2 | $$(TARGETDIR)
 	$$(OPENSSL) \
     pkcs12 \
     -nocerts \
@@ -47,8 +48,7 @@ endef
 
 # $(call exportCertificateFromPfx2Pem,CertPemFile,PfxFile)
 define exportCertificateFromPfx2Pem
-$1: $2
-	$$(MAKETARGETDIR)
+$1: $2 | $$(TARGETDIR)
 	$$(OPENSSL) \
     pkcs12 \
     -nokeys \
@@ -60,8 +60,7 @@ endef
 
 # $(call convertCertificateKeyPem2Pvk,PvkFile,PvkPemFile)
 define convertCertificateKeyPem2Pvk
-$1: $2
-	$$(MAKETARGETDIR)
+$1: $2 | $$(TARGETDIR)
 	$(OPENSSL) \
     rsa \
     -inform PEM \
@@ -76,8 +75,7 @@ endef
 
 # $(call convertCertificatePem2Spc,SpcFile,CertPemFile)
 define convertCertificatePem2Spc
-$1: $2
-	$$(MAKETARGETDIR)
+$1: $2 | $$(TARGETDIR)
 	$(OPENSSL) \
     crl2pkcs7 \
     -nocrl \
@@ -90,8 +88,7 @@ endef
 
 # $(call convertCertificatePem2Pfx,PfxFile,KeyFile,CertPemFile)
 define convertCertificatePem2Pfx
-$1: $2 $3
-	$$(MAKETARGETDIR)
+$1: $2 $3 | $$(TARGETDIR)
 	$(OPENSSL) \
     pkcs12 \
     -export \

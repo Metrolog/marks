@@ -5,36 +5,32 @@
 ROOT_PROJECT_DIR ?= ../
 ITG_MAKEUTILS_DIR ?= $(ROOT_PROJECT_DIR)ITG.MakeUtils/
 include $(ITG_MAKEUTILS_DIR)common.mk
-include $(ITG_MAKEUTILS_DIR)appveyor.mk
+include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
+include $(ITG_MAKEUTILS_DIR)powershell/powershell.mk
 
-all: CP1251 CP1253
+all:: CP1251 CP1253
 
 AGLFNFILE ?= agl-aglfn/aglfn.txt
 
 # download unicode mappings
 
 MAPPINGSDIR = maps/
+ENCODINGSDIR = encodings/
 
-$(MAPPINGSDIR)MAPPINGS/%.TXT:
-	$(call writeinformation,Downloading file "$(@F)"...)
-	$(MAKETARGETDIR)
-	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o '$@'
-	$(TOUCH) $@
-	$(call writeinformation,File "$(@F)" is downloaded.)
+$(MAPPINGSDIR)MAPPINGS/%.TXT: | $(TARGETDIR)
+	$(CURL) "http://www.unicode.org/Public/MAPPINGS/$*.TXT" -o "$@"
 
-$(OUTPUTDIR)%.ps:
+$(ENCODINGSDIR)%.ps: | $(TARGETDIR)
 	$(call writeinformation,Creating PostScript encoding file "$(@F)" from "$<"...)
-	$(MAKETARGETDIR)
-	./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath '$<' -FilePath '$@' $(VERBOSEFLAGS)
-	$(call writeinformation,File "$(@F)" is ready.)
+	$(RUNPOWERSHELLSCRIPT) ./New-PostscriptEncodingTable.ps1 -EncodingSourceFilePath '$<' -FilePath '$@' $(VERBOSEFLAGS)
 
 # $(call mapPSEncodingFileToSource, uri, encoding)
 define mapPSEncodingFileToSource
 
-export $(2)TARGET := $(OUTPUTDIR)$(2)Encoding.ps
+export $(2)TARGET := $(ENCODINGSDIR)$(2)Encoding.ps
 $(call pushArtifactTargets,$(2)TARGET)
 
-$(OUTPUTDIR)$(2)Encoding.ps: $(MAPPINGSDIR)MAPPINGS/$(1)/$(2).TXT
+$(ENCODINGSDIR)$(2)Encoding.ps: $(MAPPINGSDIR)MAPPINGS/$(1)/$(2).TXT
 
 .PHONY: $2
 $2: $$($(2)TARGET)
@@ -57,5 +53,6 @@ $(foreach encoding, KOI8-R KOI8-U, \
   $(eval $(call mapPSEncodingFileToSource,VENDORS/MISC,$(encoding))) \
 )
 
-clean::
+maintainer-clean::
 	$(RMDIR) $(MAPPINGSDIR)
+	$(RMDIR) $(ENCODINGSDIR)

@@ -1,0 +1,155 @@
+%!PS-Adobe-3.0
+%%Title: CSM makrs
+%%Creator: Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%Copyright: 2018 Sergey S. Betke <sergey.s.betke@yandex.ru>
+%%+ See LICENSE at https://github.com/Metrolog/marks
+%%LanguageLevel: 3
+%%DocumentData: Clean7Bit
+%%DocumentNeededResources: ProcSet (csm-marks)
+%%+: ProcSet (si) 2.2 0
+%%+: ProcSet (graphics-alignments) 2.2 0
+%%+: ProcSet (distiller)
+%%Pages: 1
+%%PageOrder: Ascend
+%%EndComments
+%%BeginProlog
+
+%%IncludeResource: ProcSet si 2.2 0
+%%IncludeResource: ProcSet graphics-alignments 2.2 0
+%%IncludeResource: ProcSet csm-marks 2.2 0
+%%IncludeResource: ProcSet distiller 2.2 0
+
+/mm  /si /ProcSet findresource  1 index  get  def
+
+/range     /arrays    /ProcSet findresource  1 index  get  def
+
+/months    /csm-marks /ProcSet findresource  1 index  get  def
+/quarters  /csm-marks /ProcSet findresource  1 index  get  def
+/year      /csm-marks /ProcSet findresource  1 index  get  def
+
+%%EndProlog
+
+%%BeginSetup
+
+/.setpdfwrite where { pop .setpdfwrite } if
+/distiller /ProcSet findresource /setdistillerparamsforcsmmarks get exec
+
+%%EndSetup
+
+%%Page: A 1
+%%BeginSetup
+%%BeginFeature: *PageSize A5
+<<
+  % /HWResolution [2400 2400]
+  % /PageSize [ 210 mm  297 2 div mm ]
+  % /ImagingBBox [ 5 mm  5 mm  210 5 sub mm  297 2 div 5 sub mm ]
+  /PageSize [ 297 2 div mm  210 mm ]
+  /ImagingBBox [ 5 mm  8 mm  297 2 div 5 sub mm  210 5 sub mm ]
+  /MirrorPrint false
+  /NegativePrint true
+>> setpagedevice
+%%EndFeature:
+%%EndSetup
+%!
+
+gsave
+
+%------------------------------------------------------------------------------
+% тестируем генерацию знака поверки для государственных научных метрологических
+% институтов
+%
+% для подготовки оттисков править код ниже !!!
+%------------------------------------------------------------------------------
+  [
+      2002
+      [ year ]
+      (МШ)
+      [ 1 ]
+      6.0 mm
+      true
+      /verification_stamp_upath
+    /csm-marks /ProcSet findresource /create_stamps get exec
+      2002
+      [ year ]
+      (МШ)
+      [ 1 ]
+      8.0 mm
+      true
+      /verification_stamp_upath
+    /csm-marks /ProcSet findresource /create_stamps get exec
+      2002
+      [ year ]
+      (МШ)
+      [ 1 ]
+      12.0 mm
+      true
+      /verification_stamp_upath
+    /csm-marks /ProcSet findresource /create_stamps get exec
+
+      2002
+      [ year ]
+      (МШ)
+      [ 0 ]
+      3.0 mm
+      true
+      /verification_stamp_upath
+    /csm-marks /ProcSet findresource /create_stamps get exec
+      2002
+      [ year ]
+      (МШ)
+      [ 0 ]
+      3.5 mm
+      true
+      /verification_stamp_upath
+    /csm-marks /ProcSet findresource /create_stamps get exec
+
+      2002
+      [ [ 4 ] months ]
+      (МШ)
+      [ 1 ]
+      8.0 mm
+      true
+      /verification_stamp_upath
+    /csm-marks /ProcSet findresource /create_stamps get exec
+      2002
+      [ [ 4 ] months ]
+      (МШ)
+      [ 1 ]
+      12.0 mm
+      true
+      /verification_stamp_upath
+    /csm-marks /ProcSet findresource /create_stamps get exec
+      2002
+      [ [ 4 ] months ]
+      (МШ)
+      [ 1 ]
+      18.0 mm
+      true
+      /verification_stamp_upath
+    /csm-marks /ProcSet findresource /create_stamps get exec
+
+      2002
+      [ year ]
+      (МШ)
+      [ 1 ]
+      6.0 mm
+      true
+      /verification_stamp_rhombus_upath
+    /csm-marks /ProcSet findresource /create_stamps get exec
+  ]
+  /boxes /ProcSet findresource /GetPageBBox get exec
+  2 mm
+/graphics-alignments /ProcSet findresource /align_upaths_in_BBox get exec
+
+
+%------------------------------------------------------------------------------
+% конец области для кода генерации оттисков
+%------------------------------------------------------------------------------
+
+grestore
+
+showpage
+
+%%EndDocument:
+%%Trailer
+%%EOF

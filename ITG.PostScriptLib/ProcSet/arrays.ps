@@ -69,6 +69,22 @@
   end
 } bind
 
+/aexists % item array --> bool
+{
+  false  exch
+    {
+        2 index  eq
+        {
+          pop
+          true
+          exit
+        }
+      if
+    }
+  forall
+  exch pop
+} bind
+
 >> /ProcSet defineresource pop
 %%EndResource:
 %} ifelse

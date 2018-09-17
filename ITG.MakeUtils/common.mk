@@ -1,6 +1,7 @@
+#!/usr/bin/make
+
 ifndef MAKE_COMMON_DIR
 MAKE_COMMON_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-ITG_MAKEUTILS_LOADED := true
 
 #region info, warning and error wrappers
 
@@ -45,11 +46,21 @@ writeerror = \
 
 #endregion info, warning and error wrappers
 
+#region calc ITG.MakeUtils relative path
+ROOT_PROJECT_DIR ?= ../
+ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
+#endregion calc ITG.MakeUtils relative path
+
+include $(MAKE_COMMON_DIR)GMSL/gmsl
+__itg_makeutils_included:=$(true)
+
+include $(MAKE_COMMON_DIR)help-system.mk
+
 #region check make tool version and features
 
-ifeq (,$(filter oneshell,$(.FEATURES)))
-$(call writeerror,Requires make version that supports .ONESHELL feature.)
-endif
+#ifeq ($(call set_is_member,oneshell,$(call set_create,$(.FEATURES))),$(false))
+#$(call writeerror,Requires make version that supports .ONESHELL feature.)
+#endif
 
 ifneq (3.82,$(firstword $(sort $(MAKE_VERSION) 3.82)))
 $(call writeerror,Requires make version 3.82 or higher.)
@@ -57,18 +68,11 @@ endif
 
 #endregion check make tool version and features
 
-#region calc ITG.MakeUtils relative path
-ROOT_PROJECT_DIR ?= ../
-ITG_MAKEUTILS_DIR ?= $(patsubst $(abspath $(ROOT_PROJECT_DIR))%,$$(ROOT_PROJECT_DIR)%,$(abspath $(MAKE_COMMON_DIR)))
-#endregion calc ITG.MakeUtils relative path
-
 #region symbols
 
-SPACE              := $(empty) $(empty)
 COMMA              :=,
 LEFT_BRACKET       :=(
 RIGHT_BRACKET      :=)
-DOLLAR_SIGN        :=$$
 
 ifeq ($(OS),Windows_NT)
 PATHSEP            :=;
@@ -80,19 +84,17 @@ endif
 
 #region deprecated functions wrappers
 
+ifeq ($(need-help),$(false))
+
 # $(call _deprecated_function, function, replacement)
 _deprecated_function = $(call writewarning,Function $1 is deprecated.$(if $2, Please$(COMMA) see about $2.))
 
 # $(call _obsolete_function, function, replacement)
 _obsolete_function = $(call writeerror,Function $1 is not avaliable now. It is obsolete.$(if $2, Please$(COMMA) see about $2.))
 
+endif
+
 #endregion deprecated functions wrappers
-
-#region asserts
-
-_assert_not_null = $(if $1,,$(call writeerror,Illegal empty value.))
-
-#endregion asserts
 
 #region debug support
 
@@ -102,7 +104,7 @@ _debug_enter = $(info Entering $0($(_args)))
 
 _debug_leave = $(info Leaving $0)
 
-_args = $(subst $(SPACE),$(COMMA) ,$(strip $(foreach a,1 2 3 4 5 6 7 8 9,$($a))))
+_args = $(subst $(__gmsl_space),$(COMMA) ,$(strip $(foreach a,1 2 3 4 5 6 7 8 9,$($a))))
 
 endif
 
@@ -121,58 +123,45 @@ OSabsPath = $(call _deprecated_function,OSabsPath)$(abspath $1)
 
 #region setup shell
 
+SHELLTYPE := sh
+
 ifeq ($(OS),Windows_NT)
-
-PowerShell         := powershell
-
-# под cygwin $(MAKE) == '/usr/bin/make'. Поэтому приходится явно переназначать.
-ifeq ($(MAKE),/usr/bin/make)
-MAKE := make
-OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -w $(abspath $1))
-endif
-
+  ifeq (a,$(shell echo "a"))
+    ISCYGWIN := $(true)
+    MAKE := make
+    OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -m $(abspath $1))
+  else
+    ISCYGWIN := $(false)
+  endif
+  HIDE := attrib +h
+  UNHIDE := attrib -h
 else
-
-PowerShell         := /usr/bin/pwsh
-
+  ISCYGWIN := $(false)
+  HIDE := /dev/null <
+  UNHIDE := /dev/null <
 endif
 
 VERBOSE            ?= true
 
-ifeq ($(VERBOSE),true)
-  VERBOSEFLAGS := -Verbose
-else
-  VERBOSEFLAGS :=
-endif
-
-.ONESHELL::
-
-POWERSHELLMODULES  := \
-  '$(ITG_MAKEUTILS_DIR)ITG.MakeUtils/ITG.MakeUtils.psd1'
-
-SHELL              := $(PowerShell)
-
-.SHELLFLAGS        = \
-  -NoLogo \
-  -NonInteractive \
-  -ExecutionPolicy unrestricted \
-  -Command \
-    $$ConfirmPreference = 'High'; \
-    $$InformationPreference = 'Continue'; \
-    $$ErrorActionPreference = 'Stop'; \
-    $$VerbosePreference = 'SilentlyContinue'; \
-    $$DebugPreference = 'SilentlyContinue'; \
-    $(POWERSHELLMODULES) | Import-Module -ErrorAction 'Stop' -Verbose:$$False;
-
-MKDIR              := mkdir $(VERBOSEFLAGS) -p
+MKDIR              := mkdir -p
 MAKETARGETDIR      = $(MKDIR) $(@D)
 MAKETARGETASDIR    = $(MKDIR) $@
-RMDIR              := rm $(VERBOSEFLAGS) -r -f
-RM                 := rm $(VERBOSEFLAGS) -r -f
-# TODO: переписать TOUCH на PowerShell
+RMDIR              := rm -r -f
+RM                 := rm -r -f
 TOUCH              := touch
-COPY               := cp $(VERBOSEFLAGS)
-CURL               := curl $(VERBOSEFLAGS)
+HIDETARGET         = $(HIDE) $@
+UNHIDETARGET       = $(UNHIDE) $@
+COPY               := cp
+CURL               := curl
+
+DIRMARKERFILE      := .dirstate
+
+%/$(DIRMARKERFILE):
+	$(MAKETARGETDIR)
+	@$(TOUCH) $@
+	@$(HIDE) $@
+
+TARGETDIR = $(if $1,$(dir $1)$(DIRMARKERFILE),$$(@D)/$(DIRMARKERFILE))
 
 # $(call dirname,dir)
 dirname = $(patsubst %/,%,$1)
@@ -186,14 +175,127 @@ OUTPUTDIR          ?= release/
 SOURCESDIR         ?= sources/
 CONFIGDIR          ?= config/
 
-$(OUTPUTDIR) $(AUXDIR) $(CONFIGDIR):
-	$(MAKETARGETASDIR)
-
 #endregion common dirs
 
+is_configure_target:=$(call set_is_member,configure,$(call set_create,$(MAKECMDGOALS)))
+is_help_target:=$(call set_is_member,help,$(call set_create,$(MAKECMDGOALS)))
+is_clean_target:=$(call __gmsl_make_bool,$(filter %clean,$(MAKECMDGOALS)))
+is_check_target:=$(call __gmsl_make_bool,$(filter check% test%,$(MAKECMDGOALS)))
+is_config_target:=$(call set_is_member,.GLOBAL_VARIABLES,$(call set_create,$(MAKECMDGOALS)))
+is_productive_target:=$(call and,\
+  $(call not,$(is_help_target)),\
+  $(call not,$(is_clean_target)),\
+  $(call not,$(is_config_target)),\
+  $(call not,$(is_configure_target))\
+)
+
+is_root_project:=$(false)
+ifdef ROOT_PROJECT_DIR
+  ifeq ($(ROOT_PROJECT_DIR),./)
+    is_root_project:=$(true)
+  endif
+endif
 
 # $(call rwildcard,dir,filesfilter)
 rwildcard = $(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
+
+# $(call include_makefile,makefile)
+define include_makefile
+$(call assert,$1,Expected makefile name)
+include $1
+
+endef
+
+# $(call include_makefile_if_not_clean,makefile)
+define include_makefile_if_not_clean
+$(call assert,$1,Expected makefile name)
+$(if $(call not,$(is_clean_target)),$(call include_makefile,$1))
+endef
+
+# $(call include_build_makefile,makefile)
+define include_build_makefile
+$(call assert,$1,Expected makefile name)
+$(if $(is_productive_target),$(call include_makefile,$1))
+endef
+
+# $(call include_check_makefile,makefile)
+define include_check_makefile
+$(call assert,$1,Expected makefile name)
+$(if $(is_check_target),$(call include_makefile,$1))
+endef
+
+
+AUX_MAKEFILE_LIST:=$(empty_set)
+
+__itg_get_static_makefile_list=$(call set_remove,$(AUX_MAKEFILE_LIST),$(call set_create,$(MAKEFILE_LIST)))
+
+__itg_aux_makefile=$(call merge,,$(if $2,$2,$(AUXDIR)) $1)
+
+# $(call call_as_makefile,expression,makefile,makefile_dir,deps)
+define __call_as_makefile_aux
+
+$(call __itg_aux_makefile,$2,$3): $(call __itg_get_static_makefile_list) $4 | $$(TARGETDIR)
+	$$(file > $$@,#!/usr/bin/make)
+	$$(file >> $$@,)
+	$$(file >> $$@,$1)
+	$$(TOUCH) $$@
+
+AUX_MAKEFILE_LIST:=$(call __itg_aux_makefile,$2,$3) $$(AUX_MAKEFILE_LIST)
+
+endef
+
+ifeq ($(is_configure_target),$(true))
+
+define call_as_makefile
+$(call assert,$2,Expected makefile name)
+$(call __call_as_makefile_aux,$1,$2,$(if $3,$3,$(CONFIGDIR)),$4)
+configure:: $(call __itg_aux_makefile,$2,$(if $3,$3,$(CONFIGDIR)))
+
+endef
+
+else
+
+ifeq ($(is_productive_target),$(true))
+
+define call_as_makefile
+
+AUX_MAKEFILE_LIST:=$(call __itg_aux_makefile,$2,$(if $3,$3,$(CONFIGDIR))) $$(AUX_MAKEFILE_LIST)
+
+$(call include_makefile,$(call __itg_aux_makefile,$2,$(if $3,$3,$(CONFIGDIR))))
+
+endef
+
+else
+  call_as_makefile=
+endif
+
+endif
+
+# $(call call_as_check_makefile,expression,makefile,makefile_dir,deps)
+ifeq ($(is_check_target),$(true))
+
+define call_as_check_makefile
+$(call assert,$2,Expected makefile name)
+$(call __call_as_makefile_aux,$1,$2,$3,$4)
+$(call include_makefile,$(call __itg_aux_makefile,$2,$3))
+endef
+
+endif
+
+# $(call call_as_build_makefile,expression,makefile,makefile_dir,deps)
+ifeq ($(is_productive_target),$(true))
+
+define call_as_build_makefile
+$(call assert,$2,Expected makefile name)
+$(call __call_as_makefile_aux,$1,$2,$3,$4)
+$(call include_makefile,$(call __itg_aux_makefile,$2,$3))
+endef
+
+endif
+
+
+# $(call reversedirpath,dirPath,pathToRootFromChild)
+reversedirpath = $(if $(strip $1),$(call merge,/,$(foreach d,$(call split,/,$1),..))/,./)
 
 # $(call setvariable, var, value)
 define setvariable
@@ -201,32 +303,35 @@ $1:=$2
 
 endef
 
-# $(call copyfile, to, from)
-define copyfile
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
-$1: $2
-	$$(MAKETARGETDIR)
+ifeq ($(call or,$(is_productive_target),$(is_configure_target)),$(true))
+
+# $(call copy_file, to, from)
+define copy_file
+$(call assert,$1,Expected file name (to))
+$(call assert,$2,Expected file name (from))
+$1: $2 | $$(TARGETDIR)
 	$(COPY) $$< $$@
 endef
 
-# $(call copyfileto, todir, fromfile)
-copyfileto = $(call copyfile,$1$(notdir $2),$2)
+else
+  copy_file=
+endif
 
-# $(call copyfilefrom, tofile, fromdir)
-copyfilefrom = $(call copyfile,$1,$2$(notdir $1))
+# $(call copy_file_to, todir, fromfile)
+copy_file_to = $(call copy_file,$1$(notdir $2),$2)
+
+# $(call copy_file_from, tofile, fromdir)
+copy_file_from = $(call copy_file,$1,$2$(notdir $1))
 
 #region subprojects support
 
 SUBPROJECTS_EXPORTS_DIR := $(CONFIGDIR)subprojectExports/
-$(SUBPROJECTS_EXPORTS_DIR): | $(CONFIGDIR)
-	$(MAKETARGETASDIR)
 
 SUBPROJECT_EXPORTS_FILE ?= $(SUBPROJECTS_EXPORTS_DIR)undefined
 
 .PHONY: .GLOBAL_VARIABLES
 .GLOBAL_VARIABLES: $(SUBPROJECT_EXPORTS_FILE)
-$(SUBPROJECT_EXPORTS_FILE):: $(MAKEFILE_LIST)
+$(SUBPROJECT_EXPORTS_FILE):: $(call __itg_get_static_makefile_list) | $(TARGETDIR)
 	$(file > $@,# subproject exported variables)
 
 # $(call exportGlobalVariablesAux, Variables, Writer)
@@ -246,17 +351,13 @@ TargetWriter = $$(foreach path,$$($(1)),$$$$$$$$(ROOT_PROJECT_DIR)$(SUBPROJECT_D
 pushArtifactTargets = $(call exportGlobalVariablesAux,$(1),TargetWriter)
 pushArtifactTarget = $(pushArtifactTargets)
 
-# $(call calcRootProjectDir, Project)
-calcRootProjectAux = $(subst $(SPACE),/,$(patsubst %,..,$(subst /,$(SPACE),$(call getSubProjectDir,$1))))
-calcRootProjectDir = $(if $(call calcRootProjectAux,$1),$(call calcRootProjectAux,$1)/,./)
-
 # $(call getSubProjectDir, Project)
-getSubProjectDir = $(call _assert_not_null,$1)$($(1)_DIR)
+getSubProjectDir = $(call assert,$1,Expected project slug)$($(1)_DIR)
 
 # $(call setSubProjectDir, Project, ProjectDir)
 define setSubProjectDir
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
+$(call assert,$1,Expected project slug)
+$(call assert,$2,Expected project directory path)
 export $(1)_DIR := $2/
 endef
 
@@ -266,38 +367,36 @@ MAKE_SUBPROJECT = \
     -C $(call getSubProjectDir,$1) \
     SUBPROJECT=$1 \
     SUBPROJECT_DIR=$(call getSubProjectDir,$1) \
-    ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
-    SUBPROJECT_EXPORTS_FILE=$(call calcRootProjectDir,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
+    ROOT_PROJECT_DIR=$(call reversedirpath,$(call getSubProjectDir,$1)) \
+    SUBPROJECT_EXPORTS_FILE=$(call reversedirpath,$1)$(SUBPROJECTS_EXPORTS_DIR)$1.mk
 
 # $(call MAKE_SUBPROJECT_TARGET, Target)
 MAKE_SUBPROJECT_TARGET = \
   $(MAKE) \
     -C $(ROOT_PROJECT_DIR) \
-    ROOT_PROJECT_DIR=$(call calcRootProjectDir,$1) \
+    ROOT_PROJECT_DIR=./ \
     $1
 
 # $(call declareProjectTargets, Project)
 define declareProjectTargets
-$(call _assert_not_null,$1)
+$(call assert,$1,Expected project slug)
 $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
 endef
 
 # $(call useSubProject, SubProject, SubProjectDir [, Targets ])
 define useSubProject
-$(call _assert_not_null,$1)
-$(call _assert_not_null,$2)
+$(call assert,$1,Expected project slug)
+$(call assert,$2,Expected project directory path)
 $(eval $(call setSubProjectDir,$1,$2))
-$(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $(SUBPROJECTS_EXPORTS_DIR)
+$(SUBPROJECTS_EXPORTS_DIR)$1.mk: $(call getSubProjectDir,$1)Makefile | $$(TARGETDIR)
 	$(call MAKE_SUBPROJECT,$1) .GLOBAL_VARIABLES
 .PHONY: $1 $3
-ifeq ($(filter %clean,$(MAKECMDGOALS)),)
-include $(SUBPROJECTS_EXPORTS_DIR)$1.mk
-endif
+$(call include_makefile_if_not_clean,$(SUBPROJECTS_EXPORTS_DIR)$1.mk)
 $1:
 	$(call MAKE_SUBPROJECT,$1)
 test-$1:
-	$(call MAKE_SUBPROJECT,$1) --keep-going test
+	$(call MAKE_SUBPROJECT,$1) --keep-going check
 $3:
 	$(call MAKE_SUBPROJECT,$1) $$@
 $(foreach target,$3,test-$(target)):
@@ -306,8 +405,12 @@ $(foreach target,$3,test.%-$(target)):
 	$(call MAKE_SUBPROJECT,$1) --keep-going $$@
 $(call getSubProjectDir,$1)%:
 	$(call MAKE_SUBPROJECT,$1) $$*
+configure::
+	$(call MAKE_SUBPROJECT,$1) $$@
 all:: $1
-test: test-$1
+check: test-$1
+help::
+	@$(call MAKE_SUBPROJECT,$1) -s --no-print-directory help
 ifeq ($(filter clean distclean maintainer-clean,$(MAKECMDGOALS)),)
 mostlyclean::
 	$(call MAKE_SUBPROJECT,$1) mostlyclean
@@ -324,12 +427,10 @@ maintainer-clean::
 	$(call MAKE_SUBPROJECT,$1) maintainer-clean
 endef
 
-ifdef ROOT_PROJECT_DIR
-ifneq ($(ROOT_PROJECT_DIR),./)
+ifneq ($(is_root_project),$(true))
 $(ROOT_PROJECT_DIR)%:
 	$(call MAKE_SUBPROJECT_TARGET, $*)
 
-endif
 endif
 
 #endregion subprojects support
@@ -337,29 +438,33 @@ endif
 #region standard targets support
 
 .DEFAULT_GOAL := all
-.PHONY: all
 
-# not standard target. Use 'check'
-.PHONY: test
-test: MAKEFLAGS += --keep-going
+.PHONY: configure
+configure:: $(call _itg_makeutils_print-help,all,Prepare build environment and create intermediate makefiles.)
+
+.PHONY: all
+all:: $(call _itg_makeutils_print-help,all,Build all targets.)
+all:: configure
 
 .PHONY: check
-check: test
+check: $(call _itg_makeutils_print-help,check,Perform self-tests.)
+check: MAKEFLAGS += --keep-going
+check: configure
 
 .PHONY: mostlyclean
-mostlyclean::
+mostlyclean:: $(call _itg_makeutils_print-help,mostlyclean,Like 'clean'$(COMMA) but may refrain from deleting a few files that people normally don’t want to recompile.)
 	$(RMDIR) $(AUXDIR)
 	$(RMDIR) $(OUTPUTDIR)
 
 .PHONY: clean
-clean:: mostlyclean
+clean:: mostlyclean  $(call _itg_makeutils_print-help,clean,Delete all files in the current directory that are normally created by building the program. Also delete files in other directories if they are created by this makefile. Don’t delete the files that record the configuration.)
 
 .PHONY: distclean
-distclean:: clean
+distclean:: clean $(call _itg_makeutils_print-help,distclean,Delete all files in the current directory (or created by this makefile) that are created by configuring or building the program.)
 	$(RMDIR) $(CONFIGDIR)
 
 .PHONY: maintainer-clean
-maintainer-clean:: distclean
+maintainer-clean:: distclean $(call _itg_makeutils_print-help,maintainer-clean,This target is intended to be used by a maintainer of the package. Not by ordinary users. You may need special tools to reconstruct some of the files that ‘make maintainer-clean’ deletes. Since these files are normally included in the distribution.)
 
 #endregion standard targets support
 
