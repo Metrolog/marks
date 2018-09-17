@@ -2,7 +2,7 @@ image:
   - WMF 5
 #  - Ubuntu
 
-version: 2.3.0.{build}
+version: 2.4.0.{build}
 
 install:
   - sh: |
