@@ -158,6 +158,8 @@ __multifile_stamps_ps_recipe_aux = \
     -D StampForProduction=$(if $(call seq,$(STAMPS_VARIANT),1),true,false) \
     -D StampFunctor=/$(strip $(STAMPS_TYPE))_upath \
     -D StampDPI=$(STAMPS_DPI) \
+    -D StampMirrorPrint=$(if $(STAMPS_MIRROR),true,false) \
+    -D StampNegativePrint=$(if $(STAMPS_NEGATIVE),true,false) \
   | iconv -t CP1251 > $1
 
 $(MULTIFILEORDERAUXDIR)%.ps: $(MARK2IMAGE) $(call __itg_get_static_makefile_list) | $(TARGETDIR)
@@ -191,7 +193,7 @@ get_multifile_order_zip = $(MULTIFILETESTSOUTPUTDIR)$(patsubst %.mk,%,$(patsubst
 
 define create_stamp
 
-$(foreach v,DPI YEAR ID PERIOD SIGN SIZE VARIANT TYPE,\
+$(foreach v,DPI MIRROR NEGATIVE YEAR ID PERIOD SIGN SIZE VARIANT TYPE,\
   $(__gmsl_newline)$(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1).ps: STAMPS_$v:=$(strip $(STAMPS_$v))\
 )
 $(MULTIFILEORDERAUXDIR)$(call get_multifile_order_relative_filename,$1).ps: $(strip $1)
@@ -228,6 +230,8 @@ define __foreach_multifile_order_aux
 # source file: $1
 
 STAMPS_DPI     := 2400
+STAMPS_MIRROR  := $(false)
+STAMPS_NEGATIVE:= $(false)
 
 STAMPS_SIGNS   := 0
 STAMPS_SIZE    := 18 mm
@@ -244,7 +248,7 @@ $(foreach f,$(MFSTAMPSFORMATS),\
   )\
 )
 
-$(foreach v,DPI YEAR ID PERIODS SIGNS SIZE VARIANT TYPE,\
+$(foreach v,DPI MIRROR NEGATIVE YEAR ID PERIODS SIGNS SIZE VARIANT TYPE,\
   $(__gmsl_newline)$(MULTIFILEAUXMAKEFILESDIR)$(call get_multifile_order_intermediate_makefile_name,$1): STAMPS_$v:=$(strip $(STAMPS_$v))\
 )
 $(call call_as_build_makefile,$$(call __multifile_order_intermediate_makefile_aux,$1),\
