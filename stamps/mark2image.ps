@@ -37,8 +37,8 @@
 /distiller /ProcSet findresource /setdistillerparamsforcsmmarks get exec
 
 <<
-  /MirrorPrint  dup systemdict exch known
-  /NegativePrint  dup systemdict exch known
+  /MirrorPrint StampMirrorPrint
+  /NegativePrint StampNegativePrint
 >> /csm-marks-params /ProcSet findresource /setmarksparams get exec
 
 %%EndSetup
