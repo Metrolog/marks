@@ -2,7 +2,7 @@ image:
   - WMF 5
 #  - Ubuntu
 
-version: 2.3.0.{build}
+version: 2.3.3.{build}
 
 install:
   - sh: |
@@ -10,7 +10,7 @@ install:
       sudo apt-get install -y make ghostscript
   - ps: |
       if ( -not $isLinux ) {
-        .\install\install.ps1 -ErrorAction Stop -InformationAction Continue -Verbose
+        .\install\install.ps1 -ErrorAction Stop -InformationAction Continue
       }
   - make --version
 
