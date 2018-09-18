@@ -100,8 +100,19 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
         -and $PSCmdLet.ShouldProcess('cygwin', 'Установить')
     ) {
         & $chocoExe install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-    };
-    $env:CygWin = Get-ItemPropertyValue `
+	};
+} else {
+    if (
+        $Scope -eq ( [System.EnvironmentVariableTarget]::Machine )
+    ) {
+		& $chocoExe upgrade cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+	};
+};
+
+if (
+	$Scope -eq ( [System.EnvironmentVariableTarget]::Machine )
+) {
+	$env:CygWin = Get-ItemPropertyValue `
         -Path HKLM:\SOFTWARE\Cygwin\setup `
         -Name rootdir `
     ;
@@ -109,7 +120,6 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
     Write-Verbose "CygWin root directory: $env:CygWin";
     $ToPath += "$env:CygWin\bin";
 
-    #& $chocoExe install make mkdir touch --source cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     # исправляем проблемы совместимости chocolatey, cyg-get и cygwin
     If ( Test-Path "$env:CygWin\cygwinsetup.exe" ) {
         $cygwinsetup = "$env:CygWin\cygwinsetup.exe";
