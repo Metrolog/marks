@@ -7,13 +7,16 @@ version: 2.4.0.{build}
 install:
   - sh: |
       sudo apt-get update
-      sudo apt-get install -y make ghostscript
-      sudo apt-get install -y imagemagick
+      sudo apt-get install -y make ghostscript imagemagick hp2xx
   - ps: |
       if ( -not $isLinux ) {
         .\install\install.ps1 -ErrorAction Stop -InformationAction Continue
       }
   - make --version
+  - gs --version
+#  - magick --version
+  - compare --version
+  - hp2xx --version
 
 build_script:
   - make all

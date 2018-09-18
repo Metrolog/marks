@@ -8,7 +8,7 @@ ifndef MAKE_PDF_DIR
 
 ifdef SHOW_PDF
   ifeq ($(OS),Windows_NT)
-    ifeq ($(ISCYGWIN),$(true))
+    ifeq ($(is_cygwin),$(true))
       OPENTARGETPDF =
     else
       OPENTARGETPDF = $@

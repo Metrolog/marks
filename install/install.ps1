@@ -132,11 +132,11 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
 
     if (
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
-		-and $PSCmdLet.ShouldProcess('Пакеты CygWin make, curl, awk, cat, cmp, cp, diff, echo, egrep, expr, false, grep, ln, ls, m4, mkdir, mv, printf, pwd, rm, rmdir, sed, sleep, sort, tar, test, touch, tr, true', 'Установить')
+		-and $PSCmdLet.ShouldProcess('Пакеты CygWin make, ghostscript, imagemagick, hp2xx, curl, awk, cat, cmp, cp, diff, echo, egrep, expr, false, grep, ln, ls, m4, mkdir, mv, printf, pwd, rm, rmdir, sed, sleep, sort, tar, test, touch, tr, true', 'Установить')
     ) {
         Invoke-ExternalInstaller `
             -LiteralPath $cygwinsetup `
-            -ArgumentList '--packages make,curl,awk,cat,cmp,cp,diff,echo,egrep,expr,false,grep,ln,ls,m4,mkdir,mv,printf,pwd,rm,rmdir,sed,sleep,sort,tar,test,touch,tr,true --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
+            -ArgumentList '--packages make,ghostscript,ImageMagick,hp2xx,curl,awk,cat,cmp,cp,diff,echo,egrep,expr,false,grep,ln,ls,m4,mkdir,mv,printf,pwd,rm,rmdir,sed,sleep,sort,tar,test,touch,tr,true --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
         ;
     };
 };
@@ -147,31 +147,6 @@ $env:CygWin = Get-ItemPropertyValue `
 ;
 Write-Verbose "CygWin root directory: $env:CygWin";
 $ToPath += "$env:CygWin\bin";
-
-if (
-    ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
-    -and $PSCmdLet.ShouldProcess('GhostScript', 'Установить')
-) {
-    & $chocoExe install Ghostscript --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-};
-$ToPath += Split-Path `
-    -LiteralPath (
-        (
-            Get-ChildItem -LiteralPath 'HKLM:\SOFTWARE\GPL Ghostscript' `
-            | Sort-Object -Property Name -Descending `
-            | Select-Object -First 1 `
-        ) `
-        | Get-ItemPropertyValue -Name 'GS_DLL'
-    ) `
-;
-
-if (
-    ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
-    -and $PSCmdLet.ShouldProcess('ImageMagick', 'Установить')
-) {
-    & $chocoExe install ImageMagick --confirm --failonstderr | Out-String -Stream | Write-Verbose;
-};
-$ToPath += Get-ItemPropertyValue -LiteralPath 'HKLM:\SOFTWARE\ImageMagick\Current' -Name 'BinPath';
 
 if ( $GUI ) {
     if (

@@ -127,16 +127,16 @@ SHELLTYPE := sh
 
 ifeq ($(OS),Windows_NT)
   ifeq (a,$(shell echo "a"))
-    ISCYGWIN := $(true)
+    is_cygwin := $(true)
     MAKE := make
     OSabsPath = $(call _deprecated_function,OSabsPath)$(shell cygpath -m $(abspath $1))
   else
-    ISCYGWIN := $(false)
+    is_cygwin := $(false)
   endif
   HIDE := attrib +h
   UNHIDE := attrib -h
 else
-  ISCYGWIN := $(false)
+  is_cygwin := $(false)
   HIDE := /dev/null <
   UNHIDE := /dev/null <
 endif

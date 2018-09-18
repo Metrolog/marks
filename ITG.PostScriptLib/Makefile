@@ -9,8 +9,6 @@ include $(ITG_MAKEUTILS_DIR)appveyor/appveyor.mk
 
 $(eval $(call prepare_PostScript_resource))
 
-GSINCDIR := $(GSINCDIR) $(PSRESOURCEOUTPUTDIR)
-
 PSLIBSRCFILES := $(call getPostScriptResourceSourceFiles)
 POSTSCRIPTRESOURCEFILES := $(call getPostScriptResourceOutputFiles,,,$(PSLIBSRCFILES))
 ITG_POSTSCRIPTLIBFILES := $(POSTSCRIPTRESOURCEFILES)

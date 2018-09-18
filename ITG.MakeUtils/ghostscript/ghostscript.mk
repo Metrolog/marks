@@ -11,14 +11,18 @@ include $(MAKE_COMMON_DIR)pdf.mk
 MAKE_GHOSTSCRIPT_DIR = $(MAKE_COMMON_DIR)ghostscript/
 
 ifeq ($(OS),Windows_NT)
-  ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
-    GSTOOL ?= gswin64c
+  ifeq ($(is_cygwin),$(true))
+    GSTOOL ?= gs
   else
-    ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+    ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
       GSTOOL ?= gswin64c
-    endif
-    ifeq ($(PROCESSOR_ARCHITECTURE),x86)
-      GSTOOL ?= gswin32c
+    else
+      ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+        GSTOOL ?= gswin64c
+      endif
+      ifeq ($(PROCESSOR_ARCHITECTURE),x86)
+        GSTOOL ?= gswin32c
+      endif
     endif
   endif
 else
@@ -29,11 +33,11 @@ GSFLAGS = \
   -P \
   -dNOPLATFONTS \
 
-# обходное решение для https://github.com/Metrolog/marks/issues/60
+GSTOOLVERSION:=$(strip $(shell $(GSTOOL) --version))
+
 ifneq ($(OS),Windows_NT)
-  ifeq (9.18,$(lastword $(sort $(shell $(GSTOOL) --version) 9.18)))
+  ifeq (9.18,$(lastword $(sort $(GSTOOLVERSION) 9.18)))
     $(call writewarning,Requires ghostscript version 9.19 or higher.)
-    GSFLAGS += -sICCProfilesDir='%rom%iccprofiles/'
   endif
 endif
 
@@ -42,15 +46,16 @@ GS = $(GSTOOL) $(GSFLAGS) \
   -dBATCH
 
 PSRESOURCEOUTPUTDIR ?= $(OUTPUTDIR)Resource/
-PSGENERICRESOURCEDIR =
-GSINCDIR ?= %rom%Resource/ $(PSRESOURCEOUTPUTDIR)
+# TODO: пока только для Cygwin и Linux. Для Windows %rom%Resource/?
+PSGENERICRESOURCEDIR = /usr/share/ghostscript/$(GSTOOLVERSION)/Resource/
+GSINCDIR ?= $(PSRESOURCEOUTPUTDIR)
 GSFONTDIR ?=
 PSRESOURCESOURCEDIR ?= ./
 ENCODINGRESOURCEDIR := Encoding/
 PROCSETRESOURCEDIR := ProcSet/
 FONTRESOURCEDIR := Font/
 FILERESOURCEDIR := File/
-RESOURCEDIRSUBDIRS = $(ENCODINGRESOURCEDIR) $(PROCSETRESOURCEDIR)
+RESOURCEDIRSUBDIRS = $(ENCODINGRESOURCEDIR) $(PROCSETRESOURCEDIR) $(FONTRESOURCEDIR)
 
 # $(call getPostScriptResourceSourceFiles[, resSourceDir])
 getPostScriptResourceSourceFiles = \
@@ -95,9 +100,8 @@ endef
 
 GSCMDLINE = $(GS) \
   $(foreach incdir,$(GSINCDIR),-I'$(incdir)') \
+  $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
   $(if $(GSFONTDIR),-sFONTPATH='$(call merge,$(PATHSEP),$(GSFONTDIR))')
-
-#  $(if $(PSGENERICRESOURCEDIR),-sGenericResourceDir='$(PSGENERICRESOURCEDIR)') \
 
 
 GSPSTOPDFFLAGS =
@@ -117,6 +121,10 @@ $(OUTPUTDIR)%.eps: $(SOURCESDIR)%.ps $$(POSTSCRIPTRESOURCEFILES) | $(TARGETDIR)
 	$(GSPSTOEPSCMDLINE) -sOutputFile='$@' '$<'
 
 
+GSPSTODISPLAYFLAGS =
+GSPSTODISPLAYCMDLINE = $(GSCMDLINE) $(GSPSTODISPLAYFLAGS) \
+  $(if $(is_cygwin),-sDEVICE=display)
+
 ifdef MAKE_TESTS_DIR
 
 # just postscript tests files, without output files
@@ -131,7 +139,7 @@ TESTSPSSOURCEFILES = $(call rwildcard,$(TESTSPSSOURCEDIR),*.ps)
 define definePostScriptClearTest
 
 $(call define_test,$(basename $(notdir $1)),ps_build,\
-  $(GSCMDLINE) '$2';,\
+  $(GSPSTODISPLAYCMDLINE) '$2';,\
   $2 $3 $$(POSTSCRIPTRESOURCEFILES),,,\
   $2 \
 )

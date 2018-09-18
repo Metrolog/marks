@@ -33,7 +33,7 @@ $(eval $(call copy_file_to,$(ENCODINGSDIR),$(CP1253TARGET)))
 maintainer-clean::
 	$(RMDIR) $(ENCODINGSDIR)
 
-GSFONTDIR := $(GSFONTDIR) $(call OSabsPath,$(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR))
+GSFONTDIR := $(GSFONTDIR) $(abspath $(PSRESOURCEOUTPUTDIR)$(FONTRESOURCEDIR))
 
 
 define __copy_font_resources_aux
