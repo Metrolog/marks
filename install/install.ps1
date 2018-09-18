@@ -165,6 +165,13 @@ $ToPath += Split-Path `
     ) `
 ;
 
+if (
+    ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
+    -and $PSCmdLet.ShouldProcess('ImageMagick', 'Установить')
+) {
+    & $chocoExe install ImageMagick --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+};
+
 if ( $GUI ) {
     if (
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
