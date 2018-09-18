@@ -10,7 +10,7 @@ install:
       sudo apt-get install -y make ghostscript imagemagick hp2xx
   - ps: |
       if ( -not $isLinux ) {
-        .\install\install.ps1 -ErrorAction Stop -InformationAction Continue
+        .\install\install.ps1 -Verbose -ErrorAction Stop -InformationAction Continue
       }
   - make --version
   - gs --version
