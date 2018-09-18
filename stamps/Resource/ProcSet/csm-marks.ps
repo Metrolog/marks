@@ -19,15 +19,15 @@
 %%+: ProcSet (si) 2.2 0
 %%+: ProcSet (graphics-alignments) 2.2 0
 %%+: ProcSet (image-st) 2.2 0
-%%DocumentSuppliedResources: Font stamp_sign_cyr
+%%+: Font stamp_sign_cyr
 %%+: Font stamp_sign_greek
 %%+: Font stamp_id
 %%+: Font stamp_gmc
 %%+: Font stamp_period
 %%+: Font stamp_year
 %%+: Font stamp_K
-%%+: ProcSet (csm-marks)
-%%Version: 2.2 0
+%%DocumentSuppliedResources: ProcSet (csm-marks)
+%%Version: 2.4 0
 %%EndComments
 %%BeginProlog
 
@@ -44,54 +44,13 @@
 %%IncludeResource: ProcSet graphics-alignments 2.2 0
 %%IncludeResource: ProcSet image-st 2.2 0
 
-/stamp_sign_cyr /Font resourcestatus { pop pop } {
-%!PS-Adobe-3.0 Resource-Font
-%%BeginResource: Font stamp_sign_cyr
-/stamp_sign_cyr (GOST2930-62forMarks) /CP1251Encoding  /fonts /ProcSet findresource /reencodefont get exec  pop
-%%EndResource:
-} ifelse
-
-/stamp_sign_greek /Font resourcestatus { pop pop } {
-%!PS-Adobe-3.0 Resource-Font
-%%BeginResource: Font stamp_sign_greek
-/stamp_sign_greek (GOST2930-62forMarks) /CP1253Encoding  /fonts /ProcSet findresource /reencodefont get exec  pop
-%%EndResource:
-} ifelse
-
-/stamp_id /Font resourcestatus { pop pop } {
-%!PS-Adobe-3.0 Resource-Font
-%%BeginResource: Font stamp_id
-/stamp_id  /stamp_sign_cyr findfont  definefont pop
-%%EndResource:
-} ifelse
-
-/stamp_gmc /Font resourcestatus { pop pop } {
-%!PS-Adobe-3.0 Resource-Font
-%%BeginResource: Font stamp_gmc
-/stamp_gmc  /stamp_sign_cyr findfont  definefont pop
-%%EndResource:
-} ifelse
-
-/stamp_period /Font resourcestatus { pop pop } {
-%!PS-Adobe-3.0 Resource-Font
-%%BeginResource: Font stamp_period
-/stamp_period  /stamp_sign_cyr findfont  definefont pop
-%%EndResource:
-} ifelse
-
-/stamp_year /Font resourcestatus { pop pop } {
-%!PS-Adobe-3.0 Resource-Font
-%%BeginResource: Font stamp_year
-/stamp_year  /stamp_period findfont  definefont pop
-%%EndResource:
-} ifelse
-
-/stamp_K /Font resourcestatus { pop pop } {
-%!PS-Adobe-3.0 Resource-Font
-%%BeginResource: Font stamp_K
-/stamp_K  /stamp_id findfont  definefont pop
-%%EndResource:
-} ifelse
+%%IncludeResource: Font stamp_sign_cyr
+%%IncludeResource: Font stamp_sign_greek
+%%IncludeResource: Font stamp_year
+%%IncludeResource: Font stamp_period
+%%IncludeResource: Font stamp_id
+%%IncludeResource: Font stamp_gmc
+%%IncludeResource: Font stamp_K
 
 %%IncludeResource: ProcSet csm-marks-cyr-signs 2.2 0
 %%IncludeResource: ProcSet csm-marks-greek-signs 2.2 0
