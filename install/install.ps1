@@ -142,11 +142,21 @@ if (
 
     if (
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
-		-and $PSCmdLet.ShouldProcess('Пакеты CygWin make, ghostscript, imagemagick, hp2xx, curl, awk, cat, cmp, cp, diff, echo, egrep, expr, false, grep, ln, ls, m4, mkdir, mv, printf, pwd, rm, rmdir, sed, sleep, sort, tar, test, touch, tr, true', 'Установить')
+		-and $PSCmdLet.ShouldProcess('Пакеты CygWin make, curl, awk, cat, cmp, cp, diff, echo, egrep, expr, false, grep, ln, ls, m4, mkdir, mv, printf, pwd, rm, rmdir, sed, sleep, sort, tar, test, touch, tr, true', 'Установить')
     ) {
         Invoke-ExternalInstaller `
             -LiteralPath $cygwinsetup `
-            -ArgumentList '--packages make,ghostscript,ImageMagick,hp2xx,curl,awk,cat,cmp,cp,diff,echo,egrep,expr,false,grep,ln,ls,m4,mkdir,mv,printf,pwd,rm,rmdir,sed,sleep,sort,tar,test,touch,tr,true --quiet-mode --no-desktop --no-startmenu --site http://mirrors.kernel.org/sourceware/cygwin/' `
+            -ArgumentList '--packages make,curl,awk,cat,cmp,cp,diff,echo,egrep,expr,false,grep,ln,ls,m4,mkdir,mv,printf,pwd,rm,rmdir,sed,sleep,sort,tar,test,touch,tr,true --quiet-mode --no-desktop --no-startmenu' `
+        ;
+    };
+
+	if (
+        ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
+		-and $PSCmdLet.ShouldProcess('ghostscript, ImageMagick, hp2xx', 'Установить')
+    ) {
+        Invoke-ExternalInstaller `
+            -LiteralPath $cygwinsetup `
+            -ArgumentList '--packages ghostscript,ImageMagick,hp2xx --quiet-mode --no-desktop --no-startmenu' `
         ;
     };
 };
