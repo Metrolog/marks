@@ -3,4 +3,4 @@ config
 release
 make.log
 ReleaseNotes.md
-~.dirstate
+.dirstate
