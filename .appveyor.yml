@@ -8,6 +8,7 @@ install:
   - sh: |
       sudo apt-get update
       sudo apt-get install -y make ghostscript
+      sudo apt-get install -y imagemagick
   - ps: |
       if ( -not $isLinux ) {
         .\install\install.ps1 -ErrorAction Stop -InformationAction Continue
