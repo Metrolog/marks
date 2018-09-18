@@ -171,6 +171,7 @@ if (
 ) {
     & $chocoExe install ImageMagick --confirm --failonstderr | Out-String -Stream | Write-Verbose;
 };
+$ToPath += Get-ItemPropertyValue -LiteralPath 'HKLM:\SOFTWARE\ImageMagick\Current' -Name 'BinPath';
 
 if ( $GUI ) {
     if (
