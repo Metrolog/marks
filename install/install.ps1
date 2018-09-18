@@ -156,7 +156,7 @@ if (
     ) {
         Invoke-ExternalInstaller `
             -LiteralPath $cygwinsetup `
-            -ArgumentList '--packages ghostscript,ImageMagick,hp2xx --quiet-mode --no-desktop --no-startmenu' `
+            -ArgumentList '--packages ghostscript,ImageMagick,hp2xx --quiet-mode' `
         ;
     };
 };
