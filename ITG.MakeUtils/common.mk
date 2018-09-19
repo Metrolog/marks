@@ -133,12 +133,12 @@ ifeq ($(OS),Windows_NT)
   else
     is_cygwin := $(false)
   endif
-  HIDE := attrib +h
-  UNHIDE := attrib -h
+  hide = attrib +h $1
+  unhide = attrib -h $1
 else
   is_cygwin := $(false)
-  HIDE := /dev/null <
-  UNHIDE := /dev/null <
+  hide =
+  unhide =
 endif
 
 VERBOSE            ?= true
@@ -149,8 +149,8 @@ MAKETARGETASDIR    = $(MKDIR) $@
 RMDIR              := rm -r -f
 RM                 := rm -r -f
 TOUCH              := touch
-HIDETARGET         = $(HIDE) $@
-UNHIDETARGET       = $(UNHIDE) $@
+HIDETARGET         = $(call hide,$@)
+UNHIDETARGET       = $(call unhide,$@)
 COPY               := cp
 CURL               := curl
 
@@ -159,7 +159,7 @@ DIRMARKERFILE      := .dirstate
 %/$(DIRMARKERFILE):
 	$(MAKETARGETDIR)
 	@$(TOUCH) $@
-	@$(HIDE) $@
+	$(HIDETARGET)
 
 TARGETDIR = $(if $1,$(dir $1)$(DIRMARKERFILE),$$(@D)/$(DIRMARKERFILE))
 

@@ -5,16 +5,11 @@ image:
 version: 2.4.0.{build}
 
 install:
-  - sh: mkdir -p config/one
   - sh: sudo apt-get update
-  - sh: mkdir -p config/two
-  - sh: sudo apt-get install -y make ghostscript imagemagick hp2xx
-  - sh: mkdir -p config/three
-#  - sh: |
-#      sudo apt-get update
-#      sudo apt-get install -y make ghostscript imagemagick hp2xx
-#      sudo rm -f /dev/null
-#      sudo mknod -m 666 /dev/null c 1 3
+  - sh: sudo apt-get install -y make
+  - sh: sudo apt-get install -y ghostscript
+  - sh: sudo apt-get install -y hp2xx
+  - sh: sudo apt-get install -y imagemagick
   - ps: |
       if ( -not $isLinux ) {
         .\install\install.ps1 -Verbose -ErrorAction Stop -InformationAction Continue
