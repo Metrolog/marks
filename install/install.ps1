@@ -43,8 +43,8 @@ Function Invoke-ExternalInstaller {
 
     $pinfo = [System.Diagnostics.ProcessStartInfo]::new();
     $pinfo.FileName = $LiteralPath;
-    $pinfo.RedirectStandardError = $true;
-    $pinfo.RedirectStandardOutput = $true;
+    #$pinfo.RedirectStandardError = $true;
+    #$pinfo.RedirectStandardOutput = $true;
     $pinfo.UseShellExecute = $false;
     $pinfo.Arguments = $ArgumentList;
     if ($PSCmdLet.ShouldProcess($LiteralPath, 'Запустить')) {
@@ -54,12 +54,13 @@ Function Invoke-ExternalInstaller {
             $p.Start() | Out-Null;
             $p.WaitForExit();
             $LASTEXITCODE = $p.ExitCode;
-            $p.StandardOutput.ReadToEnd() `
-            | Write-Verbose `
-            ;
+            #$p.StandardOutput.ReadToEnd() `
+            #| Write-Verbose `
+            #;
             if ( $p.ExitCode -ne 0 ) {
-                $p.StandardError.ReadToEnd() `
-                | Write-Error `
+				#$p.StandardError.ReadToEnd() `
+				"$LiteralPath exit with error code $($p.ExitCode)" `
+				| Write-Error `
                 ;
             };
         } finally {
@@ -99,13 +100,13 @@ if ( -not ( $env:APPVEYOR -eq 'True' ) ) {
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
         -and $PSCmdLet.ShouldProcess('cygwin', 'Установить')
     ) {
-        & $chocoExe install cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+        & $chocoExe install cygwin --no-progress --confirm --failonstderr | Out-String -Stream | Write-Verbose;
 	};
 } else {
     if (
         $Scope -eq ( [System.EnvironmentVariableTarget]::Machine )
     ) {
-		& $chocoExe upgrade cygwin --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+		& $chocoExe upgrade cygwin --no-progress --confirm --failonstderr | Out-String -Stream | Write-Verbose;
 	};
 };
 
@@ -156,7 +157,7 @@ if (
     ) {
         Invoke-ExternalInstaller `
             -LiteralPath $cygwinsetup `
-            -ArgumentList '--packages ghostscript,ImageMagick,hp2xx --quiet-mode' `
+            -ArgumentList '--packages ghostscript,ImageMagick,hp2xx --quiet-mode --no-desktop --no-startmenu' `
         ;
     };
 };
@@ -173,7 +174,7 @@ if ( $GUI ) {
         ( $Scope -eq ( [System.EnvironmentVariableTarget]::Machine ) ) `
         -and $PSCmdLet.ShouldProcess('Visual Studio Code', 'Установить')
     ) {
-        & $chocoExe install vscode --confirm --failonstderr | Out-String -Stream | Write-Verbose;
+        & $chocoExe install vscode --no-progress --confirm --failonstderr | Out-String -Stream | Write-Verbose;
     };
 };
 
