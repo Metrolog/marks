@@ -146,7 +146,7 @@ PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
 
 __multifile_stamps_ps_recipe_aux = \
-  set -o pipefail || true; \
+  set +e; set -o pipefail; set -e; \
   export LANG=ru_RU.UTF8; \
   iconv -f CP1251 $2 \
   | m4 \
