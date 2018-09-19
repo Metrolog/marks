@@ -65,7 +65,7 @@ MULTIFILEORDERAUXDIR = $(AUXDIR)mf/
 MULTIFILETESTSOUTPUTDIR = $(TESTSOUTPUTDIR)mf/
 
 # $(call range, from, to)
-__itg_range_aux = $(shell i=$1; while [[ $$i -le $2 ]]; do printf "%d " $$i; i=$$(( i+1 )); done )
+__itg_range_aux = $(shell i=$1; while [ $$i -le $2 ]; do printf "%d " $$i; i=`expr $$i + 1`; done )
 __itg_range_auxII = $(call __itg_range_aux,$(call first,$(call split,_,$1)),$(call last,$(call split,_,$1)))
 range = $(call memoize,__itg_range_auxII,$(call merge,_,$1 $2))
 
