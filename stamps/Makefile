@@ -145,8 +145,9 @@ $(eval $(foreach f,$(MFSUPPORTEDFORMATS),$(call define_multifile_stamps_images_r
 PSTOOLSDIR =
 MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
 
+# TODO: убрал pipefail из-за несовместимости с bourne shell. Необходимо найти совместимое решение или переписать код
+#  set -o pipefail;
 __multifile_stamps_ps_recipe_aux = \
-  set +e; set -o pipefail; set -e; \
   export LANG=ru_RU.UTF8; \
   iconv -f CP1251 $2 \
   | m4 \
