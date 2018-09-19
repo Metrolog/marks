@@ -1,6 +1,7 @@
 image:
   - WMF 5
-  - Ubuntu
+  - Ubuntu1604
+  - Ubuntu1804
 
 version: 2.4.0.{build}
 
