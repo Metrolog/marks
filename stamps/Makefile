@@ -149,7 +149,7 @@ MARK2IMAGE = $(PSTOOLSDIR)mark2image.ps
 #  set -o pipefail;
 __multifile_stamps_ps_recipe_aux = \
   export LANG=ru_RU.UTF8; \
-  iconv -f CP1251 $2 \
+  iconv -f CP1251 -t UTF8 $2 \
   | m4 \
     -D StampYear=\($(strip $(STAMPS_YEAR))\) \
     -D StampPeriod=\($(if $(call seq,$(strip $(STAMPS_PERIOD)),year),,$(strip $(STAMPS_PERIOD)))\) \
@@ -161,7 +161,7 @@ __multifile_stamps_ps_recipe_aux = \
     -D StampDPI=$(STAMPS_DPI) \
     -D StampMirrorPrint=$(if $(STAMPS_MIRROR),true,false) \
     -D StampNegativePrint=$(if $(STAMPS_NEGATIVE),true,false) \
-  | iconv -t CP1251 > $1
+  | iconv -f UTF8 -t CP1251 > $1
 
 $(MULTIFILEORDERAUXDIR)%.ps: $(MARK2IMAGE) $(call __itg_get_static_makefile_list) | $(TARGETDIR)
 	$(call __multifile_stamps_ps_recipe_aux,$@,$<)
