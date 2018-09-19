@@ -1,6 +1,6 @@
 image:
   - WMF 5
-#  - Ubuntu
+  - Ubuntu
 
 version: 2.4.0.{build}
 
