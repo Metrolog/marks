@@ -62,25 +62,29 @@ testPlatformWrapper = $(TESTTOOL) \
 endif
 
 # $(call define_test,id,targetId,script,deps,testTargetFile,orderOnlyDeps,testfile,afterFinish)
+
+get_test_target = test.$(strip $1)-$(strip $2)
+get_test_group_target = test-$(strip $1)
+
 define __define_test_aux
 
-.PHONY: test.$(strip $1)-$(strip $2).recipe
-test.$(strip $1)-$(strip $2).recipe: $(call uniq,$5 $7 $4) $(if $6,| $6)
+.PHONY: $(call get_test_target,$1,$2).recipe
+$(call get_test_target,$1,$2).recipe: $(call uniq,$5 $7 $4) $(if $6,| $6)
 $(if $(strip $3),	$(strip $3))
 
-.PHONY: test.$(strip $1)-$(strip $2)
-test.$(strip $1)-$(strip $2): $(call uniq,$7 $4) $(if $6,| $6)
+.PHONY: $(call get_test_target,$1,$2)
+$(call get_test_target,$1,$2): $(call uniq,$7 $4) $(if $6,| $6)
 	$$(call testPlatformWrapper,$$@,\
-    $$(MAKE) test.$(strip $1)-$(strip $2).recipe \
+    $$(MAKE) $(call get_test_target,$1,$2).recipe \
       OUTPUTDIR=$(TESTSOUTPUTDIR) \
     ,$(strip $7)\
   )
 $(if $(strip $8),	$(strip $8))
 
-.PHONY: test-$(strip $2)
-test-$(strip $2): | test.$(strip $1)-$(strip $2)
+.PHONY: $(call get_test_group_target,$2)
+$(call get_test_group_target,$2): | $(call get_test_target,$1,$2)
 
-check: | test-$(strip $2)
+check: | $(call get_test_group_target,$2)
 
 endef
 
