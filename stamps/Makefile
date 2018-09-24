@@ -102,8 +102,6 @@ ifeq ($(call set_is_subset,$(call set_create,$(MFSTAMPSFORMATS)),$(call set_crea
 $(call writeerror,MFSTAMPSFORMATS contains unsupported file types. Must contains any from: $(MFSUPPORTEDFORMATS))
 endif
 
-all:: marks-pdf
-
 # $(call define_stamps_output_file_rule, file_type_slug)
 define __define_stamps_output_file_rule_aux
 
