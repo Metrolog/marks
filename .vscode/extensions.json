@@ -5,15 +5,16 @@
 		"eamodio.gitlens",
 		"vector-of-bool.gitflow",
 		"sidneys1.gitconfig",
-		"EditorConfig.EditorConfig",
+		"editorconfig.editorconfig",
 		"sleistner.vscode-fileutils",
-		"Gruntfuggly.todo-tree",
+		"gruntfuggly.todo-tree",
 		"redhat.vscode-yaml",
-		"DavidAnson.vscode-markdownlint",
+		"davidanson.vscode-markdownlint",
 		"bierner.markdown-preview-github-styles",
-		"ms-vscode.PowerShell",
+		"ms-vscode.powershell",
 		"sjhuangx.vscode-scheme",
 		"mxschmitt.postscript",
-		"timonwong.shellcheck"
+		"timonwong.shellcheck",
+		"tomoki1207.pdf"
 	]
 }
